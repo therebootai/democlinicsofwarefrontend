@@ -5,12 +5,10 @@ import Dashboard from "./pages/doctors/Dashboard";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/doctor/dashboard" element={<Dashboard />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/doctor/dashboard" element={<Dashboard />} />
+    </Routes>
   );
 }
 
