@@ -14,15 +14,14 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
       link: "/doctor/dashboard",
     },
     {
-
       icon: "/icons/prescriptions.svg",
       name: "Prescription",
       link: "/prescription/manage",
-
+    },
+    {
       icon: "/icons/navpatient.svg",
       name: "Patients",
       link: "/doctor/patients",
-
     },
   ];
 
