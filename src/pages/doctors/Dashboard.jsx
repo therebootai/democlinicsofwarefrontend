@@ -51,12 +51,12 @@ const Dashboard = () => {
   ];
   return (
     <AdminDashboardTemplate>
-      <div className="p-8 flex flex-col gap-4">
+      <div className="p-8 flex flex-col gap-8">
         <div>
           <PerformanceComponent />
         </div>
         <div className="p-2 bg-white rounded-lg flex flex-col gap-4">
-          <h1 className="text-3xl font-semibold">Recent Appointments</h1>
+          <h1 className="text-2xl font-semibold">Recent Appointments</h1>
           <div className="flex flex-col">
             <div className="px-4 h-[4rem] bg-[#27B3FF] rounded-t-lg font-semibold text-lg text-white flex flex-row items-center justify-between gap-4 ">
               <div className="w-[10%]">Id</div>

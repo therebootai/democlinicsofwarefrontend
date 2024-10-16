@@ -16,8 +16,8 @@ const PerformanceComponent = () => {
     { icons: "/icons/followup.svg", totalnumber: "1268+", name: "Followup" },
   ];
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold ">Performance</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold ">Performance</h1>
       <div className="grid grid-cols-4 gap-8">
         {details.map((item, index) => (
           <div
