@@ -14,9 +14,15 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
       link: "/doctor/dashboard",
     },
     {
+
       icon: "/icons/prescriptions.svg",
       name: "Prescription",
       link: "/prescription/manage",
+
+      icon: "/icons/navpatient.svg",
+      name: "Patients",
+      link: "/doctor/patients",
+
     },
   ];
 
@@ -109,8 +115,10 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
                   {item.link ? (
                     <Link
                       to={item.link}
-                      className={`text-[#27B3FF] font-semibold cursor-pointer ml-2 ${
-                        location.pathname === item.link ? "" : ""
+                      className={` font-semibold cursor-pointer ml-2 ${
+                        location.pathname === item.link
+                          ? "text-[#27B3FF]"
+                          : " text-[#666666]"
                       }`}
                       onClick={closeMobileSidebar}
                     >
@@ -118,10 +126,10 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
                     </Link>
                   ) : (
                     <span
-                      className={`text-[#27B3FF] font-semibold cursor-pointer ml-2 ${
+                      className={` font-semibold cursor-pointer ml-2 ${
                         location.pathname === item.link
-                          ? "text-[white]"
-                          : "text-[#777777]"
+                          ? "text-[#27B3FF]"
+                          : "text-[#666666]"
                       }`}
                     >
                       {item.name}

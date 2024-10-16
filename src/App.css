@@ -1,0 +1,3 @@
+.priority-button {
+  @apply h-[2rem] rounded-md bg-[#EEEEEE] flex justify-center items-center px-6 text-[#555555] text-base font-normal;
+}
