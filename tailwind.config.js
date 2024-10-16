@@ -11,12 +11,12 @@ export default {
         xl: "1440px",
         xxl: "1780px",
       },
-      color: {
-        orange: "#FA5503",
-        blue: "#27B3FF",
-        gray: "#555555",
-        green: "#00B252",
-        purple: "#7F03FA",
+      colors: {
+        "custom-orange": "#FA5503",
+        "custom-blue": "#27B3FF",
+        "custom-gray": "#555555",
+        "custom-green": "#00B252",
+        "custom-purple": "#7F03FA",
       },
       fontFamily: {
         "be-vietnam-pro": ["Be Vietnam Pro", "sans-serif"],
