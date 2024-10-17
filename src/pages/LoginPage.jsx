@@ -84,14 +84,16 @@ const LoginPage = () => {
 
   return (
     <div className="flex justify-center h-screen bg-[#EDF4F7] overflow-y-scroll bg-no-repeat bg-cover bg-center overflow-x-hidden items-center ">
-      <div className="lg:w-[40%] xl:w-[35%] sm:w-[95%] md:w-[60%] bg-white h-fit py-10 lg:px-6 xl:px-16 gap-8 flex flex-col boxsh rounded-lg text-black bg-transparent">
+      <div className="lg:w-[45%] xlg:w-[40%] xl:w-[35%] w-[95%] md:w-[60%] bg-white h-fit py-10 lg:px-6 xl:px-16 gap-8 flex flex-col boxsh rounded-lg text-black bg-transparent">
         <div className="flex flex-col justify-center items-center  gap-4 ">
           <img
             src="/images/dentitydentallogo.png"
             alt=""
-            className="h-[5rem]"
+            className="h-[5rem] "
           />
-          <div className="text-lg">Welcome back, Login to your account</div>
+          <div className="xlg:text-lg text-base">
+            Welcome back, Login to your account
+          </div>
         </div>
 
         <form
@@ -99,14 +101,14 @@ const LoginPage = () => {
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-2 ">
-            <label className="text-lg font-[400]">
+            <label className="xlg:text-lg text-base font-[400]">
               Mobile Number/ Email ID:
             </label>
             <input
               type="text"
               value={emailorphone}
               onChange={(e) => setEmailorphone(e.target.value)}
-              className="bg-[#EFEFEF]  text-[#00000033] rounded-md sm:h-[2.5rem] xl:h-[3rem] p-2 text-lg outline-none"
+              className="bg-[#EFEFEF] text-[#333333]  placeholder-[#00000033] rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 text-sm xl:text-lg outline-none"
             />
             {emailorphoneError && (
               <div className="text-red-500 text-sm mt-1">
@@ -115,13 +117,15 @@ const LoginPage = () => {
             )}
           </div>
           <div className="flex flex-col  gap-2">
-            <label className="text-lg font-[400]">Password:</label>
-            <div className="flex sm:h-[2.5rem] xl:h-[3rem] w-full items-center justify-between  rounded-md bg-[#EFEFEF] ">
+            <label className="xlg:text-lg text-base font-[400]">
+              Password:
+            </label>
+            <div className="flex h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem]  w-full items-center justify-between  rounded-sm xl:rounded-md bg-[#EFEFEF] ">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-[#EFEFEF]  rounded-md sm:h-[2.5rem] xl:h-[3rem] p-2 w-full text-[#00000033] text-lg border-none focus:outline-none"
+                className="bg-[#EFEFEF]  rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 w-full text-[#333333]  placeholder-[#00000033] text-sm xl:text-lg border-none focus:outline-none"
               />
               <div
                 onClick={() => setShowPassword(!showPassword)}
@@ -135,13 +139,13 @@ const LoginPage = () => {
             )}
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-lg font-[400]">
+            <label htmlFor="" className="xlg:text-lg text-base font-[400]">
               Choose Your Role
             </label>
             <select
               name=""
               id=""
-              className="bg-[#EFEFEF]  rounded-md sm:h-[2.5rem] xl:h-[3rem] p-2 w-full text-[#00000033] text-lg border-none focus:outline-none"
+              className="bg-[#EFEFEF]  rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 w-full text-[#333333]  placeholder-[#00000033] text-sm xl:text-lg border-none focus:outline-none"
             >
               <option value="">Choose Your Role</option>
               <option value="">Doctor</option>
@@ -149,18 +153,18 @@ const LoginPage = () => {
             </select>
           </div>
           <div className="flex w-full justify-between items-center">
-            <div className="flex flex-row gap-1 items-center text-lg font-medium">
+            <div className="flex flex-row gap-1 items-center xlg:text-lg text-base font-medium">
               <input type="checkbox" name="" id="" />
               <span>Remember me</span>
             </div>
-            <div className="text-[#27B3FF] text-lg font-medium">
+            <div className="text-[#27B3FF] xlg:text-lg text-base font-medium">
               Forgot password?
             </div>
           </div>
           <div className="flex justify-center items-center">
             <Link
               to={"/doctor/dashboard"}
-              className="w-[30%] rounded-md sm:h-[2rem] xl:h-[2.5rem] flex justify-center items-center text-white text-base font-medium bg-[#27B3FF]"
+              className="w-[30%] rounded xl:rounded-md sm:h-[2rem] xl:h-[2.5rem] flex justify-center items-center text-white text-base font-medium bg-[#27B3FF]"
             >
               {loading ? "Wait..." : "Login"}
             </Link>

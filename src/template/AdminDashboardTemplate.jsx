@@ -37,7 +37,7 @@ const AdminDashboardTemplate = ({ children }) => {
           isMobileSidebarOpen={isMobileSidebarOpen}
           closeMobileSidebar={closeMobileSidebar}
         />
-        <div className="w-full p-4 overflow-auto bg-[#EDF4F7] no-scrollbar lg:ml-[5rem] xl:ml-[5rem]">
+        <div className="w-full p-4 overflow-auto  bg-[#EDF4F7]  lg:ml-[5rem] xl:ml-[5rem]">
           {children}
         </div>
       </div>
