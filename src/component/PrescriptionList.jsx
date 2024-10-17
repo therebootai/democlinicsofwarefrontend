@@ -3,6 +3,7 @@ import { BsEye } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import { GoPerson } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const PrescriptionList = ({ prescriptionlist = [] }) => {
   return (
@@ -50,9 +51,12 @@ const PrescriptionList = ({ prescriptionlist = [] }) => {
               <button className="priority-button">Start Visit</button>
               <button className="priority-button">More..</button>
               <div className="flex flex-row items-center gap-4">
-                <button className="xlg:text-2xl text-xl font-medium text-[#7F03FA]">
+                <Link
+                  to={"/prescription/1/details"}
+                  className="xlg:text-2xl text-xl font-medium text-[#7F03FA]"
+                >
                   <BsEye />
-                </button>
+                </Link>
                 <button className="xlg:text-2xl text-xl font-medium text-[#00B252]">
                   <FaEdit />
                 </button>
