@@ -2,6 +2,7 @@ import React from "react";
 import { IoEyeOutline, IoPersonOutline } from "react-icons/io5";
 import { MdCurrencyRupee } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const PrescriptionList = () => {
   return (
@@ -46,12 +47,12 @@ const PrescriptionList = () => {
         <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
           <h3 className="text-sm text-custom-gray">More..</h3>
         </div>
-        <button
-          type="button"
+        <Link
+          to="/prescription/1/details"
           className="inline-flex text-2xl text-custom-purple"
         >
           <IoEyeOutline />
-        </button>
+        </Link>
         <button
           type="button"
           className="inline-flex text-2xl text-custom-green"

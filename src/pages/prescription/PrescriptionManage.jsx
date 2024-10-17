@@ -1,7 +1,7 @@
 import React from "react";
-import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
-import Topheader from "../component/Topheader";
-import PrescriptionList from "../component/PrescriptionList";
+import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
+import Topheader from "../../component/Topheader";
+import PrescriptionList from "../../component/PrescriptionList";
 
 const PrescriptionManage = () => {
   return (

@@ -6,6 +6,7 @@ import { BsEye } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 
 const Patients = () => {
+  
   const patientsdata = [
     {
       pid: "001",
@@ -78,6 +79,7 @@ const Patients = () => {
       due: "500",
     },
   ];
+
   return (
     <AdminDashboardTemplate>
       <div className="p-8 flex flex-col gap-8">

@@ -2,11 +2,12 @@ import { Route, Routes } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/doctors/Dashboard";
-import PrescriptionManage from "./pages/PrescriptionManage";
 
 import "./App.css";
 
 import Patients from "./pages/doctors/Patients";
+import PrescriptionManage from "./pages/prescription/PrescriptionManage";
+import PrescriptionDetails from "./pages/prescription/PrescriptionDetails";
 
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
       <Route path="/prescription/manage" element={<PrescriptionManage />} />
 
       <Route path="/doctor/patients" element={<Patients />} />
+
+      <Route path="/prescription/:id/details" element={<PrescriptionDetails/>} />
 
     </Routes>
   );
