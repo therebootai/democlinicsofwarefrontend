@@ -1,3 +1,40 @@
 .priority-button {
-  @apply h-[2rem] rounded-md bg-[#EEEEEE] flex justify-center items-center px-6 text-[#555555] text-base font-normal;
+  @apply h-[2rem] rounded xlg:rounded-md bg-[#EEEEEE] flex justify-center items-center px-4 xlg:px-6 text-[#555555] text-[13px] xlg:text-base font-normal;
+}
+
+.priority-input {
+  @apply h-[4rem] px-2 bg-white w-full rounded-md placeholder-[#00000080] text-base text-[#333333] outline-none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 20px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #252829;
+  border-radius: 20px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background-color: #edf4f7;
+  border-radius: 20px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #1686c3;
+  border-radius: 20px;
+}
+
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #919495 #edf4f7;
 }
