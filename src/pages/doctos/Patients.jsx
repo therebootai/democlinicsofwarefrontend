@@ -7,6 +7,7 @@ import { FaEdit } from "react-icons/fa";
 import Topheader from "../../component/Topheader";
 
 const Patients = () => {
+  
   const patientsdata = [
     {
       pid: "001",
@@ -79,6 +80,7 @@ const Patients = () => {
       due: "500",
     },
   ];
+
   return (
     <AdminDashboardTemplate>
       <div className="">
