@@ -3,11 +3,6 @@ import { BsEye } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import { GoPerson } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
-<<<<<<< HEAD
-import { FiEdit } from "react-icons/fi";
-import { Link } from "react-router-dom";
-=======
->>>>>>> d664b2289d0f5c6b9dc75e90517c502ad4c8d60a
 
 const PrescriptionList = ({ prescriptionlist = [] }) => {
   return (
@@ -64,59 +59,8 @@ const PrescriptionList = ({ prescriptionlist = [] }) => {
               </div>
             </div>
           </div>
-<<<<<<< HEAD
-          <h3 className="text-[#888] text-sm ps-5">+91 98655 78989</h3>
-        </div>
-        <div className="flex gap-4">
-          <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-            <h3 className="text-sm text-custom-gray">Priority</h3>
-          </div>
-          <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-            <h3 className="text-sm text-custom-gray">Add Invoice</h3>
-          </div>
-          <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded gap-3 text-sm">
-            <MdCurrencyRupee className="text-custom-gray" />
-            <h3 className="text-custom-green">Paid</h3>
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-8 justify-between">
-        <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-          <h3 className="text-sm text-custom-gray">00:09 m | 08:01 PM</h3>
-        </div>
-        <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded gap-3 text-sm">
-          <MdCurrencyRupee className="text-custom-gray" />
-          <h3 className="text-custom-green">1000 Cash</h3>
-        </div>
-        <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-          <h3 className="text-sm text-custom-gray">Add Address</h3>
-        </div>
-        <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-          <h3 className="text-sm text-custom-gray">Prescription</h3>
-        </div>
-        <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-          <h3 className="text-sm text-custom-gray">Start Visit</h3>
-        </div>
-        <div className="bg-[#eee] inline-flex items-center justify-center py-1 px-4 rounded">
-          <h3 className="text-sm text-custom-gray">More..</h3>
-        </div>
-        <Link
-          to="/prescription/1/details"
-          className="inline-flex text-2xl text-custom-purple"
-        >
-          <IoEyeOutline />
-        </Link>
-        <button
-          type="button"
-          className="inline-flex text-2xl text-custom-green"
-        >
-          <FiEdit />
-        </button>
-      </div>
-=======
         </section>
       ))}
->>>>>>> d664b2289d0f5c6b9dc75e90517c502ad4c8d60a
     </div>
   );
 };
