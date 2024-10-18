@@ -158,8 +158,8 @@ const AddNewPrescription = () => {
   return (
     <>
       <TopHeaderMini />
-      <div className="p-8 flex gap-6 bg-[#EDF4F7]">
-        <div className="py-6 px-10">
+      <div className="p-6 xl:p-8 flex gap-6 bg-[#EDF4F7]">
+        <div className="py-6 px-6 xl:px-10">
           <div className="flex gap-5 py-9 border-b border-black/20">
             <div className="flex flex-col gap-5">
               <h3 className="text-black text-xl">Oral Findings</h3>

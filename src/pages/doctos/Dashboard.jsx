@@ -2,6 +2,8 @@ import React from "react";
 import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
 import PerformanceComponent from "../../component/PerformanceComponent";
 import Topheader from "../../component/Topheader";
+import GaugeChart from "../../component/GaugeChart";
+import { BsGraphUpArrow, BsPeople } from "react-icons/bs";
 
 const Dashboard = () => {
   const data = [
@@ -91,6 +93,20 @@ const Dashboard = () => {
       <div className="xl:p-8 p-4 flex flex-col gap-8">
         <div>
           <PerformanceComponent />
+        </div>
+        <div className="flex flex-col xlg:flex-row gap-6 justify-between">
+          <div className="bg-white rounded boxsh flex items-center justify-center w-full">
+            <GaugeChart
+              icon={<BsPeople className="size-6 text-custom-orange" />}
+              text={"Monthly Patients"}
+            />
+          </div>
+          <div className="bg-white rounded boxsh flex items-center justify-center w-full">
+            <GaugeChart
+              icon={<BsGraphUpArrow className="size-6 text-custom-orange" />}
+              text={"Payments"}
+            />
+          </div>
         </div>
         <div className="p-2 bg-white rounded-lg flex flex-col gap-4">
           <h1 className="xlg:text-2xl text-xl font-semibold">
