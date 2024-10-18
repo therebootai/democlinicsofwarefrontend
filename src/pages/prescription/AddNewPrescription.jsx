@@ -113,6 +113,48 @@ const AddNewPrescription = () => {
     },
   ];
 
+  const symtomInput = [
+    "Pain In Tooth",
+    "Since (1 Week)",
+    "Severity (Mid)",
+    "More.. (Back Pain)",
+    "Text...",
+    "Text...",
+    "Text...",
+    "Text...",
+  ];
+
+  const diagonosisInput = [
+    "Pain In Tooth",
+    "Since (1 Week)",
+    "Status",
+    "Text...",
+    "Text...",
+    "Text...",
+  ];
+
+  const mediCations = [
+    "Name",
+    "Dose",
+    "Frequency",
+    "Timing",
+    "Duration",
+    "Startfrom",
+    "Instructions",
+    "Qty",
+  ];
+
+  const labResults = [
+    "RBC Count",
+    "Dose",
+    "Frequency",
+    "Timing",
+    "Duration",
+    "Startfrom",
+    "Instructions",
+    "Qty",
+  ];
+
   return (
     <>
       <TopHeaderMini />
@@ -383,7 +425,7 @@ const AddNewPrescription = () => {
                 </div>
               ))}
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 pb-9">
               <input
                 type="text"
                 placeholder="Hypertension"
@@ -403,6 +445,243 @@ const AddNewPrescription = () => {
               </button>
             </div>
           </div>
+          <div className="flex flex-col gap-9">
+            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+              Symptom
+            </h1>
+            <div className="flex gap-6 pb-9">
+              <div className="flex flex-wrap gap-4">
+                {symtomInput.map((placeholder, index) => (
+                  <input
+                    type="text"
+                    key={index}
+                    placeholder={placeholder}
+                    className="min-w-[20vmax] bg-white rounded py-4 px-6 outline-none text-xl"
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col gap-5 flex-1 justify-between">
+                <button
+                  type="button"
+                  className="text-[#E40000] inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCircleMinus />
+                </button>
+                <button
+                  type="button"
+                  className="text-custom-green inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCirclePlus />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-9">
+            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+              Diagnosis
+            </h1>
+            <div className="flex gap-6 pb-9">
+              <div className="flex flex-wrap gap-4">
+                {diagonosisInput.map((placeholder, index) => (
+                  <input
+                    type="text"
+                    key={index}
+                    placeholder={placeholder}
+                    className="min-w-[26.5vmax] bg-white rounded py-4 px-6 outline-none text-xl"
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col gap-5 flex-1 justify-between">
+                <button
+                  type="button"
+                  className="text-[#E40000] inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCircleMinus />
+                </button>
+                <button
+                  type="button"
+                  className="text-custom-green inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCirclePlus />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-9">
+            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+              Medications
+            </h1>
+            <div className="flex gap-5 pb-9">
+              <div className="flex flex-wrap gap-5">
+                {mediCations.map((placeholder, index) => (
+                  <input
+                    type="text"
+                    key={index}
+                    placeholder={placeholder}
+                    className="bg-white rounded py-4 px-6 outline-none text-xl"
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col gap-5 flex-1 justify-between">
+                <button
+                  type="button"
+                  className="text-[#E40000] inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCircleMinus />
+                </button>
+                <button
+                  type="button"
+                  className="text-custom-green inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCirclePlus />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-9">
+            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+              Lab Results
+            </h1>
+            <div className="flex gap-5 pb-9">
+              <div className="flex flex-wrap gap-5">
+                {labResults.map((placeholder, index) => (
+                  <input
+                    type="text"
+                    key={index}
+                    placeholder={placeholder}
+                    className="bg-white rounded py-4 px-6 outline-none text-xl"
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col gap-5 flex-1 justify-between">
+                <button
+                  type="button"
+                  className="text-[#E40000] inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCircleMinus />
+                </button>
+                <button
+                  type="button"
+                  className="text-custom-green inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base min-w-[6vmax] flex-1"
+                >
+                  <CiCirclePlus />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-9">
+            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+              Refer to a Doctor
+            </h1>
+            <div className="bg-white w-full py-5 px-6 flex gap-2">
+              <span
+                type="button"
+                className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray gap-2 inline-flex whitespace-nowrap"
+              >
+                Saikat Paul
+                <button type="button" className="text-custom-orange">
+                  <IoClose />
+                </button>
+              </span>
+              <span
+                type="button"
+                className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray gap-2 inline-flex whitespace-nowrap"
+              >
+                Soma Paul
+                <button type="button" className="text-custom-orange">
+                  <IoClose />
+                </button>
+              </span>
+              <input
+                type="text"
+                placeholder="Soma Paul"
+                className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-9">
+            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+              Advices
+            </h1>
+            <textarea
+              placeholder="After eating use every night tooth brush"
+              className="bg-white rounded outline-none py-5 px-6 min-h-[20vmax] resize-none text-sm text-custom-gray"
+            ></textarea>
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-1 items-center">
+                <input
+                  type="checkbox"
+                  name=""
+                  id="mouth_gargle"
+                  className="accent-custom-blue cursor-pointer"
+                />
+                <label
+                  htmlFor="mouth_gargle"
+                  className="whitespace-nowrap text-sm text-custom-gray cursor-pointer"
+                >
+                  Mouth Gargle
+                </label>
+              </div>
+              <div className="flex gap-1 items-center">
+                <input
+                  type="checkbox"
+                  name=""
+                  id="after_eating_use_every_night_tooth_brush"
+                  className="accent-custom-blue cursor-pointer"
+                />
+                <label
+                  htmlFor="after_eating_use_every_night_tooth_brush"
+                  className="whitespace-nowrap text-sm text-custom-gray cursor-pointer"
+                >
+                  After eating use every night tooth brush
+                </label>
+              </div>
+              <div className="flex gap-1 items-center">
+                <input
+                  type="checkbox"
+                  name=""
+                  id="please_take_some_bed_rest"
+                  className="accent-custom-blue cursor-pointer"
+                />
+                <label
+                  htmlFor="please_take_some_bed_rest"
+                  className="whitespace-nowrap text-sm text-custom-gray cursor-pointer"
+                >
+                  Please take some bed rest
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-black/20 py-9 bg-[#EDF4F7] flex justify-between">
+        <div className="pl-20">
+          <button
+            type="button"
+            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+          >
+            Clear
+          </button>
+        </div>
+        <div className="pr-20 flex gap-9">
+          <button
+            type="button"
+            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+          >
+            Preview
+          </button>
+          <button
+            type="button"
+            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+          >
+            Print
+          </button>
+          <button
+            type="button"
+            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+          >
+            Finish Prescription
+          </button>
         </div>
       </div>
     </>
