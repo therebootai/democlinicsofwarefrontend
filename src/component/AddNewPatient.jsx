@@ -53,6 +53,13 @@ const AddNewPatient = ({ handleClose }) => {
               className="priority-input"
             />
           </div>
+          <div>
+            <select name="" id="" className=" priority-input">
+              <option value="">Select Doctor</option>
+              <option value="Yes">Doctor1</option>
+              <option value="No">Doctor2</option>
+            </select>
+          </div>
           <div className="grid grid-cols-2 gap-6">
             <button
               onClick={handleClose}
