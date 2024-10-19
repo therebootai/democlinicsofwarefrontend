@@ -10,7 +10,7 @@ const AddNewPatient = ({ handleClose }) => {
   };
 
   return (
-    <div className="xlg:p-8 p-4 flex flex-col gap-16">
+    <div className="xlg:p-8 p-4 flex flex-col gap-16  ">
       <div className="flex flex-row justify-between items-center">
         <h1 className="text-2xl font-semibold text-[#333333]">
           Create New Patient
