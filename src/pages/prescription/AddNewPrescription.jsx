@@ -159,15 +159,15 @@ const AddNewPrescription = () => {
     <>
       <TopHeaderMini />
       <div className="p-6 xl:p-8 flex gap-6 bg-[#EDF4F7]">
-        <div className="py-6 px-6 xl:px-10">
+        <div className="py-6 px-8 xl:px-10">
           <div className="flex gap-5 py-9 border-b border-black/20">
             <div className="flex flex-col gap-5">
-              <h3 className="text-black text-xl">Oral Findings</h3>
-              <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+              <h3 className="text-black text-lg xl:text-xl">Oral Findings</h3>
+              <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                 <input
                   type="text"
                   placeholder="Root Canal"
-                  className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                  className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                 />
                 <button
                   type="button"
@@ -178,8 +178,8 @@ const AddNewPrescription = () => {
               </div>
             </div>
             <div className="flex flex-col gap-5">
-              <h3 className="text-black text-xl">Area</h3>
-              <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+              <h3 className="text-black text-lg xl:text-xl">Area</h3>
+              <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                 <span
                   type="button"
                   className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray gap-2 inline-flex"
@@ -201,17 +201,17 @@ const AddNewPrescription = () => {
                 <input
                   type="text"
                   placeholder="Root Canal"
-                  className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                  className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                 />
               </div>
             </div>
             <div className="flex flex-col gap-5">
-              <h3 className="text-black text-xl">Additional Notes</h3>
-              <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+              <h3 className="text-black text-lg xl:text-xl">Additional Notes</h3>
+              <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                 <input
                   type="text"
                   placeholder="Notes..."
-                  className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                  className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                 />
               </div>
             </div>
@@ -236,12 +236,12 @@ const AddNewPrescription = () => {
           <div className="flex flex-col border-b border-black/20 py-9 gap-6">
             <div className="flex gap-5">
               <div className="flex flex-col gap-5">
-                <h3 className="text-black text-xl">Dental Procedure</h3>
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+                <h3 className="text-black text-lg xl:text-xl">Dental Procedure</h3>
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <input
                     type="text"
                     placeholder="Root Canal"
-                    className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                   />
                   <button
                     type="button"
@@ -252,8 +252,8 @@ const AddNewPrescription = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-5">
-                <h3 className="text-black text-xl">Area</h3>
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+                <h3 className="text-black text-lg xl:text-xl">Area</h3>
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <span
                     type="button"
                     className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray gap-2 inline-flex"
@@ -275,17 +275,17 @@ const AddNewPrescription = () => {
                   <input
                     type="text"
                     placeholder="Root Canal"
-                    className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                   />
                 </div>
               </div>
               <div className="flex flex-col gap-5">
-                <h3 className="text-black text-xl">Additional Notes</h3>
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+                <h3 className="text-black text-lg xl:text-xl">Additional Notes</h3>
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <input
                     type="text"
                     placeholder="Notes..."
-                    className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                   />
                 </div>
               </div>
@@ -309,11 +309,11 @@ const AddNewPrescription = () => {
             </div>
             <div className="flex gap-5">
               <div className="flex flex-col gap-5">
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <input
                     type="text"
                     placeholder="Root Canal"
-                    className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                   />
                   <button
                     type="button"
@@ -324,7 +324,7 @@ const AddNewPrescription = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-5">
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <span
                     type="button"
                     className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray gap-2 inline-flex"
@@ -346,16 +346,16 @@ const AddNewPrescription = () => {
                   <input
                     type="text"
                     placeholder="Root Canal"
-                    className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                   />
                 </div>
               </div>
               <div className="flex flex-col gap-5">
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[26.4vmax]">
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <input
                     type="text"
                     placeholder="Notes..."
-                    className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
                   />
                 </div>
               </div>
@@ -380,12 +380,12 @@ const AddNewPrescription = () => {
           <div className="py-9 flex gap-6 flex-wrap justify-between">
             {basicPatientDetails.map((data, index) => (
               <div className="flex flex-col gap-5" key={index}>
-                <h3 className="text-black text-xl">{data.label}</h3>
-                <div className="bg-white flex px-6 py-8 rounded gap-2 min-w-[28.5vmax]">
+                <h3 className="text-black text-lg xl:text-xl">{data.label}</h3>
+                <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[28.5vmax]">
                   <input
                     type="text"
                     placeholder={data.placeholder}
-                    className="bg-transparent outline-none text-xl text-custom-gray w-full"
+                    className="bg-transparent outline-none text-lg xl:text-xl text-custom-gray w-full"
                   />
                   <span
                     type="button"
@@ -398,7 +398,7 @@ const AddNewPrescription = () => {
             ))}
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Patient Medical History
             </h1>
             <div className="py-9 flex gap-3 justify-between flex-wrap">
@@ -413,7 +413,7 @@ const AddNewPrescription = () => {
                   />
                   <label
                     htmlFor={data.id}
-                    className="whitespace-nowrap text-xl text-custom-gray cursor-pointer"
+                    className="whitespace-nowrap text-lg xl:text-xl text-custom-gray cursor-pointer"
                   >
                     {data.label}
                   </label>
@@ -446,7 +446,7 @@ const AddNewPrescription = () => {
             </div>
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Symptom
             </h1>
             <div className="flex gap-6 pb-9">
@@ -456,7 +456,7 @@ const AddNewPrescription = () => {
                     type="text"
                     key={index}
                     placeholder={placeholder}
-                    className="min-w-[20vmax] bg-white rounded py-4 px-6 outline-none text-xl"
+                    className="min-w-[20vmax] bg-white rounded py-4 px-6 outline-none text-lg xl:text-xl"
                   />
                 ))}
               </div>
@@ -477,7 +477,7 @@ const AddNewPrescription = () => {
             </div>
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Diagnosis
             </h1>
             <div className="flex gap-6 pb-9">
@@ -487,7 +487,7 @@ const AddNewPrescription = () => {
                     type="text"
                     key={index}
                     placeholder={placeholder}
-                    className="min-w-[26.5vmax] bg-white rounded py-4 px-6 outline-none text-xl"
+                    className="min-w-[26.5vmax] bg-white rounded py-4 px-6 outline-none text-lg xl:text-xl"
                   />
                 ))}
               </div>
@@ -508,7 +508,7 @@ const AddNewPrescription = () => {
             </div>
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Medications
             </h1>
             <div className="flex gap-5 pb-9">
@@ -518,7 +518,7 @@ const AddNewPrescription = () => {
                     type="text"
                     key={index}
                     placeholder={placeholder}
-                    className="bg-white rounded py-4 px-6 outline-none text-xl"
+                    className="bg-white rounded py-4 px-6 outline-none text-lg xl:text-xl"
                   />
                 ))}
               </div>
@@ -539,7 +539,7 @@ const AddNewPrescription = () => {
             </div>
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Lab Results
             </h1>
             <div className="flex gap-5 pb-9">
@@ -549,7 +549,7 @@ const AddNewPrescription = () => {
                     type="text"
                     key={index}
                     placeholder={placeholder}
-                    className="bg-white rounded py-4 px-6 outline-none text-xl"
+                    className="bg-white rounded py-4 px-6 outline-none text-lg xl:text-xl"
                   />
                 ))}
               </div>
@@ -570,7 +570,7 @@ const AddNewPrescription = () => {
             </div>
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Refer to a Doctor
             </h1>
             <div className="bg-white w-full py-5 px-6 flex gap-2">
@@ -595,12 +595,12 @@ const AddNewPrescription = () => {
               <input
                 type="text"
                 placeholder="Soma Paul"
-                className="bg-transparent outline-none text-xl placeholder:text-[#d5d5d5] w-full"
+                className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
               />
             </div>
           </div>
           <div className="flex flex-col gap-9">
-            <h1 className="text-custom-gray text-xl font-semibold py-4 border-b border-black/20">
+            <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Advices
             </h1>
             <textarea
@@ -655,30 +655,30 @@ const AddNewPrescription = () => {
         </div>
       </div>
       <div className="border-t border-black/20 py-9 bg-[#EDF4F7] flex justify-between">
-        <div className="pl-20">
+        <div className="pl-16 xlg:pl-20">
           <button
             type="button"
-            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+            className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
           >
             Clear
           </button>
         </div>
-        <div className="pr-20 flex gap-9">
+        <div className="pr-16 xlg:pr-20 flex gap-9">
           <button
             type="button"
-            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+            className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
           >
             Preview
           </button>
           <button
             type="button"
-            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+            className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
           >
             Print
           </button>
           <button
             type="button"
-            className="text-xl font-semibold text-center text-white bg-custom-blue py-4 px-10 rounded"
+            className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
           >
             Finish Prescription
           </button>
