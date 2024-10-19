@@ -47,7 +47,9 @@ const PrescriptionList = ({ prescriptionlist = [] }) => {
                 <span className="text-[#00B252]">{item.paid} Cash</span>
               </button>
               <button className="priority-button">Due {item.due}</button>
-              <button className="priority-button">Prescription</button>
+              <Link to="/prescription/add" className="priority-button">
+                Prescription
+              </Link>
               <button className="priority-button">Start Visit</button>
               <button className="priority-button">More..</button>
               <div className="flex flex-row items-center gap-4">
