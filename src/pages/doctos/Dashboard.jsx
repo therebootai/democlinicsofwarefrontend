@@ -71,14 +71,14 @@ const Dashboard = () => {
         <div>
           <PerformanceComponent />
         </div>
-        <div className="flex flex-col xlg:flex-row gap-6 justify-between">
-          <div className="bg-white rounded boxsh flex items-center justify-center w-full">
+        <div className="flex flex-col w-full lg:flex-row gap-4 justify-between overflow-x-hidden p-4 ">
+          <div className="bg-white rounded boxsh flex items-center justify-center w-full lg:w-[50%] xlg:w-[50%]">
             <GaugeChart
               icon={<BsPeople className="size-6 text-custom-orange" />}
               text={"Monthly Patients"}
             />
           </div>
-          <div className="bg-white rounded boxsh flex items-center justify-center w-full">
+          <div className="bg-white rounded boxsh flex items-center justify-center w-full lg:w-[50%] xlg:w-[50%]">
             <GaugeChart
               icon={<BsGraphUpArrow className="size-6 text-custom-orange" />}
               text={"Payments"}

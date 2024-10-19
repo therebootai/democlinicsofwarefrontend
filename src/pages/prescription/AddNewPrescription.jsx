@@ -407,15 +407,15 @@ const AddNewPrescription = () => {
             <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
               Patient Medical History
             </h1>
-            <div className="py-9 flex gap-3 justify-between flex-wrap">
+            <div className="py-9 grid grid-cols-4 gap-3  ">
               {medicalHistory.map((data, index) => (
-                <div className="flex gap-3 items-center" key={index}>
+                <div className="flex gap-4 items-center" key={index}>
                   <input
                     type="checkbox"
                     name=""
                     id={data.id}
                     checked={data.check}
-                    className="size-full accent-custom-gray cursor-pointer"
+                    className="size-6 accent-custom-gray cursor-pointer"
                   />
                   <label
                     htmlFor={data.id}
