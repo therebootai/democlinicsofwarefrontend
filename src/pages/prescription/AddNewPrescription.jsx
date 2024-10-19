@@ -206,7 +206,9 @@ const AddNewPrescription = () => {
               </div>
             </div>
             <div className="flex flex-col gap-5">
-              <h3 className="text-black text-lg xl:text-xl">Additional Notes</h3>
+              <h3 className="text-black text-lg xl:text-xl">
+                Additional Notes
+              </h3>
               <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                 <input
                   type="text"
@@ -236,7 +238,9 @@ const AddNewPrescription = () => {
           <div className="flex flex-col border-b border-black/20 py-9 gap-6">
             <div className="flex gap-5">
               <div className="flex flex-col gap-5">
-                <h3 className="text-black text-lg xl:text-xl">Dental Procedure</h3>
+                <h3 className="text-black text-lg xl:text-xl">
+                  Dental Procedure
+                </h3>
                 <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <input
                     type="text"
@@ -280,7 +284,9 @@ const AddNewPrescription = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-5">
-                <h3 className="text-black text-lg xl:text-xl">Additional Notes</h3>
+                <h3 className="text-black text-lg xl:text-xl">
+                  Additional Notes
+                </h3>
                 <div className="bg-white flex px-4 xl:px-6 py-6 xl:py-8 rounded gap-2 min-w-[26.4vmax]">
                   <input
                     type="text"

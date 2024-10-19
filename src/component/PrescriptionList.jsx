@@ -59,9 +59,6 @@ const PrescriptionList = ({ prescriptionlist = [] }) => {
                 >
                   <BsEye />
                 </Link>
-                <button className="xlg:text-2xl text-xl font-medium text-[#00B252]">
-                  <FaEdit />
-                </button>
               </div>
             </div>
           </div>
