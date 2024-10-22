@@ -9,6 +9,7 @@ import PrescriptionDetails from "./pages/prescription/PrescriptionDetails";
 import AddNewPrescription from "./pages/prescription/AddNewPrescription";
 import Estimate from "./pages/Estimate";
 import CreateInvoice from "./pages/CreateInvoice";
+import AddPaymentCharges from "./pages/AddPaymentCharges";
 
 function App() {
   return (
@@ -28,6 +29,10 @@ function App() {
       <Route path="/patient/:id/createinvoice" element={<CreateInvoice />} />
 
       <Route path="/doctor/payments" element={<Payments />} />
+      <Route
+        path="/payments/add-payment-charges"
+        element={<AddPaymentCharges />}
+      />
 
       <Route path="/prescription/add" element={<AddNewPrescription />} />
     </Routes>
