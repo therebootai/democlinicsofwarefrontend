@@ -7,12 +7,11 @@ import Payments from "./pages/Payments";
 import PrescriptionManage from "./pages/prescription/PrescriptionManage";
 import PrescriptionDetails from "./pages/prescription/PrescriptionDetails";
 import AddNewPrescription from "./pages/prescription/AddNewPrescription";
-<<<<<<< HEAD
+
 import { Forms } from "./pages/Forms";
-=======
+
 import Estimate from "./pages/Estimate";
 import CreateInvoice from "./pages/CreateInvoice";
->>>>>>> 9f77c57af48d58fc982d9eefcaad73cf737fb97e
 
 function App() {
   return (
