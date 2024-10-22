@@ -37,12 +37,12 @@ const AdminSideHeader = () => {
     {
       icon: "/icons/forms.svg",
       name: "Forms",
-      link: "",
+      link: "/forms",
     },
     {
-      icon: "/icons/analytics.svg",
-      name: "Analytics",
-      link: "",
+      icon: "/icons/forms.svg",
+      name: "Directions",
+      link: "/directions",
     },
   ];
 
