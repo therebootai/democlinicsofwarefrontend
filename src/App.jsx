@@ -7,8 +7,12 @@ import Payments from "./pages/Payments";
 import PrescriptionManage from "./pages/prescription/PrescriptionManage";
 import PrescriptionDetails from "./pages/prescription/PrescriptionDetails";
 import AddNewPrescription from "./pages/prescription/AddNewPrescription";
+
+import { Forms } from "./pages/Forms";
+
 import Estimate from "./pages/Estimate";
 import CreateInvoice from "./pages/CreateInvoice";
+import Direction from "./pages/Direction";
 
 function App() {
   return (
@@ -30,6 +34,8 @@ function App() {
       <Route path="/doctor/payments" element={<Payments />} />
 
       <Route path="/prescription/add" element={<AddNewPrescription />} />
+      <Route path="/forms" element={<Forms />} />
+      <Route path="/directions" element={<Direction />} />
     </Routes>
   );
 }
