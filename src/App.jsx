@@ -12,6 +12,7 @@ import { Forms } from "./pages/Forms";
 
 import Estimate from "./pages/Estimate";
 import CreateInvoice from "./pages/CreateInvoice";
+import Direction from "./pages/Direction";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
 
       <Route path="/prescription/add" element={<AddNewPrescription />} />
       <Route path="/forms" element={<Forms />} />
+      <Route path="/directions" element={<Direction />} />
     </Routes>
   );
 }

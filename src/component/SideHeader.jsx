@@ -33,6 +33,11 @@ const AdminSideHeader = () => {
       name: "Forms",
       link: "/forms",
     },
+    {
+      icon: "/icons/forms.svg",
+      name: "Directions",
+      link: "/directions",
+    },
   ];
 
   const handleIconClick = (index) => {
