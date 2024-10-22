@@ -28,6 +28,11 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
       name: "Payments",
       link: "/doctor/payments",
     },
+    {
+      icon: "/icons/forms.svg",
+      name: "Forms",
+      link: "/forms",
+    },
   ];
 
   const handleIconClick = (index) => {
