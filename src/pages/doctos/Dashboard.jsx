@@ -3,63 +3,70 @@ import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
 import PerformanceComponent from "../../component/PerformanceComponent";
 import Topheader from "../../component/Topheader";
 import GaugeChart from "../../component/GaugeChart";
-import { BsGraphUpArrow, BsPeople } from "react-icons/bs";
+import { BsEye, BsGraphUpArrow, BsPeople } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import ViewPatient from "../../component/ViewPatient";
+import { GoPerson } from "react-icons/go";
+import { MdCurrencyRupee } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const [data, setData] = useState([
+  const [showViewPatient, setShowViewPatient] = useState(false);
+
+  const handleViewPatient = () => {
+    setShowViewPatient(true);
+  };
+
+  const handleClose = () => {
+    setShowViewPatient(false);
+  };
+  const [patientsData, setPatientsData] = useState([
     {
-      id: "#44",
-      patient: "Harish Malik Mohan",
-      email: "healthcaredentalenter@gmail.com",
-      mobilenumber: "+91 12345 67890",
-      datetime: "12/07/24 - 3:00pm",
-      service: "Dental Treatment",
-      doctor: "Dr. Saikat Paul",
-      fees: "700 INR",
-      paymentstatus: "Confirm",
+      pid: "001",
+      name: "Prakesh C.",
+      gender: "Male",
+      age: "37",
+      mobilenumber: "1234567890",
+      paid: "1000",
+      due: "500",
+      priority: "High",
+      doctorname: "Dr Saikat Paul",
     },
     {
-      id: "#44",
-      patient: "Harish Malik Mohan",
-      email: "healthcaredentalenter@gmail.com",
-      mobilenumber: "+91 12345 67890",
-      datetime: "12/07/24 - 3:00pm",
-      service: "Dental Treatment",
-      doctor: "Dr. Saikat Paul",
-      fees: "700 INR",
-      paymentstatus: "Pending",
+      pid: "002",
+      name: "Ravi S.",
+      gender: "Male",
+      age: "42",
+      mobilenumber: "9876543210",
+      paid: "1500",
+      due: "1000",
+      priority: "",
+      doctorname: "Dr Saikat Paul",
     },
     {
-      id: "#44",
-      patient: "Harish Malik Mohan",
-      email: "healthcaredentalenter@gmail.com",
-      mobilenumber: "+91 12345 67890",
-      datetime: "12/07/24 - 3:00pm",
-      service: "Dental Treatment",
-      doctor: "Dr. Saikat Paul",
-      fees: "700 INR",
-      paymentstatus: "Confirm",
-    },
-    {
-      id: "#44",
-      patient: "Harish Malik Mohan",
-      email: "healthcaredentalenter@gmail.com",
-      mobilenumber: "+91 12345 67890",
-      datetime: "12/07/24 - 3:00pm",
-      service: "Dental Treatment",
-      doctor: "Dr. Saikat Paul",
-      fees: "700 INR",
-      paymentstatus: "Refund",
+      pid: "003",
+      name: "Neha K.",
+      gender: "Female",
+      age: "29",
+      mobilenumber: "4567891230",
+      paid: "2000",
+      due: "0",
+      priority: "",
+      doctorname: "Dr Saikat Paul",
     },
   ]);
 
-  // Function to handle changes in payment status
-  const handlePaymentStatusChange = (index, newStatus) => {
-    const updatedData = [...data];
-    updatedData[index].paymentstatus = newStatus;
-    setData(updatedData);
+  const togglePriority = (index) => {
+    const updatedPatients = patientsData.map((patient, i) => {
+      if (i === index) {
+        return {
+          ...patient,
+          priority: patient.priority === "High" ? "" : "High",
+        };
+      }
+      return patient;
+    });
+    setPatientsData(updatedPatients);
   };
 
   return (
@@ -71,7 +78,7 @@ const Dashboard = () => {
         <div>
           <PerformanceComponent />
         </div>
-        <div className="flex flex-col w-full lg:flex-row gap-4 justify-between overflow-x-hidden p-4 ">
+        <div className="flex flex-col w-full lg:flex-row gap-4 justify-between overflow-x-hidden py-4  ">
           <div className="bg-white rounded boxsh flex items-center justify-center w-full lg:w-[50%] xlg:w-[50%]">
             <GaugeChart
               icon={<BsPeople className="size-6 text-custom-orange" />}
@@ -89,69 +96,147 @@ const Dashboard = () => {
           <h1 className="xlg:text-2xl text-xl font-semibold">
             Recent Appointments
           </h1>
-          <div className="  w-full overflow-x-auto custom-scroll ">
-            <div className=" max-h-[400px] min-w-[1100px] xlg:min-w-[1400px]">
-              <div className="flex flex-col">
-                <div className="px-4 h-[4rem] bg-[#27B3FF] rounded-t-lg font-semibold text-sm xlg:text-base text-white flex flex-row items-center justify-between gap-4 ">
-                  <div className="w-[10%]">Id</div>
-                  <div className="w-[25%]">Patient</div>
-                  <div className="w-[15%]">Date and Time</div>
-                  <div className="w-[10%]">Service</div>
-                  <div className="w-[10%]">Doctor</div>
-                  <div className="w-[10%]">Fees</div>
-                  <div className="w-[10%]">Payment Status</div>
-                  <div className="w-[10%]">Action</div>
-                </div>
-                <div className="flex flex-col ">
-                  {data.map((item, index) => (
-                    <div
-                      key={index}
-                      className="px-4 py-2 flex flex-row items-center  text-[#555555] text-xs xlg:text-sm justify-between gap-4"
-                    >
-                      <div className="w-[10%]">{item.id}</div>
-                      <div className="w-[25%] flex flex-col">
-                        <div className="xlg:text-base text-sm font-medium">
-                          {item.patient}
+          <div className="flex flex-col gap-6">
+            {patientsData.map((item, index) => (
+              <section
+                key={index}
+                className={`xlg:p-4 p-3 rounded-md border border-[#E7E7E7]  ${
+                  index % 2 == 0 ? "bg-[#F5F5F5]" : " bg-transparent "
+                }`}
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-row items-start justify-between">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex flex-row items-center gap-2">
+                        <span className="xlg:text-lg text-base text-[#888888] font-medium ">
+                          {item.pid}.
+                        </span>
+                        <div className="flex flex-row items-center gap-1 text-sm xlg:text-base font-medium text-[#555555]">
+                          <GoPerson /> <span>{item.name}</span> |
+                          <span>{item.gender}</span> |
+                          <span>{item.age} Years</span>
                         </div>
-                        <div>{item.email}</div>
-                        <div>{item.mobilenumber}</div>
                       </div>
-                      <div className="w-[15%]">{item.datetime}</div>
-                      <div className="w-[10%]">{item.service}</div>
-                      <div className="w-[10%]">{item.doctor}</div>
-                      <div className="w-[10%]">{item.fees}</div>
-                      <div className="w-[10%]">
-                        <select
-                          value={item.paymentstatus}
-                          onChange={(e) =>
-                            handlePaymentStatusChange(index, e.target.value)
-                          }
-                          className={`px-2 w-fit rounded h-[1.5rem] xlg:h-[2rem]  bg-white boxsh outline-none flex justify-center items-center border border-[#B8B8B8]  ${
-                            item.paymentstatus === "Confirm"
-                              ? "text-green-500"
-                              : item.paymentstatus === "Refund"
-                              ? "text-blue-500"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Confirm">Confirm</option>
-                          <option value="Refund">Refund</option>
-                        </select>
-                      </div>
-
-                      <div className="w-[10%] flex gap-4 items-center">
-                        <button className="text-[#00B252] font-semibold text-2xl ">
-                          <FaEdit />
-                        </button>
-                        <button className="text-[#E40000] font-semibold text-2xl ">
-                          <RiDeleteBin6Line />
-                        </button>
+                      <div className="xlg:text-base text-sm font-medium text-[#555555]">
+                        +91 {item.mobilenumber}
                       </div>
                     </div>
-                  ))}
+                    <div className="flex flex-row gap-4">
+                      <button
+                        onClick={() => togglePriority(index)}
+                        className={`priority-button ${
+                          item.priority === "High"
+                            ? "bg-blue-500 text-white"
+                            : index % 2 === 0
+                            ? "bg-white"
+                            : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        {item.priority || "Priority"}
+                      </button>
+                      <button
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        <span>
+                          <MdCurrencyRupee />
+                        </span>
+                        <span className="text-[#00B252]">{item.paid} Paid</span>
+                      </button>
+                      <button
+                        className={`priority-button text-[#E40000] ${
+                          index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                        } `}
+                      >
+                        Due {item.due}
+                      </button>
+                      <Link
+                        to="/prescription/add"
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Start Visit
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-row justify-between items-center ">
+                    <button
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      {item.doctorname}
+                    </button>
+                    <div
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      Create Invoice
+                    </div>
+                    <div
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      Case History
+                    </div>
+                    <button
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      Estimate
+                    </button>
+
+                    <button
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      Prescription
+                    </button>
+                    <button
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      Documents
+                    </button>
+
+                    <button
+                      className={`priority-button ${
+                        index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      }`}
+                    >
+                      Forms
+                    </button>
+                    <div className="flex flex-row items-center gap-4">
+                      <button
+                        onClick={handleViewPatient}
+                        className="xlg:text-2xl text-xl font-medium text-[#7F03FA]"
+                      >
+                        <BsEye />
+                      </button>
+                      <button className="xlg:text-2xl text-xl font-medium text-[#00B252]">
+                        <FaEdit />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </section>
+            ))}
+          </div>
+          <div
+            className={`fixed top-0 right-0 h-screen w-[60%] xlg:w-[50%] overflow-scroll custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+              showViewPatient ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="p-4">
+              <ViewPatient handleClose={handleClose} />
             </div>
           </div>
         </div>

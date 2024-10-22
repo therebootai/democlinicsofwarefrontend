@@ -7,6 +7,8 @@ import Payments from "./pages/Payments";
 import PrescriptionManage from "./pages/prescription/PrescriptionManage";
 import PrescriptionDetails from "./pages/prescription/PrescriptionDetails";
 import AddNewPrescription from "./pages/prescription/AddNewPrescription";
+import Estimate from "./pages/Estimate";
+import CreateInvoice from "./pages/CreateInvoice";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         path="/prescription/:id/details"
         element={<PrescriptionDetails />}
       />
+      <Route path="/patient/:id/estimate" element={<Estimate />} />
+      <Route path="/patient/:id/createinvoice" element={<CreateInvoice />} />
 
       <Route path="/doctor/payments" element={<Payments />} />
 

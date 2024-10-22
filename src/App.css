@@ -1,5 +1,5 @@
 .priority-button {
-  @apply h-[2rem] rounded xlg:rounded-md bg-[#EEEEEE] flex justify-center items-center px-4 xlg:px-6 text-[#555555] text-[13px] xlg:text-base font-normal;
+  @apply h-[2rem] rounded xlg:rounded-md bg-[#EEEEEE] flex justify-center items-center px-4 xlg:px-6 text-[#555555] text-[13px] xlg:text-base font-medium;
 }
 
 .priority-input {
