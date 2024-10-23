@@ -82,7 +82,7 @@ const Patients = () => {
         >
           <button
             onClick={handleAddNewClick}
-            className="flex items-center bg-custom-orange gap-3 rounded px-2 xlg:px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+            className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-2 xlg:px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
           >
             <GoPlusCircle />
             <h3>Add Patient</h3>
