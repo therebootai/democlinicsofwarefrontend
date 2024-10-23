@@ -62,10 +62,10 @@ const AdminSideHeader = () => {
         <img
           src="/images/dentitydentallogo.png"
           alt="Clinic Logo"
-          className="h-[3rem] "
+          className="xl:h-[3rem] h-[2.5rem] "
         />
       </div>
-      <div className="flex flex-col gap-4 mt-6">
+      <div className="flex flex-col xlg:gap-8 gap-4 mt-2 p-1 xlg:p-2 xl:pl-4 ">
         {sideheader.map((item, index) => (
           <div
             key={index}
@@ -73,7 +73,7 @@ const AdminSideHeader = () => {
             onClick={() => handleIconClick(index)}
           >
             <div
-              className={`flex items-center p-2 pl-4 rounded-lg w-full ${
+              className={`flex items-center  rounded-lg w-full ${
                 hoveredIndex === index || location.pathname === item.link
                   ? "bg-transparent text-custom-blue"
                   : "bg-transparent"
@@ -82,18 +82,17 @@ const AdminSideHeader = () => {
                 transition: "background-color 0.5s ease, width 0.5s ease",
               }}
             >
-              <div className="h-[1.5rem] w-[2px] bg-[#27B3FF]"></div>
               <span className={`p-2 rounded-md  `}>
                 <img
                   src={item.icon}
                   alt={item.name}
-                  className={`h-[1.4rem] w-[1.4rem]  `}
+                  className={`xl:h-[1.4rem] xl:w-[1.4rem] h-[1rem] w-[1rem] `}
                 />
               </span>
               {item.link ? (
                 <Link
                   to={item.link}
-                  className={` font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
+                  className={` xl:text-base xlg:text-sm text-xs font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
                     location.pathname === item.link
                       ? "text-[#27B3FF]"
                       : " text-[#666666]"
@@ -103,7 +102,7 @@ const AdminSideHeader = () => {
                 </Link>
               ) : (
                 <span
-                  className={` font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
+                  className={` xl:text-base xlg:text-sm text-xs  font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
                     location.pathname === item.link
                       ? "text-[#27B3FF]"
                       : "text-[#666666]"

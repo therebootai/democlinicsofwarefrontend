@@ -39,15 +39,15 @@ const Topheader = ({
   const formattedDate = currentDate.format("dddd, DD MMM YY");
 
   return (
-    <header className="flex justify-between pb-5 p-4 border-b border-black/20">
-      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-3 h-[2.5rem]">
+    <header className="flex justify-between pb-5 p-2 xlg:p-4 border-b border-black/20">
+      <div className="flex items-center bg-[#F5F5F5] gap-1 xlg:gap-3 rounded px-1 xlg:px-3 h-[2.5rem]">
         <button
           onClick={handlePreviousDay}
           className="text-custom-gray text-xs xl:text-base xlg:text-sm"
         >
           <FaCaretLeft />
         </button>
-        <span className="text-custom-gray text-xs xl:text-base xlg:text-sm">
+        <span className="text-custom-gray text-[11px] xl:text-base xlg:text-sm">
           {formattedDate}
         </span>
         <button
@@ -57,12 +57,12 @@ const Topheader = ({
           <FaCaretRight />
         </button>
       </div>
-      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-3 h-[2.5rem]">
+      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-3 h-[2.5rem]">
         <h3 className="text-xs xl:text-base xlg:text-sm text-custom-gray">
           Today
         </h3>
       </div>
-      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-3 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
+      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-3 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
         <select className="block w-full appearance-none cursor-pointer truncate pe-2  bg-[#F5F5F5] focus:outline-none">
           <option value="Dentity Dental Rajar">Dentity Dental Rajarhat</option>
           <option value="Another Option 1">Another Option 1</option>
@@ -115,7 +115,7 @@ const Topheader = ({
         </span>
       </div>
       <div
-        className={`fixed top-0 right-0 h-screen w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
           isModalShow ? "translate-x-0" : "translate-x-full"
         }`}
       >

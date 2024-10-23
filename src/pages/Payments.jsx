@@ -71,20 +71,20 @@ const Payments = () => {
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-col gap-1">
                       <div className="flex flex-row items-center gap-2">
-                        <span className="xlg:text-lg text-base text-[#888888] font-medium ">
+                        <span className="xlg:text-lg text-sm text-[#888888] font-medium ">
                           {item.pid}.
                         </span>
-                        <div className="flex flex-row items-center gap-1 text-sm xlg:text-base font-medium text-[#555555]">
+                        <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-base font-medium text-[#555555]">
                           <GoPerson /> <span>{item.name}</span> |
                           <span>{item.gender}</span> |
                           <span>{item.age} Years</span>
                         </div>
                       </div>
-                      <div className="xlg:text-base text-sm font-medium text-[#555555]">
+                      <div className="xlg:text-base text-[13px] font-medium text-[#555555]">
                         +91 {item.mobilenumber}
                       </div>
                     </div>
-                    <div className="flex flex-row gap-4">
+                    <div className="flex flex-row gap-2 xlg:gap-4">
                       <button
                         className={`priority-button ${
                           index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
@@ -116,7 +116,7 @@ const Payments = () => {
                       >
                         Total <MdCurrencyRupee /> {item.totalbill}
                       </button>
-                      <div className="flex flex-row items-center gap-4">
+                      <div className="flex flex-row items-center gap-2 xlg:gap-4">
                         <button className="xlg:text-2xl text-xl font-medium text-[#7F03FA]">
                           <BsEye />
                         </button>

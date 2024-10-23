@@ -82,14 +82,14 @@ const Patients = () => {
         >
           <button
             onClick={handleAddNewClick}
-            className="flex items-center bg-custom-orange gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+            className="flex items-center bg-custom-orange gap-3 rounded px-2 xlg:px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
           >
             <GoPlusCircle />
             <h3>Add Patient</h3>
           </button>
         </Topheader>
       </div>
-      <div className="xl:p-8 p-4 flex flex-col gap-8">
+      <div className="xl:p-8 p-3 flex flex-col gap-8">
         <div className="flex flex-col gap-6">
           {patientsData.map((item, index) => (
             <section
@@ -102,16 +102,16 @@ const Patients = () => {
                 <div className="flex flex-row items-start justify-between">
                   <div className="flex flex-col gap-1">
                     <div className="flex flex-row items-center gap-2">
-                      <span className="xlg:text-lg text-base text-[#888888] font-medium ">
+                      <span className="xlg:text-lg text-sm text-[#888888] font-medium ">
                         {item.pid}.
                       </span>
-                      <div className="flex flex-row items-center gap-1 text-sm xlg:text-base font-medium text-[#555555]">
+                      <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-base font-medium text-[#555555]">
                         <GoPerson /> <span>{item.name}</span> |
                         <span>{item.gender}</span> |
                         <span>{item.age} Years</span>
                       </div>
                     </div>
-                    <div className="xlg:text-base text-sm font-medium text-[#555555]">
+                    <div className="xlg:text-base text-[13px] font-medium text-[#555555]">
                       +91 {item.mobilenumber}
                     </div>
                   </div>
@@ -210,14 +210,14 @@ const Patients = () => {
                   >
                     Forms
                   </button>
-                  <div className="flex flex-row items-center gap-4">
+                  <div className="flex flex-row items-center gap-2 xlg:gap-4">
                     <button
                       onClick={handleViewPatient}
-                      className="xlg:text-2xl text-xl font-medium text-[#7F03FA]"
+                      className="xlg:text-2xl text-lg font-medium text-[#7F03FA]"
                     >
                       <BsEye />
                     </button>
-                    <button className="xlg:text-2xl text-xl font-medium text-[#00B252]">
+                    <button className="xlg:text-2xl text-lg font-medium text-[#00B252]">
                       <FaEdit />
                     </button>
                   </div>
@@ -227,7 +227,7 @@ const Patients = () => {
           ))}
         </div>
         <div
-          className={`fixed top-0 right-0 h-screen w-[60%] xlg:w-[50%] overflow-scroll custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
             showViewPatient ? "translate-x-0" : "translate-x-full"
           }`}
         >
