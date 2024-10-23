@@ -6,12 +6,13 @@ import GaugeChart from "../../component/GaugeChart";
 import { BsEye, BsGraphUpArrow, BsPeople } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import ViewPatient from "../../component/ViewPatient";
-import { GoPerson } from "react-icons/go";
+import { GoPerson, GoPlusCircle } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [showViewPatient, setShowViewPatient] = useState(false);
+  const [showAddPatient, setShowAddPatient] = useState(false);
 
   const handleViewPatient = () => {
     setShowViewPatient(true);
@@ -20,6 +21,11 @@ const Dashboard = () => {
   const handleClose = () => {
     setShowViewPatient(false);
   };
+
+  const handleAddNewClick = () => {
+    setShowAddPatient(true);
+  };
+
   const [patientsData, setPatientsData] = useState([
     {
       pid: "001",
@@ -72,7 +78,19 @@ const Dashboard = () => {
   return (
     <AdminDashboardTemplate>
       <div className="">
-        <Topheader />
+        <Topheader
+          isModalShow={showAddPatient}
+          setIsModalShow={setShowAddPatient}
+          modalToShow={"patientModal"}
+        >
+          <button
+            onClick={handleAddNewClick}
+            className="flex items-center bg-custom-orange gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+          >
+            <GoPlusCircle />
+            <h3>Add Patient</h3>
+          </button>
+        </Topheader>
       </div>
       <div className="xl:p-8 p-4 flex flex-col gap-8">
         <div>

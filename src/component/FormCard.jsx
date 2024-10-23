@@ -16,13 +16,13 @@ const FormCard = () => {
       <div className="flex justify-between gap-4">
         <button
           type="button"
-          className="text-custom-blue text-sm text-center border border-custom-blue rounded py-3 px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
+          className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-3 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
         >
           View
         </button>
         <button
           type="button"
-          className="text-custom-blue text-sm text-center border border-custom-blue rounded py-3 px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
+          className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-3 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
         >
           Download
         </button>
