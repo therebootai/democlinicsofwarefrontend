@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 
-const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
+const AdminSideHeader = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [activeIndex, setActiveIndex] = useState(null);
-  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const location = useLocation();
 
   const sideheader = [
@@ -19,14 +18,31 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
       link: "/doctor/patients",
     },
     {
-      icon: "/icons/prescriptions.svg",
-      name: "Prescription",
-      link: "/prescription/manage",
+      icon: "/icons/estimate.svg",
+      name: "Estimate",
+      link: "/patient/:id/estimate",
     },
+
     {
       icon: "/icons/payments.svg",
       name: "Payments",
       link: "/doctor/payments",
+    },
+    {
+      icon: "/icons/payments.svg",
+      name: "Add Payment Charges",
+      link: "/payments/add-payment-charges",
+    },
+
+    {
+      icon: "/icons/forms.svg",
+      name: "Forms",
+      link: "/forms",
+    },
+    {
+      icon: "/icons/forms.svg",
+      name: "Directions",
+      link: "/directions",
     },
   ];
 
@@ -38,108 +54,62 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
     }
   };
 
-  // Reset active index when the sidebar is closed
-  useEffect(() => {
-    if (!isMobileSidebarOpen) {
-      setActiveIndex(null);
-    }
-  }, [isMobileSidebarOpen]);
-
-  // Handle mouse leave for the entire sidebar
-  useEffect(() => {
-    const handleMouseLeave = () => {
-      setHoveredIndex(null);
-      setActiveIndex(null);
-      setIsSidebarHovered(false);
-    };
-
-    const sidebarElement = document.getElementById("admin-sidebar");
-    sidebarElement.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      sidebarElement.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
-
   return (
     <div
-      id="admin-sidebar"
-      className={`absolute flex flex-col gap-4 h-full bg-[white] shadow-custom-light transition-all duration-300 z-50 ${
-        isMobileSidebarOpen ? "block" : "hidden"
-      } md:flex ${
-        isSidebarHovered || activeIndex !== null ? "w-64" : "w-[5rem]"
-      }`}
-      onMouseEnter={() => setIsSidebarHovered(true)}
-      onMouseLeave={() => setIsSidebarHovered(false)}
+      className={` flex flex-col gap-4 h-full bg-[white] shadow-[5px_0px_8px_0px_rgba(0,0,0,0.05)] transition-all duration-300 z-50 `}
     >
       <div className="flex justify-center items-center mt-4 border-b p-2 pb-5  border-[#00000033]">
-        {isSidebarHovered || activeIndex !== null ? (
-          <img
-            src="/images/dentitydentallogo.png"
-            alt="Clinic Logo"
-            className="h-[3rem] "
-          />
-        ) : (
-          <img
-            src="/images/dentitydentallogoshort.png"
-            alt="clinic Logo"
-            className="h-[3rem] "
-          />
-        )}
+        <img
+          src="/images/dentitydentallogo.png"
+          alt="Clinic Logo"
+          className="xl:h-[3rem] h-[2.5rem] "
+        />
       </div>
-      <div className="flex flex-col gap-4 mt-6">
+      <div className="flex flex-col xlg:gap-8 gap-4 mt-2 p-1 xlg:p-2 xl:pl-4 ">
         {sideheader.map((item, index) => (
           <div
             key={index}
             className="relative flex flex-col items-start"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
             onClick={() => handleIconClick(index)}
           >
             <div
-              className={`flex items-center p-2 pl-4 rounded-lg w-full ${
+              className={`flex items-center  rounded-lg w-full ${
                 hoveredIndex === index || location.pathname === item.link
-                  ? "bg-gradient-to-b from-[#FFFFFF] to-[#EAEAEA]"
+                  ? "bg-transparent text-custom-blue"
                   : "bg-transparent"
               } `}
               style={{
                 transition: "background-color 0.5s ease, width 0.5s ease",
               }}
             >
-              <div className="h-[1.5rem] w-[2px] bg-[#27B3FF]"></div>
               <span className={`p-2 rounded-md  `}>
                 <img
                   src={item.icon}
                   alt={item.name}
-                  className={`h-[1.4rem] w-[1.4rem]  `}
+                  className={`xl:h-[1.4rem] xl:w-[1.4rem] h-[1rem] w-[1rem] `}
                 />
               </span>
-              {(isSidebarHovered || activeIndex !== null) && (
-                <>
-                  {item.link ? (
-                    <Link
-                      to={item.link}
-                      className={` font-semibold cursor-pointer ml-2 ${
-                        location.pathname === item.link
-                          ? "text-[#27B3FF]"
-                          : " text-[#666666]"
-                      }`}
-                      onClick={closeMobileSidebar}
-                    >
-                      {item.name}
-                    </Link>
-                  ) : (
-                    <span
-                      className={` font-semibold cursor-pointer ml-2 ${
-                        location.pathname === item.link
-                          ? "text-[#27B3FF]"
-                          : "text-[#666666]"
-                      }`}
-                    >
-                      {item.name}
-                    </span>
-                  )}
-                </>
+              {item.link ? (
+                <Link
+                  to={item.link}
+                  className={` xl:text-base xlg:text-sm text-xs font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
+                    location.pathname === item.link
+                      ? "text-[#27B3FF]"
+                      : " text-[#666666]"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <span
+                  className={` xl:text-base xlg:text-sm text-xs  font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
+                    location.pathname === item.link
+                      ? "text-[#27B3FF]"
+                      : "text-[#666666]"
+                  }`}
+                >
+                  {item.name}
+                </span>
               )}
             </div>
 
@@ -173,7 +143,6 @@ const AdminSideHeader = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
                       transition:
                         "transform 0.5s ease, opacity 0.5s ease, color 0.3s ease",
                     }}
-                    onClick={closeMobileSidebar} // Close sidebar on link click
                   >
                     {link.name}
                   </Link>
