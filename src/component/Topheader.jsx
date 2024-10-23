@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { FaCaretDown, FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
@@ -17,6 +17,7 @@ const Topheader = ({
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileImageRef = useRef(null);
   const profileDropdownRef = useRef(null);
+  const modalRef = useRef(null);
 
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen((prev) => !prev);
@@ -37,6 +38,19 @@ const Topheader = ({
 
   // Format the date to "Today, 10 Sep 24"
   const formattedDate = currentDate.format("dddd, DD MMM YY");
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setIsModalShow(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setIsModalShow]);
 
   return (
     <header className="flex justify-between pb-5 p-2 xlg:p-4 border-b border-black/20">
@@ -115,6 +129,7 @@ const Topheader = ({
         </span>
       </div>
       <div
+        ref={modalRef}
         className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
           isModalShow ? "translate-x-0" : "translate-x-full"
         }`}
