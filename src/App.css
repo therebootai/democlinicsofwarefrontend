@@ -1,5 +1,5 @@
 .priority-button {
-  @apply xlg:h-[1.8rem] h-[1.8rem] rounded xlg:rounded-md bg-[#EEEEEE] flex justify-center items-center px-2 xlg:px-4 xl:px-5 text-[#555555] text-[12px] xlg:text-sm  xl:text-[15px] font-medium hover:bg-custom-blue hover:text-white;
+  @apply xlg:h-[1.8rem] h-[1.6rem] rounded xlg:rounded-md bg-[#EEEEEE] flex justify-center items-center px-2 xlg:px-4 xl:px-5 text-[#555555] text-[12px] xlg:text-sm  xl:text-[15px] font-medium hover:bg-custom-blue hover:text-white;
 }
 
 .priority-input {
