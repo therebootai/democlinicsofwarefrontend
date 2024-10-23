@@ -92,39 +92,39 @@ const Dashboard = () => {
           </button>
         </Topheader>
       </div>
-      <div className="xl:p-8 p-4 flex flex-col gap-8">
+      <div className="xl:p-4 p-2 flex flex-col gap-2">
         <div>
           <PerformanceComponent />
         </div>
-        <div className="grid grid-cols-2 xlg:grid-cols-3 w-full lg:flex-row gap-4 justify-between overflow-x-hidden py-4  ">
+        <div className="grid grid-cols-2 lg:grid-cols-3 w-full lg:flex-row gap-4 justify-between overflow-x-hidden py-4  ">
           <div className="bg-white rounded boxsh flex items-center justify-center w-full ">
             <GaugeChart
-              icon={<BsPeople className="size-6 text-custom-orange" />}
+              icon={<BsPeople className="size-5 text-custom-orange" />}
               text={"Monthly Patients"}
             />
           </div>
           <div className="bg-white rounded boxsh flex items-center justify-center w-full">
             <GaugeChart
-              icon={<BsGraphUpArrow className="size-6 text-custom-orange" />}
+              icon={<BsGraphUpArrow className="size-5 text-custom-orange" />}
               text={"Payments"}
             />
           </div>
           <div className="bg-white rounded boxsh flex items-center justify-center w-full">
             <GaugeChart
-              icon={<BsGraphUpArrow className="size-6 text-custom-orange" />}
+              icon={<BsGraphUpArrow className="size-5 text-custom-orange" />}
               text={"Payments"}
             />
           </div>
         </div>
-        <div className="p-2 bg-white rounded-lg flex flex-col gap-4">
-          <h1 className="xlg:text-2xl text-xl font-semibold">
+        <div className=" bg-white rounded-lg flex flex-col gap-2">
+          <h1 className="xlg:text-xl text-base font-semibold">
             Recent Appointments
           </h1>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {patientsData.map((item, index) => (
               <section
                 key={index}
-                className={`xlg:p-4 p-3 rounded-md border border-[#E7E7E7]  ${
+                className={`xlg:p-2 p-1 rounded-md border border-[#E7E7E7]  ${
                   index % 2 == 0 ? "bg-[#F5F5F5]" : " bg-transparent "
                 }`}
               >
@@ -135,13 +135,13 @@ const Dashboard = () => {
                         <span className="xlg:text-lg text-sms text-[#888888] font-medium ">
                           {item.pid}.
                         </span>
-                        <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-base font-medium text-[#555555]">
+                        <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-sm font-medium text-[#555555]">
                           <GoPerson /> <span>{item.name}</span> |
                           <span>{item.gender}</span> |
                           <span>{item.age} Years</span>
                         </div>
                       </div>
-                      <div className="xlg:text-base text-[13px] font-medium text-[#555555]">
+                      <div className="xlg:text-sm text-[13px] font-medium text-[#555555]">
                         +91 {item.mobilenumber}
                       </div>
                     </div>
