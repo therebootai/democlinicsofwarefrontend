@@ -12,16 +12,10 @@ const COLORS = ["#27B3FF", "#FA5503", "#00B252"]; //colors
 const RADIAN = Math.PI / 180;
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, payload }) => {
-  // Access the data from the label object
   const { name } = payload;
-
-  // Calculate the radius and position of the label
-  const radius = outerRadius + 10; // Adjust the radius to position the label outside
+  const radius = outerRadius + 10;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  // Customize the label content
-  const labelText = `${name}`;
 
   return (
     <text
@@ -30,27 +24,30 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, payload }) => {
       fill="#555555"
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
+      className="xlg:text-xs text-[10px]"
     >
-      {labelText}
+      {name}
     </text>
   );
 };
 
 export default function GaugeChart({ icon, text }) {
   return (
-    <div className="flex flex-col items-center justify-center relative pb-12">
-      <PieChart width={550} height={200}>
+    <div className="flex flex-col items-center justify-center relative">
+      <PieChart width={300} height={150}>
+        {" "}
+        {/* Reduce chart size */}
         <Pie
           data={data}
-          cx={275}
-          cy={200}
+          cx={150} // Adjust the position of the center
+          cy={120} // Adjust vertical position
           startAngle={180}
           endAngle={0}
           labelLine={false}
           label={renderCustomizedLabel}
-          innerRadius={100} // Adjust for background track width
-          outerRadius={120}
-          fill="#ccc" // Light gray color for background track
+          innerRadius={80} // Reduce radius for a smaller chart
+          outerRadius={93}
+          fill="#ccc"
           dataKey="value"
         >
           {data.map((entry, index) => (
@@ -59,13 +56,15 @@ export default function GaugeChart({ icon, text }) {
         </Pie>
       </PieChart>
 
-      <div className="text-center mt-4 flex flex-col items-center absolute bottom-0 py-4">
-        <div className="py-4">
+      <div className="text-center mt-2 flex flex-col items-center absolute bottom-0 pb-2">
+        {" "}
+        {/* Adjust padding */}
+        <div className="pb-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="7"
-            height="43"
-            viewBox="0 0 7 43"
+            width="6"
+            height="40" // Reduce the size of the gauge needle
+            viewBox="0 0 7 40"
             fill="none"
           >
             <path
@@ -75,7 +74,8 @@ export default function GaugeChart({ icon, text }) {
           </svg>
         </div>
         <div>{icon}</div>
-        <div className="text-[#888] text-sm font-medium mt-2">{text}</div>
+        <div className="text-[#888] text-xs font-medium mt-1">{text}</div>{" "}
+        {/* Adjust text size */}
       </div>
     </div>
   );
