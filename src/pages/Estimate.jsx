@@ -2,6 +2,8 @@ import React from "react";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
+import { GoPlusCircle } from "react-icons/go";
+import { Link } from "react-router-dom";
 
 const Estimate = () => {
   const estimate = [
@@ -19,7 +21,15 @@ const Estimate = () => {
   return (
     <AdminDashboardTemplate>
       <div>
-        <Topheader />
+        <Topheader>
+          <Link
+            to="/payments/add-payment-charges"
+            className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+          >
+            <GoPlusCircle />
+            <h3>Create Invoice</h3>
+          </Link>
+        </Topheader>
       </div>
       <div className="flex flex-col gap-10 mt-6 ">
         <div className="w-[40%]">

@@ -28,11 +28,6 @@ const AdminSideHeader = () => {
       name: "Payments",
       link: "/doctor/payments",
     },
-    {
-      icon: "/icons/payments.svg",
-      name: "Add Payment Charges",
-      link: "/payments/add-payment-charges",
-    },
 
     {
       icon: "/icons/forms.svg",

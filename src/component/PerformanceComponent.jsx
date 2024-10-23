@@ -17,11 +17,10 @@ const PerformanceComponent = () => {
   ];
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="xlg:text-2xl text-xl font-semibold ">Performance</h1>
       <div className="grid grid-cols-4 gap-4 xl:gap-8">
         {details.map((item, index) => (
           <div
-            className="xlg:h-[8rem] h-[6rem] w-full bg-white rounded-md boxsh flex justify-center items-center "
+            className="xlg:h-[6rem] h-[5rem] w-full bg-white rounded-md boxsh flex justify-center items-center "
             key={index}
           >
             <div className="flex items-center justify-center gap-2">
@@ -33,10 +32,10 @@ const PerformanceComponent = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-[#555555] text-lg/[20px] xlg:text-2xl/[20px] font-semibold ">
+                <h1 className="text-[#555555] text-base/[20px] xlg:text-xl/[20px] font-semibold ">
                   {item.totalnumber}
                 </h1>
-                <h2 className="text-base xlg:text-lg text-[#888888] font-normal">
+                <h2 className="text-sm xlg:text-base text-[#888888] font-normal">
                   {item.name}
                 </h2>
               </div>
