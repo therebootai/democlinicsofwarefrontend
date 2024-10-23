@@ -26,13 +26,13 @@ const AddForm = ({ handleClose }) => {
             <button
               onClick={handleClose}
               type="button"
-              className=" h-[2.5rem] boxsh flex w-full justify-center items-center bg-white rounded-md text-base text-[#FA5503] font-medium"
+              className=" h-[2.5rem] boxsh flex w-full justify-center items-center bg-white rounded-md text-base hover:bg-[#FA5503] hover:text-white text-[#FA5503] font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className=" h-[2.5rem] boxsh flex w-full justify-center items-center bg-custom-blue  rounded-md text-base text-[white] font-medium"
+              className=" h-[2.5rem] boxsh flex w-full justify-center items-center bg-custom-blue hover:text-custom-blue hover:bg-white hover:border-2 border-custom-blue  rounded-md text-base text-[white] font-medium"
             >
               Submit
             </button>
