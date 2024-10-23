@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
-import { GoPerson } from "react-icons/go";
+import { GoPerson, GoPlusCircle } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
 import { BsEye } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
@@ -10,6 +10,7 @@ import ViewPatient from "../../component/ViewPatient";
 
 const Patients = () => {
   const [showViewPatient, setShowViewPatient] = useState(false);
+  const [showAddPatient, setShowAddPatient] = useState(false);
 
   const handleViewPatient = () => {
     setShowViewPatient(true);
@@ -67,10 +68,26 @@ const Patients = () => {
     setPatientsData(updatedPatients);
   };
 
+  const handleAddNewClick = () => {
+    setShowAddPatient(true);
+  };
+
   return (
     <AdminDashboardTemplate>
       <div className="">
-        <Topheader />
+        <Topheader
+          isModalShow={showAddPatient}
+          setIsModalShow={setShowAddPatient}
+          modalToShow={"patientModal"}
+        >
+          <button
+            onClick={handleAddNewClick}
+            className="flex items-center bg-custom-orange gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+          >
+            <GoPlusCircle />
+            <h3>Add Patient</h3>
+          </button>
+        </Topheader>
       </div>
       <div className="xl:p-8 p-4 flex flex-col gap-8">
         <div className="flex flex-col gap-6">

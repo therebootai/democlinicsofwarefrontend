@@ -46,7 +46,15 @@ const Payments = () => {
   return (
     <AdminDashboardTemplate>
       <div>
-        <Topheader />
+        <Topheader>
+          <Link
+            to="/payments/add-payment-charges"
+            className="flex items-center bg-custom-orange gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+          >
+            <GoPlusCircle />
+            <h3>Create Invoice</h3>
+          </Link>
+        </Topheader>
       </div>
       <div className="xl:p-8 p-4 flex flex-col gap-8">
         <div className="p-2 bg-white rounded-lg flex flex-col gap-4">
