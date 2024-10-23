@@ -132,7 +132,7 @@ const Dashboard = () => {
                   <div className="flex flex-row items-start justify-between">
                     <div className="flex flex-col gap-1">
                       <div className="flex flex-row items-center gap-2">
-                        <span className="xlg:text-lg text-sms text-[#888888] font-medium ">
+                        <span className="xlg:text-sm text-sm text-[#888888] font-medium ">
                           {item.pid}.
                         </span>
                         <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-sm font-medium text-[#555555]">
