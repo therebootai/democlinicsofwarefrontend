@@ -28,11 +28,11 @@ const PerformanceComponent = () => {
                 <img
                   src={item.icons}
                   alt=""
-                  className="xlg:h-[2.5rem] h-[2rem]"
+                  className="xlg:h-[2rem] h-[1.5rem]"
                 />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-[#555555] text-base/[20px] xlg:text-xl/[20px] font-semibold ">
+                <h1 className="text-[#555555] text-base/[20px] xlg:text-lg/[20px] font-semibold ">
                   {item.totalnumber}
                 </h1>
                 <h2 className="text-sm xlg:text-base text-[#888888] font-normal">

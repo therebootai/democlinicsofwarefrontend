@@ -92,7 +92,7 @@ const Dashboard = () => {
           </button>
         </Topheader>
       </div>
-      <div className="xl:p-8 p-4 flex flex-col gap-8">
+      <div className="xl:p-4 p-2 flex flex-col gap-2">
         <div>
           <PerformanceComponent />
         </div>
