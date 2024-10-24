@@ -56,14 +56,14 @@ const Payments = () => {
           </Link>
         </Topheader>
       </div>
-      <div className="xl:p-8 p-4 flex flex-col gap-8">
-        <div className="p-2 bg-white rounded-lg flex flex-col gap-4">
+      <div className="xl:p-8 p-4 xlg:px-8 px-4 flex flex-col gap-8">
+        <div className=" bg-white rounded-lg flex flex-col gap-4">
           <h1 className="xlg:text-2xl text-xl font-semibold">Payments</h1>
           <div className="w-full flex flex-col gap-6">
             {paymentsData.map((item, index) => (
               <section
                 key={index}
-                className={`xlg:p-4 p-3 rounded-md border border-[#E7E7E7]  ${
+                className={`xlg:p-4 xxl:p-6 p-3 rounded-md border border-[#E7E7E7]  ${
                   index % 2 == 0 ? "bg-[#F5F5F5]" : " bg-transparent "
                 }`}
               >
@@ -71,16 +71,16 @@ const Payments = () => {
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-col gap-1">
                       <div className="flex flex-row items-center gap-2">
-                        <span className="xlg:text-lg text-sm text-[#888888] font-medium ">
+                        <span className="xlg:text-lg text-sm xxl:text-xl text-[#888888] font-medium ">
                           {item.pid}.
                         </span>
-                        <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-base font-medium text-[#555555]">
+                        <div className="flex flex-row items-center gap-1 text-[13px] xxl:text-xl xlg:text-base font-medium text-[#555555]">
                           <GoPerson /> <span>{item.name}</span> |
                           <span>{item.gender}</span> |
                           <span>{item.age} Years</span>
                         </div>
                       </div>
-                      <div className="xlg:text-base text-[13px] font-medium text-[#555555]">
+                      <div className="xlg:text-base text-[13px] xxl:text-xl font-medium text-[#555555]">
                         +91 {item.mobilenumber}
                       </div>
                     </div>

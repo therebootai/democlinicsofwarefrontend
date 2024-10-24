@@ -21,8 +21,8 @@ const CreateInvoice = () => {
       <div>
         <Topheader />
       </div>
-      <div className="flex flex-col gap-10 mt-6 ">
-        <div className="p-4 border-2 border-[#E7E7E7] rounded-lg">
+      <div className="flex flex-col gap-10 mt-6 px-4 xl:px-8 ">
+        <div className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg">
           <div className="flex flex-col">
             <div className="flex justify-between py-3  border-b border-black/20">
               <div className="flex items-center gap-5 justify-center">
@@ -34,20 +34,20 @@ const CreateInvoice = () => {
                   className="size-[4vmax]"
                 />
                 <div className="flex flex-col gap-2">
-                  <h1 className="xlg:text-base text-sm font-semibold text-custom-gray">
+                  <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
                     Dr. Saikat Paul
                   </h1>
-                  <p className="xlg:text-base text-sm text-[#9C9C9C]">
+                  <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
                     MD, BDS
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-5 justify-center">
                 <div className="flex flex-col ">
-                  <h1 className="xlg:text-base text-sm font-semibold text-custom-gray text-right">
+                  <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                     Dentity Dental
                   </h1>
-                  <p className="xlg:text-base text-sm text-[#9C9C9C] text-right">
+                  <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C] text-right">
                     Rajarhat Newtown, Kolkata
                   </p>
                 </div>
@@ -62,24 +62,24 @@ const CreateInvoice = () => {
             </div>
             <div className="flex justify-between py-3  border-b border-black/20">
               <div className="flex flex-col gap-2">
-                <h1 className="xlg:text-base text-sm font-semibold text-custom-gray">
+                <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
                   Prakesh Chandra
                 </h1>
-                <p className="xlg:text-base text-sm text-[#9C9C9C]">
+                <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
                   Male, 32 Years | +91 12356 67890
                 </p>
               </div>
               <div className="flex flex-col gap-2">
-                <h1 className="xlg:text-base text-sm font-semibold text-custom-gray text-right">
+                <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                   Monday
                 </h1>
-                <p className="xlg:text-base text-sm font-semibold text-custom-gray   text-right">
+                <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray   text-right">
                   23/09/2024 | 02:45 PM
                 </p>
               </div>
             </div>
             <div className="flex flex-col gap-4 py-4">
-              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm text-[#333333] ">
+              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm xxl:text-xl text-[#333333] ">
                 <div className="flex-1">Name of Item</div>
                 <div className="flex-1">Charges</div>
                 <div className="flex-1">Description</div>
@@ -87,7 +87,7 @@ const CreateInvoice = () => {
               <div className="flex flex-col gap-2">
                 {estimate.map((item, index) => (
                   <div
-                    className="flex flex-row text-sm text-custom-gray "
+                    className="flex flex-row text-sm xxl:text-xl text-custom-gray "
                     key={index}
                   >
                     <div className="flex-1">
@@ -131,13 +131,13 @@ const CreateInvoice = () => {
             </div>
           </div>
           <div className="w-full flex flex-row gap-6">
-            <button className="w-[15%] flex justify-center items-center h-[3rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue hover:text-white font-medium">
+            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white xxl:text-lg hover:bg-custom-blue hover:text-white font-medium">
               Add Item
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue hover:text-white font-medium">
+            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
               Preview
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue hover:text-white font-medium">
+            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
               Download
             </button>
           </div>

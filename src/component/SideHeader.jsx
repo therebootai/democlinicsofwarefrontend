@@ -60,7 +60,7 @@ const AdminSideHeader = () => {
           className="xl:h-[3rem] h-[2.5rem] "
         />
       </div>
-      <div className="flex flex-col xlg:gap-8 gap-4 mt-2 p-1 xlg:p-2 xl:pl-4 ">
+      <div className="flex flex-col xlg:gap-4 gap-4 mt-2 p-1 xlg:p-2 xl:pl-4 ">
         {sideheader.map((item, index) => (
           <div
             key={index}
@@ -87,7 +87,7 @@ const AdminSideHeader = () => {
               {item.link ? (
                 <Link
                   to={item.link}
-                  className={` xl:text-base xlg:text-sm text-xs font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
+                  className={` xl:text-base xxl:text-xl xlg:text-sm text-xs font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
                     location.pathname === item.link
                       ? "text-[#27B3FF]"
                       : " text-[#666666]"
@@ -97,7 +97,7 @@ const AdminSideHeader = () => {
                 </Link>
               ) : (
                 <span
-                  className={` xl:text-base xlg:text-sm text-xs  font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
+                  className={` xl:text-base xxl:text-xl xlg:text-sm text-xs  font-semibold cursor-pointer hover:text-custom-blue ml-2 ${
                     location.pathname === item.link
                       ? "text-[#27B3FF]"
                       : "text-[#666666]"

@@ -36,7 +36,7 @@ const Dashboard = () => {
       paid: "1000",
       due: "500",
       priority: "High",
-      doctorname: "Dr Saikat Paul",
+      doctorname: "Dr Saikat Paul (MD, BDS)",
     },
     {
       pid: "002",
@@ -47,7 +47,7 @@ const Dashboard = () => {
       paid: "1500",
       due: "1000",
       priority: "",
-      doctorname: "Dr Saikat Paul",
+      doctorname: "Dr Saikat Paul (MD, BDS)",
     },
     {
       pid: "003",
@@ -58,7 +58,7 @@ const Dashboard = () => {
       paid: "2000",
       due: "0",
       priority: "",
-      doctorname: "Dr Saikat Paul",
+      doctorname: "Dr Saikat Paul (MD, BDS)",
     },
   ]);
 
@@ -85,14 +85,14 @@ const Dashboard = () => {
         >
           <button
             onClick={handleAddNewClick}
-            className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-2 xlg:px-3  h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5] transition-colors duration-300 ease-in-out"
+            className="flex items-center bg-custom-orange hover:bg-blue-500 gap-3 rounded px-2 xlg:px-3  h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5] transition-colors duration-300 ease-in-out"
           >
             <GoPlusCircle />
             <h3>Add Patient</h3>
           </button>
         </Topheader>
       </div>
-      <div className="xl:p-4 p-2 flex flex-col gap-2">
+      <div className="xlg:px-8 px-4 py-4 flex flex-col gap-2">
         <div>
           <PerformanceComponent />
         </div>
@@ -117,14 +117,14 @@ const Dashboard = () => {
           </div>
         </div>
         <div className=" bg-white rounded-lg flex flex-col gap-2">
-          <h1 className="xlg:text-xl text-base font-semibold">
+          <h1 className="xlg:text-xl xxl:text-2xl text-base font-semibold">
             Recent Appointments
           </h1>
           <div className="flex flex-col gap-4">
             {patientsData.map((item, index) => (
               <section
                 key={index}
-                className={`xlg:p-2 p-1 rounded-md border border-[#E7E7E7]  ${
+                className={`xlg:p-3 px-3 xlg:px-4 p-1 rounded-md border border-[#E7E7E7]  ${
                   index % 2 == 0 ? "bg-[#F5F5F5]" : " bg-transparent "
                 }`}
               >
@@ -132,16 +132,16 @@ const Dashboard = () => {
                   <div className="flex flex-row items-start justify-between">
                     <div className="flex flex-col gap-1">
                       <div className="flex flex-row items-center gap-2">
-                        <span className="xlg:text-sm text-sm text-[#888888] font-medium ">
+                        <span className="xlg:text-[13px] text-sm xxl:text-xl text-[#888888] font-medium ">
                           {item.pid}.
                         </span>
-                        <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-sm font-medium text-[#555555]">
+                        <div className="flex flex-row items-center gap-1 text-[13px] xxl:text-xl xlg:text-sm font-medium text-[#555555]">
                           <GoPerson /> <span>{item.name}</span> |
                           <span>{item.gender}</span> |
                           <span>{item.age} Years</span>
                         </div>
                       </div>
-                      <div className="xlg:text-sm text-[13px] font-medium text-[#555555]">
+                      <div className="xlg:text-sm text-[13px] xxl:text-xl font-medium text-[#555555]">
                         +91 {item.mobilenumber}
                       </div>
                     </div>
@@ -158,23 +158,27 @@ const Dashboard = () => {
                       >
                         {item.priority || "Priority"}
                       </button>
-                      <button
-                        className={`priority-button ${
-                          index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                      <div
+                        className={`priority-button hover:text-[#00B252] text-[#00B252]  ${
+                          index % 2 === 0
+                            ? "bg-[white] hover:bg-white"
+                            : "bg-[#EEEEEE] hover:bg-[#EEEEEE]"
                         }`}
                       >
                         <span>
                           <MdCurrencyRupee />
                         </span>
-                        <span className="text-[#00B252]">{item.paid} Paid</span>
-                      </button>
-                      <button
-                        className={`priority-button text-[#E40000] ${
-                          index % 2 === 0 ? "bg-[white]" : "bg-[#EEEEEE]"
+                        <span className="">{item.paid} Paid</span>
+                      </div>
+                      <div
+                        className={`priority-button hover:text-[#E40000] text-[#E40000] ${
+                          index % 2 === 0
+                            ? "bg-[white] hover:bg-white"
+                            : "bg-[#EEEEEE] hover:bg-[#eeeeee]"
                         } `}
                       >
                         Due {item.due}
-                      </button>
+                      </div>
                       <Link
                         to="/prescription/add"
                         className={`priority-button ${

@@ -4,6 +4,7 @@ import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
 import { GoPlusCircle } from "react-icons/go";
 import { Link } from "react-router-dom";
+import { FaCaretDown } from "react-icons/fa";
 
 const Estimate = () => {
   const estimate = [
@@ -31,7 +32,7 @@ const Estimate = () => {
           </Link>
         </Topheader>
       </div>
-      <div className="flex flex-col gap-10 mt-6 ">
+      <div className="flex flex-col gap-10 mt-6 px-4 xlg:px-8 ">
         <div className="w-[40%]">
           <input
             type="text"
@@ -40,7 +41,7 @@ const Estimate = () => {
           />
         </div>
 
-        <div className="p-4 border-2 border-[#E7E7E7] rounded-lg">
+        <div className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg">
           <div className="flex flex-col">
             <div className="flex justify-between py-3  border-b border-black/20">
               <div className="flex items-center gap-5 justify-center">
@@ -52,20 +53,20 @@ const Estimate = () => {
                   className="size-[4vmax]"
                 />
                 <div className="flex flex-col gap-2">
-                  <h1 className="xlg:text-base text-sm font-semibold text-custom-gray">
+                  <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
                     Dr. Saikat Paul
                   </h1>
-                  <p className="xlg:text-base text-sm text-[#9C9C9C]">
+                  <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
                     MD, BDS
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-5 justify-center">
                 <div className="flex flex-col ">
-                  <h1 className="xlg:text-base text-sm font-semibold text-custom-gray text-right">
+                  <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                     Dentity Dental
                   </h1>
-                  <p className="xlg:text-base text-sm text-[#9C9C9C] text-right">
+                  <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C] text-right">
                     Rajarhat Newtown, Kolkata
                   </p>
                 </div>
@@ -80,24 +81,24 @@ const Estimate = () => {
             </div>
             <div className="flex justify-between py-3  border-b border-black/20">
               <div className="flex flex-col gap-2">
-                <h1 className="xlg:text-base text-sm font-semibold text-custom-gray">
+                <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
                   Prakesh Chandra
                 </h1>
-                <p className="xlg:text-base text-sm text-[#9C9C9C]">
+                <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
                   Male, 32 Years | +91 12356 67890
                 </p>
               </div>
               <div className="flex flex-col gap-2">
-                <h1 className="xlg:text-base text-sm font-semibold text-custom-gray text-right">
+                <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                   Monday
                 </h1>
-                <p className="xlg:text-base text-sm font-semibold text-custom-gray   text-right">
+                <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray   text-right">
                   23/09/2024 | 02:45 PM
                 </p>
               </div>
             </div>
             <div className="flex flex-col gap-4 py-4">
-              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm text-[#333333] ">
+              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm xxl:text-lg text-[#333333] ">
                 <div className="flex-1">Name of Item</div>
                 <div className="flex-1">Charges</div>
                 <div className="flex-1">Description</div>
@@ -105,7 +106,7 @@ const Estimate = () => {
               <div className="flex flex-col gap-2">
                 {estimate.map((item, index) => (
                   <div
-                    className="flex flex-row text-sm text-custom-gray "
+                    className="flex flex-row text-sm xxl:text-lg text-custom-gray "
                     key={index}
                   >
                     <div className="flex-1">
@@ -126,11 +127,11 @@ const Estimate = () => {
         </div>
         <div className=" flex flex-col gap-6">
           <div className="flex flex-row gap-8">
-            <div className=" w-[40%] ">
+            <div className=" w-[40%]  flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[4rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray ">
               <select
                 name=""
                 id=""
-                className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
+                className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none  focus:outline-none appearance-none"
               >
                 <option value="">Consultation Charges - 500</option>
                 <option value="">IOPA X- Ray of - 6000</option>
@@ -139,6 +140,7 @@ const Estimate = () => {
                   Ultra Sonic Scalling of Full Mouth - 700
                 </option>
               </select>
+              <FaCaretDown className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-600" />
             </div>
             <div className="w-[40%]">
               <input
@@ -149,13 +151,13 @@ const Estimate = () => {
             </div>
           </div>
           <div className="w-full flex flex-row gap-6">
-            <button className="w-[15%] flex justify-center items-center h-[3rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue hover:text-white font-medium">
+            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
               Add Item
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue hover:text-white font-medium">
+            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
               Preview
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue hover:text-white font-medium">
+            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
               Download
             </button>
           </div>
