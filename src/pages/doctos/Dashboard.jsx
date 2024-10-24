@@ -85,7 +85,7 @@ const Dashboard = () => {
         >
           <button
             onClick={handleAddNewClick}
-            className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-2 xlg:px-3  h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5]"
+            className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-2 xlg:px-3  h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5] transition-colors duration-300 ease-in-out"
           >
             <GoPlusCircle />
             <h3>Add Patient</h3>
