@@ -26,12 +26,12 @@ const AdminDashboardTemplate = ({ children }) => {
   // }
 
   return (
-    <div className="flex flex-col w-full h-full  overflow-hidden">
+    <div className="flex flex-col w-full h-full   overflow-hidden">
       <div className="flex flex-row h-screen sm:w-full ">
-        <span className="xlg:w-[17%] w-[20%]">
+        <span className="xlg:w-[15%] w-[20%]">
           <AdminSideHeader />
         </span>
-        <div className="w-[80%] xlg:w-[83%] p-4 overflow-auto   ">
+        <div className="w-[80%] xlg:w-[85%] xlg:px-6 px-4 xl:px-8 p-4 overflow-auto    ">
           {children}
         </div>
       </div>

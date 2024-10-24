@@ -2,6 +2,7 @@ import React from "react";
 import TopHeaderMini from "../../component/TopHeaderMini";
 import { IoClose } from "react-icons/io5";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 const AddNewPrescription = () => {
   const basicPatientDetails = [
@@ -670,12 +671,13 @@ const AddNewPrescription = () => {
           </button>
         </div>
         <div className="pr-16 xlg:pr-20 flex gap-9">
-          <button
+          <Link
+            to={"/prescription/:id/details"}
             type="button"
             className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
           >
             Preview
-          </button>
+          </Link>
           <button
             type="button"
             className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"

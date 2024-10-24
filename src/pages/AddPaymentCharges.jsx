@@ -54,7 +54,7 @@ const AddPaymentCharges = () => {
       <div>
         <Topheader />
       </div>
-      <div className="flex flex-col gap-8 mt-8 ">
+      <div className="flex flex-col gap-8 mt-8 xlg:px-8 px-4 ">
         <div className="flex flex-row gap-8">
           <div className="w-full flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4 w-[80%]">
@@ -94,14 +94,17 @@ const AddPaymentCharges = () => {
           {/* <div className="h-[3.5rem] items-center flex px-4 w-full text-custom-gray text-3xl font-medium border-b border-[#00000033]">
             Charges List
           </div> */}
-          <div className="flex flex-row border-b pb-4 border-[#0000001A]">
+          <div className="flex flex-row border-b pb-4 text-sm xxl:text-xl border-[#0000001A]">
             <div className="w-[40%]">Name Of Iteam</div>
             <div className="w-[40%]">Charges</div>
             <div className="w-[20%]">Action</div>
           </div>
           <div className="flex flex-col">
             {chargeList.map((item, index) => (
-              <div key={index} className="flex flex-row  gap-4">
+              <div
+                key={index}
+                className="flex flex-row  text-xm xxl:text-lg gap-4"
+              >
                 {editingIndex === index ? (
                   <>
                     <div className="w-[40%]">
