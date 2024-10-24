@@ -122,13 +122,13 @@ const AddNewPatient = ({ handleClose }) => {
             <button
               type="button"
               onClick={handleClose}
-              className=" h-[2.5rem] boxsh flex w-full justify-center items-center bg-white rounded-md text-base hover:bg-[#FA5503] hover:text-white text-[#FA5503] font-medium"
+              className=" h-[2.5rem] transition-colors duration-300 ease-in-out boxsh flex w-full justify-center items-center bg-white rounded-md text-base hover:bg-[#FA5503] hover:text-white text-[#FA5503] font-medium"
             >
               Cancel
             </button>
             <button
               type="submit" // Changed to "submit" for the form to be submitted
-              className=" h-[2.5rem] boxsh flex w-full justify-center items-center bg-custom-blue hover:text-custom-blue hover:bg-white hover:border-2 border-custom-blue  rounded-md text-base text-[white] font-medium"
+              className=" h-[2.5rem] transition-colors duration-300 ease-in-out boxsh flex w-full justify-center items-center bg-custom-blue hover:text-custom-blue hover:bg-white hover:border-2 border-custom-blue  rounded-md text-base text-[white] font-medium"
             >
               Submit
             </button>
