@@ -138,7 +138,12 @@ const Topheader = ({
           {modalToShow === "patientModal" && (
             <AddNewPatient handleClose={handleClose} />
           )}
-          {modalToShow === "formModal" && <AddForm handleClose={handleClose} />}
+          {modalToShow === "formModal" && (
+            <AddForm handleClose={handleClose} headerText={"Form"} />
+          )}
+          {modalToShow === "directionModal" && (
+            <AddForm handleClose={handleClose} headerText={"Direction"} />
+          )}
           {!modalToShow && null}
         </div>
       </div>

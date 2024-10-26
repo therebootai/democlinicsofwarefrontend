@@ -16,7 +16,7 @@ const Direction = () => {
         <Topheader
           isModalShow={showAddForm}
           setIsModalShow={setShowAddForm}
-          modalToShow={"formModal"}
+          modalToShow={"directionModal"}
         >
           <button
             onClick={handleAddNewClick}
