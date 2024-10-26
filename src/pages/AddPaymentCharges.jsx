@@ -14,24 +14,23 @@ const AddPaymentCharges = () => {
   const [editNameOfItem, setEditNameOfItem] = useState("");
   const [editCharges, setEditCharges] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1); // Keep track of the current page
-  const [totalPages, setTotalPages] = useState(1); // Keep track of total pages
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  // Fetch the existing payment charges from the server with pagination
   const fetchPayments = async (page = 1) => {
     try {
       setLoading(true);
       const response = await axios.get(`${VITE_BASE_URL}/api/addpayment/get`, {
-        params: { page, limit: 20 }, // Send the page and limit as query params
+        params: { page, limit: 20 },
       });
 
       if (response.data && response.data.data) {
         setChargeList(response.data.data);
-        setCurrentPage(response.data.page); // Update the current page
-        setTotalPages(response.data.totalPages); // Set total pages
+        setCurrentPage(response.data.page);
+        setTotalPages(response.data.totalPages);
         setLoading(false);
       }
     } catch (error) {
@@ -41,8 +40,8 @@ const AddPaymentCharges = () => {
   };
 
   useEffect(() => {
-    fetchPayments(currentPage); // Fetch the data when the component mounts
-  }, [currentPage]); // Refetch when current page changes
+    fetchPayments(currentPage);
+  }, [currentPage]);
 
   const handleSubmit = async () => {
     if (nameOfItem && charges) {
@@ -109,7 +108,6 @@ const AddPaymentCharges = () => {
     }
   };
 
-  // Pagination controls
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prevPage) => prevPage + 1);
@@ -241,12 +239,11 @@ const AddPaymentCharges = () => {
             </div>
           )}
 
-          {/* Pagination Controls */}
           <div className="flex gap-6 text-sm font-medium justify-center items-center w-full mt-4">
             <button
               className="h-[2rem] flex justify-center items-center px-4 bg-custom-orange text-white hover:bg-blue-500 rounded"
               onClick={handlePreviousPage}
-              disabled={currentPage === 1} // Disable if on first page
+              disabled={currentPage === 1}
             >
               Prev
             </button>
@@ -256,7 +253,7 @@ const AddPaymentCharges = () => {
             <button
               className="h-[2rem] flex justify-center items-center px-4 text-white bg-custom-orange hover:bg-blue-500 rounded"
               onClick={handleNextPage}
-              disabled={currentPage === totalPages} // Disable if on last page
+              disabled={currentPage === totalPages}
             >
               Next
             </button>
