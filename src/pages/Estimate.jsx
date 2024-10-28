@@ -1,24 +1,70 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
 import { GoPlusCircle } from "react-icons/go";
+import { FaCaretDown, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { FaCaretDown } from "react-icons/fa";
+import axios from "axios";
 
 const Estimate = () => {
-  const estimate = [
-    {
-      itemname: "Consultation Charges",
-      charges: "500",
-      description: "Lorem Ipsum",
-    },
-    {
-      itemname: "Consultation Charges",
-      charges: "500",
-      description: "",
-    },
-  ];
+  const [estimate, setEstimate] = useState([]);
+  const [selectedItem, setSelectedItem] = useState("");
+  const [description, setDescription] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (searchTerm.trim() === "") {
+        setSearchResults([]);
+        return;
+      }
+
+      try {
+        setIsSearching(true);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/addpayment/getdropdown`,
+          {
+            params: { query: searchTerm },
+          }
+        );
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    fetchSearchResults();
+  }, [searchTerm]);
+
+  const handleAddItem = () => {
+    if (selectedItem) {
+      const itemExists = estimate.some(
+        (item) => item.itemname === selectedItem.itemname
+      );
+      if (itemExists) {
+        alert("Item already added.");
+        return;
+      }
+
+      setEstimate((prevEstimate) => [
+        ...prevEstimate,
+        { ...selectedItem, description: description || "N/A" },
+      ]);
+      setSelectedItem("");
+      setSearchTerm("");
+      setDescription("");
+    }
+  };
+
+  const handleDeleteItem = (index) => {
+    setEstimate((prevEstimate) => prevEstimate.filter((_, i) => i !== index));
+  };
+
   return (
     <AdminDashboardTemplate>
       <div>
@@ -37,13 +83,13 @@ const Estimate = () => {
           <input
             type="text"
             placeholder="Search Patients"
-            className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none "
+            className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
           />
         </div>
-
         <div className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg">
           <div className="flex flex-col">
-            <div className="flex justify-between py-3  border-b border-black/20">
+            {/* Doctor and Patient Info */}
+            <div className="flex justify-between py-3 border-b border-black/20">
               <div className="flex items-center gap-5 justify-center">
                 <img
                   src="/icons/tooth-prescription.svg"
@@ -62,7 +108,7 @@ const Estimate = () => {
                 </div>
               </div>
               <div className="flex items-center gap-5 justify-center">
-                <div className="flex flex-col ">
+                <div className="flex flex-col">
                   <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                     Dentity Dental
                   </h1>
@@ -79,7 +125,7 @@ const Estimate = () => {
                 />
               </div>
             </div>
-            <div className="flex justify-between py-3  border-b border-black/20">
+            <div className="flex justify-between py-3 border-b border-black/20">
               <div className="flex flex-col gap-2">
                 <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
                   Prakesh Chandra
@@ -92,66 +138,98 @@ const Estimate = () => {
                 <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                   Monday
                 </h1>
-                <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray   text-right">
+                <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                   23/09/2024 | 02:45 PM
                 </p>
               </div>
             </div>
+
+            {/* Estimate Table */}
             <div className="flex flex-col gap-4 py-4">
-              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm xxl:text-lg text-[#333333] ">
+              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm xxl:text-lg text-[#333333]">
                 <div className="flex-1">Name of Item</div>
                 <div className="flex-1">Charges</div>
                 <div className="flex-1">Description</div>
+                <div className="flex-1">Action</div>
               </div>
               <div className="flex flex-col gap-2">
                 {estimate.map((item, index) => (
                   <div
-                    className="flex flex-row text-sm xxl:text-lg text-custom-gray "
+                    className="flex flex-row text-sm xxl:text-lg text-custom-gray"
                     key={index}
                   >
                     <div className="flex-1">
-                      {index + 1}. {item.itemname}
+                      {index + 1}. {item.iteamName}
                     </div>
                     <div className="flex-1 flex items-center">
-                      <span>
-                        <MdCurrencyRupee />
-                      </span>
-                      {item.charges}
+                      <MdCurrencyRupee />
+                      {item.iteamCharges}
                     </div>
-                    <div className="flex-1">{item.description || "N/A"}</div>
+                    <div className="flex-1">{item.description}</div>
+                    <div className="flex-1">
+                      <button
+                        onClick={() => handleDeleteItem(index)}
+                        className="text-red-500 hover:text-red-700 ml-4"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
-        <div className=" flex flex-col gap-6">
+        {/* Search and Add Item Section */}
+        <div className="flex flex-col gap-6">
           <div className="flex flex-row gap-8">
-            <div className=" w-[40%]  flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[4rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray ">
-              <select
-                name=""
-                id=""
-                className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none  focus:outline-none appearance-none"
-              >
-                <option value="">Consultation Charges - 500</option>
-                <option value="">IOPA X- Ray of - 6000</option>
-                <option value="">Extraction of - 5000</option>
-                <option value="">
-                  Ultra Sonic Scalling of Full Mouth - 700
-                </option>
-              </select>
-              <FaCaretDown className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-600" />
+            <div className="relative w-[40%]">
+              <input
+                type="text"
+                placeholder="Search Item"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
+              />
+              {isSearching ? (
+                <div className="absolute top-[4rem] bg-white w-full z-10">
+                  <p className="p-4">Searching...</p>
+                </div>
+              ) : searchResults.length > 0 ? (
+                <div className="absolute top-[4rem] bg-white w-full z-10 shadow-lg rounded-md">
+                  {searchResults.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setSearchTerm(
+                          `${item.iteamName} - ${item.iteamCharges}`
+                        );
+                        setSearchResults([]);
+                      }}
+                      className="p-2 cursor-pointer hover:bg-gray-100"
+                    >
+                      {item.iteamName} - {item.iteamCharges}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <div className="w-[40%]">
               <input
                 type="text"
                 placeholder="If any type of description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
               />
             </div>
           </div>
           <div className="w-full flex flex-row gap-6">
-            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
+            <button
+              onClick={handleAddItem}
+              className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium"
+            >
               Add Item
             </button>
             <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
