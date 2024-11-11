@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         "be-vietnam-pro": ["Be Vietnam Pro", "sans-serif"],
         jost: ["Jost", "sans-serif"],
+        albertsans: ["Albert Sans", "sans-serif"],
       },
     },
   },

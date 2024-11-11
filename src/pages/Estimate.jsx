@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
@@ -6,6 +6,7 @@ import { GoPlusCircle } from "react-icons/go";
 import { FaCaretDown, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import html2pdf from "html2pdf.js";
 
 const Estimate = () => {
   const [estimate, setEstimate] = useState([]);
@@ -14,6 +15,7 @@ const Estimate = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const estimateRef = useRef();
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -44,7 +46,7 @@ const Estimate = () => {
   const handleAddItem = () => {
     if (selectedItem) {
       const itemExists = estimate.some(
-        (item) => item.itemname === selectedItem.itemname
+        (item) => item.iteamName === selectedItem.iteamName
       );
       if (itemExists) {
         alert("Item already added.");
@@ -63,6 +65,52 @@ const Estimate = () => {
 
   const handleDeleteItem = (index) => {
     setEstimate((prevEstimate) => prevEstimate.filter((_, i) => i !== index));
+  };
+
+  const handleDownload = () => {
+    const patientName = "Prakesh Chandra";
+    const today = new Date().toISOString().slice(0, 10);
+
+    const element = estimateRef.current;
+
+    element.classList.add("hide-action");
+
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 1,
+        filename: `${patientName}-${today}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: "portrait" },
+      })
+      .save()
+      .finally(() => {
+        element.classList.remove("hide-action");
+      });
+  };
+
+  const handlePreview = () => {
+    const patientName = "Prakesh Chandra";
+    const today = new Date().toISOString().slice(0, 10);
+
+    const element = estimateRef.current;
+    element.classList.add("hide-action");
+
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 1,
+        filename: `${patientName}-${today}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: "portrait" },
+      })
+      .output("bloburl")
+      .then((pdfUrl) => {
+        window.open(pdfUrl, "_blank");
+      })
+      .finally(() => {
+        element.classList.remove("hide-action");
+      });
   };
 
   return (
@@ -86,7 +134,10 @@ const Estimate = () => {
             className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
           />
         </div>
-        <div className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg">
+        <div
+          className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg "
+          ref={estimateRef}
+        >
           <div className="flex flex-col">
             {/* Doctor and Patient Info */}
             <div className="flex justify-between py-3 border-b border-black/20">
@@ -150,7 +201,7 @@ const Estimate = () => {
                 <div className="flex-1">Name of Item</div>
                 <div className="flex-1">Charges</div>
                 <div className="flex-1">Description</div>
-                <div className="flex-1">Action</div>
+                <div className="flex-1 action-column">Action</div>
               </div>
               <div className="flex flex-col gap-2">
                 {estimate.map((item, index) => (
@@ -166,10 +217,10 @@ const Estimate = () => {
                       {item.iteamCharges}
                     </div>
                     <div className="flex-1">{item.description}</div>
-                    <div className="flex-1">
+                    <div className="flex-1 action-column">
                       <button
                         onClick={() => handleDeleteItem(index)}
-                        className="text-red-500 hover:text-red-700 ml-4"
+                        className="text-red-500 hover:text-red-700 ml-4 "
                       >
                         <FaTrash />
                       </button>
@@ -193,7 +244,7 @@ const Estimate = () => {
               />
               {isSearching ? (
                 <div className="absolute top-[4rem] bg-white w-full z-10">
-                  <p className="p-4">Searching...</p>
+                  <p className="p-4">...</p>
                 </div>
               ) : searchResults.length > 0 ? (
                 <div className="absolute top-[4rem] bg-white w-full z-10 shadow-lg rounded-md">
@@ -225,17 +276,23 @@ const Estimate = () => {
               />
             </div>
           </div>
-          <div className="w-full flex flex-row gap-6">
+          <div className="w-full flex flex-row gap-6 ">
             <button
               onClick={handleAddItem}
               className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium"
             >
               Add Item
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
+            <button
+              onClick={handlePreview}
+              className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium"
+            >
               Preview
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
+            <button
+              onClick={handleDownload}
+              className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium"
+            >
               Download
             </button>
           </div>

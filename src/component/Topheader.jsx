@@ -6,14 +6,21 @@ import { Link } from "react-router-dom";
 import AddNewPatient from "./AddNewPatient";
 import { IoIosLogOut } from "react-icons/io";
 import AddForm from "./AddForm";
+import { DateRangePicker } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { format } from "date-fns";
 
 const Topheader = ({
   children,
   isModalShow = false,
   setIsModalShow = null,
   modalToShow,
+  search,
+  setSearch,
+  handleDateFilter,
+  handleClearFilter,
 }) => {
-  const [currentDate, setCurrentDate] = useState(dayjs());
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileImageRef = useRef(null);
   const profileDropdownRef = useRef(null);
@@ -27,17 +34,35 @@ const Topheader = ({
     setIsModalShow(false);
   };
 
-  const handlePreviousDay = () => {
-    setCurrentDate(currentDate.subtract(1, "day"));
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isDateFiltered, setIsDateFiltered] = useState(false);
+
+  const handleDateChange = (ranges) => {
+    setDateRange([ranges.selection]);
   };
 
-  // Navigate to next day
-  const handleNextDay = () => {
-    setCurrentDate(currentDate.add(1, "day"));
+  const handleShow = () => {
+    const startDate = format(dateRange[0].startDate, "yyyy-MM-dd");
+    const endDate = format(dateRange[0].endDate, "yyyy-MM-dd");
+    handleDateFilter(startDate, endDate); // Call parent function with selected dates
+    setIsDateFiltered(true); // Mark filter as active
+    setShowDatePicker(false); // Close date picker
   };
 
-  // Format the date to "Today, 10 Sep 24"
-  const formattedDate = currentDate.format("dddd, DD MMM YY");
+  const handleClear = () => {
+    setIsDateFiltered(false); // Reset filter state
+    handleClearFilter(); // Call parent function to clear filter
+    setDateRange([
+      { startDate: new Date(), endDate: new Date(), key: "selection" },
+    ]); // Reset date range
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -54,27 +79,45 @@ const Topheader = ({
 
   return (
     <header className="flex justify-between pb-4 xlg:pb-5 p-2 px-4 xlg:p-4 xlg:px-8 border-b border-black/20">
-      <div className="flex items-center bg-[#F5F5F5] gap-1 xlg:gap-3 rounded px-1 xlg:px-3 h-[2.5rem]">
-        <button
-          onClick={handlePreviousDay}
-          className="text-custom-gray text-xs xl:text-base xlg:text-sm"
-        >
-          <FaCaretLeft />
-        </button>
-        <span className="text-custom-gray text-[11px] xl:text-base xlg:text-sm">
-          {formattedDate}
-        </span>
-        <button
-          onClick={handleNextDay}
-          className="text-custom-gray text-xs xl:text-base xlg:text-sm"
-        >
-          <FaCaretRight />
-        </button>
-      </div>
-      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[2.5rem]">
-        <h3 className="text-xs xl:text-base xlg:text-sm text-custom-gray">
-          Today
-        </h3>
+      <div className="flex flex-row gap-4">
+        <div className="relative">
+          <input
+            type="text"
+            readOnly
+            value={`From: ${format(
+              dateRange[0].startDate,
+              "MM/dd/yyyy"
+            )} To: ${format(dateRange[0].endDate, "MM/dd/yyyy")}`}
+            className="h-[2.5rem] px-6 rounded-md bg-[#F5F5F5] text-sm cursor-pointer outline-none"
+            onClick={() => setShowDatePicker(!showDatePicker)}
+          />
+
+          {showDatePicker && (
+            <div className="absolute z-10 mt-2">
+              <DateRangePicker
+                ranges={dateRange}
+                onChange={handleDateChange}
+                rangeColors={["#3b82f6"]}
+              />
+            </div>
+          )}
+        </div>
+
+        {!isDateFiltered ? (
+          <button
+            className="h-[2.5rem] px-6 flex justify-center items-center bg-custom-blue rounded text-white text-base"
+            onClick={handleShow}
+          >
+            Show
+          </button>
+        ) : (
+          <button
+            className="h-[2.5rem] px-6 flex justify-center items-center bg-gray-300 rounded text-black text-base"
+            onClick={handleClear}
+          >
+            Clear
+          </button>
+        )}
       </div>
       <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
         <select className="block w-full appearance-none cursor-pointer truncate pe-2  bg-[#F5F5F5] focus:outline-none">
@@ -89,6 +132,8 @@ const Topheader = ({
         <input
           type="text"
           placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className="text-custom-gray text-xs xl:text-base xlg:text-sm placeholder:text-custom-gray bg-[#F5F5F5] placeholder-[#00000080] focus:outline-none"
         />
         <button

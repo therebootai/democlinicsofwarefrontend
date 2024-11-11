@@ -1,49 +1,219 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
+import { FaTrash } from "react-icons/fa";
+import axios from "axios";
+import html2pdf from "html2pdf.js";
 
 const CreateInvoice = () => {
-  const estimate = [
-    {
-      itemname: "Consultation Charges",
-      charges: "500",
-      description: "Lorem Ipsum",
-    },
-    {
-      itemname: "Consultation Charges",
-      charges: "500",
-      description: "",
-    },
-  ];
+  const { patientId } = useParams();
+  const [estimate, setEstimate] = useState([]);
+  const [patientData, setPatientData] = useState(null);
+  const [doctorData, setDoctorData] = useState(null);
+  const [selectedItem, setSelectedItem] = useState("");
+  const [description, setDescription] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const estimateRef = useRef();
+  const [isSaved, setIsSaved] = useState(false); // Track if saved
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [currentPaymentId, setCurrentPaymentId] = useState(null);
+  const [totalCharges, setTotalCharges] = useState(0);
+
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/patients/get/${patientId}`
+        );
+        setPatientData(response.data);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      }
+    };
+
+    fetchPatientData();
+  }, [patientId]);
+
+  useEffect(() => {
+    const fetchPaymentDetails = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/patients/get/${patientId}`
+        );
+        const existingPayment = response.data.paymentDetails.find(
+          (payment) => payment.paymentId === currentPaymentId
+        );
+        if (existingPayment) {
+          setCurrentPaymentId(existingPayment.paymentId);
+          setEstimate(existingPayment.paymentDetails); // Load existing items
+          setPaymentMethod(existingPayment.paymentMethod);
+          setTotalCharges(existingPayment.totalCharges);
+        }
+      } catch (error) {
+        console.error("Error fetching payment details:", error);
+      }
+    };
+
+    fetchPaymentDetails();
+  }, [patientId]);
+
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (!searchTerm.trim()) {
+        setSearchResults([]);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/addpayment/getdropdown`,
+          { params: { query: searchTerm } }
+        );
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    fetchSearchResults();
+  }, [searchTerm]);
+
+  const handleAddItem = () => {
+    if (selectedItem) {
+      const itemExists = estimate.some(
+        (item) => item.iteamName === selectedItem.iteamName
+      );
+      if (itemExists) {
+        alert("Item already added.");
+        return;
+      }
+      setEstimate((prevEstimate) => [
+        ...prevEstimate,
+        { ...selectedItem, description: description || "N/A" },
+      ]);
+      setSelectedItem("");
+      setSearchTerm("");
+      setDescription("");
+      setIsSaved(false);
+    }
+  };
+
+  const handleDeleteItem = (index) => {
+    setEstimate((prevEstimate) => prevEstimate.filter((_, i) => i !== index));
+  };
+
+  useEffect(() => {
+    const calculateTotalCharges = () => {
+      const total = estimate.reduce(
+        (acc, item) => acc + Number(item.iteamCharges),
+        0
+      );
+      setTotalCharges(total);
+    };
+
+    calculateTotalCharges();
+  }, [estimate]); // Recalculate total charges whenever `estimate` changes
+
+  const handleSave = async () => {
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    try {
+      if (currentPaymentId) {
+        await axios.put(
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/api/patients/update/payment/${patientId}/${currentPaymentId}`,
+          {
+            paymentDetails: estimate,
+            totalCharges: totalCharges,
+          }
+        );
+      } else {
+        // Save as a new payment if no existing paymentId
+        const response = await axios.put(
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/api/patients/add/payment/${patientId}`,
+          {
+            paymentMethod,
+            paymentDetails: estimate,
+            totalCharges,
+          }
+        );
+        setCurrentPaymentId(response.data.paymentId);
+      }
+
+      alert("Payment details saved successfully.");
+      setIsSaved(true);
+    } catch (error) {
+      console.error("Error saving payment details:", error);
+      alert("Failed to save payment details.");
+    }
+  };
+
+  // Prevent download if not saved
+  const handleDownload = () => {
+    if (!isSaved) {
+      alert("Please save the data before downloading.");
+      return;
+    }
+
+    const element = estimateRef.current;
+    element.classList.add("hide-action");
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 1,
+        filename: `${patientData.patientName}-Invoice.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: "portrait" },
+      })
+      .save()
+      .finally(() => {
+        element.classList.remove("hide-action");
+      });
+  };
   return (
     <AdminDashboardTemplate>
       <div>
         <Topheader />
       </div>
       <div className="flex flex-col gap-10 mt-6 px-4 xl:px-8 ">
-        <div className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg">
+        <div
+          className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg "
+          ref={estimateRef}
+        >
           <div className="flex flex-col">
-            <div className="flex justify-between py-3  border-b border-black/20">
+            {/* Doctor and Patient Info */}
+            <div className="flex justify-between py-3 border-b border-black/20">
               <div className="flex items-center gap-5 justify-center">
                 <img
                   src="/icons/tooth-prescription.svg"
                   alt="dental prescribe"
                   width={71}
                   height={71}
-                  className="size-[4vmax]"
                 />
                 <div className="flex flex-col gap-2">
                   <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
-                    Dr. Saikat Paul
+                    {patientData
+                      ? `Dr. ${patientData.chooseDoctor}`
+                      : "Doctor Unavailable"}
                   </h1>
                   <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
-                    MD, BDS
+                    {patientData?.specialization || "N/A"}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-5 justify-center">
-                <div className="flex flex-col ">
+                <div className="flex flex-col">
                   <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
                     Dentity Dental
                   </h1>
@@ -60,84 +230,165 @@ const CreateInvoice = () => {
                 />
               </div>
             </div>
-            <div className="flex justify-between py-3  border-b border-black/20">
+            <div className="flex justify-between py-3 border-b border-black/20">
               <div className="flex flex-col gap-2">
                 <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
-                  Prakesh Chandra
+                  {patientData?.patientName || "Patient Name"}
                 </h1>
                 <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
-                  Male, 32 Years | +91 12356 67890
+                  {patientData?.gender}, {patientData?.age} Years | +91{" "}
+                  {patientData?.mobileNumber}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
                 <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
-                  Monday
+                  {new Date(patientData?.createdAt).toLocaleDateString(
+                    "en-GB",
+                    { weekday: "long" }
+                  )}
                 </h1>
-                <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray   text-right">
-                  23/09/2024 | 02:45 PM
+                <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
+                  {new Date(patientData?.createdAt).toLocaleDateString("en-GB")}
+                  <span> | </span>
+                  {new Date(patientData?.createdAt).toLocaleTimeString(
+                    "en-GB",
+                    {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    }
+                  )}
                 </p>
               </div>
             </div>
+
+            {/* Estimate Table */}
             <div className="flex flex-col gap-4 py-4">
-              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm xxl:text-xl text-[#333333] ">
+              <div className="border-b border-[#0000001A] flex flex-row pb-2 font-semibold text-sm xxl:text-lg text-[#333333]">
                 <div className="flex-1">Name of Item</div>
                 <div className="flex-1">Charges</div>
                 <div className="flex-1">Description</div>
+                <div className="flex-1 action-column">Action</div>
               </div>
               <div className="flex flex-col gap-2">
                 {estimate.map((item, index) => (
                   <div
-                    className="flex flex-row text-sm xxl:text-xl text-custom-gray "
+                    className="flex flex-row text-sm xxl:text-lg text-custom-gray"
                     key={index}
                   >
                     <div className="flex-1">
-                      {index + 1}. {item.itemname}
+                      {index + 1}. {item.iteamName}
                     </div>
                     <div className="flex-1 flex items-center">
-                      <span>
-                        <MdCurrencyRupee />
-                      </span>
-                      {item.charges}
+                      <MdCurrencyRupee className="action-column" />
+                      {item.iteamCharges}
                     </div>
                     <div className="flex-1">{item.description || "N/A"}</div>
+                    <div className="flex-1 action-column">
+                      <button
+                        onClick={() => handleDeleteItem(index)}
+                        className="text-red-500 hover:text-red-700 ml-4 "
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                   </div>
                 ))}
+                <div className="py-2 border-t border-[#0000001A]">
+                  {estimate.length > 0 && (
+                    <div className="py-2 border-t border-[#0000001A]">
+                      <div className="flex flex-row ">
+                        <div className="flex-1">Total</div>
+                        <div className="flex-1 flex items-center">
+                          <MdCurrencyRupee className="action-column" />
+                          {totalCharges}
+                        </div>
+                        <div className="flex-1">
+                          <select
+                            value={paymentMethod}
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                            className=" bg-[#0000001A] action-column outline-none text-custom-gray rounded"
+                          >
+                            <option value="">Payment Method</option>
+                            <option value="Online">Online</option>
+                            <option value="Cash">Cash</option>
+                          </select>
+                        </div>
+                        <div
+                          className="flex-1 action-column"
+                          onClick={handleSave}
+                        >
+                          <button className=" px-4  bg-custom-blue h-[1.5rem]  rounded flex justify-center items-center text-white">
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className=" flex flex-col gap-6">
+
+        {/* Search and Add Item Section */}
+        <div className="flex flex-col gap-6">
           <div className="flex flex-row gap-8">
-            <div className=" w-[40%] ">
-              <select
-                name=""
-                id=""
+            <div className="relative w-[40%]">
+              <input
+                type="text"
+                placeholder="Search Item"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
-              >
-                <option value="">Consultation Charges - 500</option>
-                <option value="">IOPA X- Ray of - 6000</option>
-                <option value="">Extraction of - 5000</option>
-                <option value="">
-                  Ultra Sonic Scalling of Full Mouth - 700
-                </option>
-              </select>
+              />
+              {isSearching ? (
+                <div className="absolute top-[4rem] bg-white w-full z-10">
+                  <p className="p-4">Loading...</p>
+                </div>
+              ) : (
+                searchResults.length > 0 && (
+                  <div className="absolute top-[4rem] bg-white w-full z-10 shadow-lg rounded-md">
+                    {searchResults.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setSelectedItem(item);
+                          setSearchTerm(
+                            `${item.iteamName} - ${item.iteamCharges}`
+                          );
+                          setSearchResults([]);
+                        }}
+                        className="p-2 cursor-pointer hover:bg-gray-100"
+                      >
+                        {item.iteamName} - {item.iteamCharges}
+                      </div>
+                    ))}
+                  </div>
+                )
+              )}
             </div>
             <div className="w-[40%]">
               <input
                 type="text"
-                placeholder="If any type of description"
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
               />
             </div>
           </div>
           <div className="w-full flex flex-row gap-6">
-            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white xxl:text-lg hover:bg-custom-blue hover:text-white font-medium">
+            <button
+              onClick={handleAddItem}
+              className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium"
+            >
               Add Item
             </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
-              Preview
-            </button>
-            <button className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium">
+            <button
+              onClick={handleDownload}
+              className="w-[15%] flex justify-center items-center h-[3rem] xxl:h-[4rem] rounded border-2 border-custom-blue text-custom-blue bg-white hover:bg-custom-blue xxl:text-lg hover:text-white font-medium"
+            >
               Download
             </button>
           </div>
