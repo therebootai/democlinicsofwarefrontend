@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RxCrossCircled } from "react-icons/rx";
 
@@ -8,10 +8,12 @@ const AddForm = ({ handleClose, headerText }) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log("Submitting Data:", data);
+    setLoading(true);
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("file", data.file[0]);
@@ -26,12 +28,20 @@ const AddForm = ({ handleClose, headerText }) => {
           "Content-Type": "multipart/form-data", // Ensure this is set
         },
       });
-      console.log("File added:", response.data);
+
+      handleClose();
+      reset({
+        title: "",
+        file: null,
+      });
     } catch (error) {
       console.error("Error adding file:", error);
+
       if (error.response) {
         console.error("Server responded with:", error.response.data);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,7 +90,7 @@ const AddForm = ({ handleClose, headerText }) => {
               type="submit"
               className=" h-[2.5rem] transition-colors duration-300 ease-in-out boxsh flex w-full justify-center items-center bg-custom-blue hover:text-custom-blue hover:bg-white hover:border-2 border-custom-blue  rounded-md text-base text-[white] font-medium"
             >
-              Submit
+              {loading ? "Submiting..." : "Submit"}
             </button>
           </div>
         </div>

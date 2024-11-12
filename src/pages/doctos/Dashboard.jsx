@@ -21,14 +21,30 @@ const Dashboard = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [dateFilter, setDateFilter] = useState({
+    startDate: "",
+    endDate: "",
+  });
 
   // Function to fetch patients data from the backend
-  const fetchPatients = async (page = 1) => {
+  const fetchPatients = async (
+    page = 1,
+    searchTerm = "",
+    startDate = "",
+    endDate = ""
+  ) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/patients/get`,
         {
-          params: { page, limit: 20 },
+          params: {
+            page,
+            limit: 20,
+            search: searchTerm,
+            startdate: startDate,
+            enddate: endDate,
+          },
         }
       );
       setPatientsData(response.data.data);
@@ -41,8 +57,23 @@ const Dashboard = () => {
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchPatients(currentPage);
-  }, [currentPage]);
+    fetchPatients(
+      currentPage,
+      search,
+      dateFilter.startDate,
+      dateFilter.endDate
+    );
+  }, [currentPage, search, dateFilter]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setDateFilter({ startDate, endDate });
+    setCurrentPage(1);
+  };
+
+  const handleClearFilter = () => {
+    setDateFilter({ startDate: "", endDate: "" });
+    setCurrentPage(1);
+  };
 
   const updatePatientInList = (updatedPatient) => {
     setPatientsData((prevPatients) =>
@@ -141,6 +172,10 @@ const Dashboard = () => {
           isModalShow={showAddPatient}
           setIsModalShow={setShowAddPatient}
           modalToShow={"patientModal"}
+          search={search} // Pass search state
+          setSearch={setSearch}
+          handleDateFilter={handleDateFilter}
+          handleClearFilter={handleClearFilter}
         >
           <button
             onClick={handleAddNewClick}
@@ -238,7 +273,7 @@ const Dashboard = () => {
                         Due {item.due || 0}
                       </div>
                       <Link
-                        to="/prescription/add"
+                        to={`/prescription/add/${item.patientId}`}
                         className={`priority-button ${
                           index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                         }`}
@@ -254,10 +289,12 @@ const Dashboard = () => {
                         index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                       }`}
                     >
-                      {item.chooseDoctor}
+                      {item.chooseDoctorDetails
+                        ? `${item.chooseDoctorDetails.name}, (${item.chooseDoctorDetails.doctorDegree})`
+                        : ""}
                     </button>
                     <Link
-                      to={`/patient/${item._id}/createinvoice`}
+                      to={`/patient/${item.patientId}/createinvoice`}
                       className={`priority-button ${
                         index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                       }`}
@@ -272,7 +309,7 @@ const Dashboard = () => {
                       Case History
                     </div>
                     <Link
-                      to={`/patient/${item._id}/estimate`}
+                      to={`/patient/${item.patientId}/estimate`}
                       className={`priority-button ${
                         index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                       }`}
@@ -280,13 +317,14 @@ const Dashboard = () => {
                       Estimate
                     </Link>
 
-                    <button
+                    <Link
+                      to={`/patient/${item.patientId}/prescriptions`}
                       className={`priority-button ${
                         index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                       }`}
                     >
                       Prescription
-                    </button>
+                    </Link>
                     <button
                       className={`priority-button ${
                         index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"

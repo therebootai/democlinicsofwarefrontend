@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import { GoPlusCircle } from "react-icons/go";
 
 const CreateInvoice = () => {
   const { patientId } = useParams();
@@ -22,6 +23,36 @@ const CreateInvoice = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [currentPaymentId, setCurrentPaymentId] = useState(null);
   const [totalCharges, setTotalCharges] = useState(0);
+  const [totalPaid, setTotalPaid] = useState("");
+  const [anyDue, setAnyDue] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const handleKeyDown = (e) => {
+    if (searchResults.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && searchResults[activeIndex]) {
+          const selected = searchResults[activeIndex];
+          setSelectedItem(selected);
+          setSearchTerm(`${selected.iteamName} - ${selected.iteamCharges}`);
+          setSearchResults([]);
+          setActiveIndex(-1); // Reset the active index after selection
+        } else if (selectedItem) {
+          handleAddItem();
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -125,6 +156,10 @@ const CreateInvoice = () => {
       return;
     }
 
+    // Default totalPaid to totalCharges if not entered
+    const paidAmount = totalPaid ? Number(totalPaid) : totalCharges;
+    const dueAmount = totalCharges - paidAmount;
+
     try {
       if (currentPaymentId) {
         await axios.put(
@@ -134,6 +169,8 @@ const CreateInvoice = () => {
           {
             paymentDetails: estimate,
             totalCharges: totalCharges,
+            totalPaid: paidAmount,
+            anyDue: dueAmount,
           }
         );
       } else {
@@ -146,6 +183,8 @@ const CreateInvoice = () => {
             paymentMethod,
             paymentDetails: estimate,
             totalCharges,
+            totalPaid: paidAmount,
+            anyDue: dueAmount,
           }
         );
         setCurrentPaymentId(response.data.paymentId);
@@ -184,7 +223,15 @@ const CreateInvoice = () => {
   return (
     <AdminDashboardTemplate>
       <div>
-        <Topheader />
+        <Topheader>
+          <Link
+            to="/payments/add-payment-charges"
+            className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5] transition-colors duration-300 ease-in-out"
+          >
+            <GoPlusCircle />
+            <h3>Create Invoice</h3>
+          </Link>
+        </Topheader>
       </div>
       <div className="flex flex-col gap-10 mt-6 px-4 xl:px-8 ">
         <div
@@ -204,11 +251,13 @@ const CreateInvoice = () => {
                 <div className="flex flex-col gap-2">
                   <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
                     {patientData
-                      ? `Dr. ${patientData.chooseDoctor}`
+                      ? `Dr. ${patientData.chooseDoctorDetails?.name}`
                       : "Doctor Unavailable"}
                   </h1>
                   <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
-                    {patientData?.specialization || "N/A"}
+                    {patientData
+                      ? `${patientData.chooseDoctorDetails?.doctorDegree}`
+                      : "N/A"}
                   </p>
                 </div>
               </div>
@@ -314,13 +363,26 @@ const CreateInvoice = () => {
                             <option value="Cash">Cash</option>
                           </select>
                         </div>
-                        <div
-                          className="flex-1 action-column"
-                          onClick={handleSave}
-                        >
-                          <button className=" px-4  bg-custom-blue h-[1.5rem]  rounded flex justify-center items-center text-white">
-                            Save
-                          </button>
+                        <div className="flex-1 flex justify-center items-center gap-2">
+                          <div className="action-column" onClick={handleSave}>
+                            <button className=" px-4  bg-custom-blue h-[1.5rem]  rounded flex justify-center items-center text-white">
+                              Save
+                            </button>
+                          </div>
+                          <div>
+                            <input
+                              type="text"
+                              placeholder="Total Pay if Any Due"
+                              value={totalPaid}
+                              onChange={(e) => {
+                                const paidValue = e.target.value;
+                                setTotalPaid(paidValue);
+                                const paidAmount = Number(paidValue) || 0;
+                                setAnyDue(totalCharges - paidAmount);
+                              }}
+                              className="bg-[#0000001A] px-2 action-column outline-none text-custom-gray rounded"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -340,6 +402,7 @@ const CreateInvoice = () => {
                 placeholder="Search Item"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
               />
               {isSearching ? (
@@ -359,7 +422,9 @@ const CreateInvoice = () => {
                           );
                           setSearchResults([]);
                         }}
-                        className="p-2 cursor-pointer hover:bg-gray-100"
+                        className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                          index === activeIndex ? "bg-gray-200" : ""
+                        }`}
                       >
                         {item.iteamName} - {item.iteamCharges}
                       </div>

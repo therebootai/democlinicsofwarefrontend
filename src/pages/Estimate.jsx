@@ -4,11 +4,12 @@ import Topheader from "../component/Topheader";
 import { MdCurrencyRupee } from "react-icons/md";
 import { GoPlusCircle } from "react-icons/go";
 import { FaCaretDown, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
 
 const Estimate = () => {
+  const { patientId } = useParams();
   const [estimate, setEstimate] = useState([]);
   const [selectedItem, setSelectedItem] = useState("");
   const [description, setDescription] = useState("");
@@ -16,6 +17,50 @@ const Estimate = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const estimateRef = useRef();
+  const [patientData, setPatientData] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const handleKeyDown = (e) => {
+    if (searchResults.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && searchResults[activeIndex]) {
+          const selected = searchResults[activeIndex];
+          setSelectedItem(selected);
+          setSearchTerm(`${selected.iteamName} - ${selected.iteamCharges}`);
+          setSearchResults([]);
+          setActiveIndex(-1); // Reset the active index after selection
+        } else if (selectedItem) {
+          handleAddItem();
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/patients/get/${patientId}`
+        );
+        setPatientData(response.data);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      }
+    };
+
+    fetchPatientData();
+  }, [patientId]);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -127,13 +172,6 @@ const Estimate = () => {
         </Topheader>
       </div>
       <div className="flex flex-col gap-10 mt-6 px-4 xlg:px-8 ">
-        <div className="w-[40%]">
-          <input
-            type="text"
-            placeholder="Search Patients"
-            className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
-          />
-        </div>
         <div
           className="p-4 xxl:p-8 border-2 border-[#E7E7E7] rounded-lg "
           ref={estimateRef}
@@ -147,14 +185,17 @@ const Estimate = () => {
                   alt="dental prescribe"
                   width={71}
                   height={71}
-                  className="size-[4vmax]"
                 />
                 <div className="flex flex-col gap-2">
                   <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
-                    Dr. Saikat Paul
+                    {patientData
+                      ? `Dr. ${patientData.chooseDoctorDetails?.name}`
+                      : "Doctor Unavailable"}
                   </h1>
                   <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
-                    MD, BDS
+                    {patientData
+                      ? `${patientData.chooseDoctorDetails?.doctorDegree}`
+                      : "N/A"}
                   </p>
                 </div>
               </div>
@@ -179,18 +220,31 @@ const Estimate = () => {
             <div className="flex justify-between py-3 border-b border-black/20">
               <div className="flex flex-col gap-2">
                 <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray">
-                  Prakesh Chandra
+                  {patientData?.patientName || "Patient Name"}
                 </h1>
                 <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C]">
-                  Male, 32 Years | +91 12356 67890
+                  {patientData?.gender}, {patientData?.age} Years | +91{" "}
+                  {patientData?.mobileNumber}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
                 <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
-                  Monday
+                  {new Date(patientData?.createdAt).toLocaleDateString(
+                    "en-GB",
+                    { weekday: "long" }
+                  )}
                 </h1>
                 <p className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
-                  23/09/2024 | 02:45 PM
+                  {new Date(patientData?.createdAt).toLocaleDateString("en-GB")}
+                  <span> | </span>
+                  {new Date(patientData?.createdAt).toLocaleTimeString(
+                    "en-GB",
+                    {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    }
+                  )}
                 </p>
               </div>
             </div>
@@ -240,6 +294,7 @@ const Estimate = () => {
                 placeholder="Search Item"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="h-[4rem] px-4 bg-[#F5F5F5] w-full rounded-md outline-none"
               />
               {isSearching ? (
@@ -258,7 +313,9 @@ const Estimate = () => {
                         );
                         setSearchResults([]);
                       }}
-                      className="p-2 cursor-pointer hover:bg-gray-100"
+                      className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                        index === activeIndex ? "bg-gray-200" : ""
+                      }`}
                     >
                       {item.iteamName} - {item.iteamCharges}
                     </div>

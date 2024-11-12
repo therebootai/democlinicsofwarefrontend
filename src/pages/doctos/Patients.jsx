@@ -9,11 +9,13 @@ import Topheader from "../../component/Topheader";
 import { Link } from "react-router-dom";
 import ViewPatient from "../../component/ViewPatient";
 import EditPatientData from "../../component/EditPatientData";
+import PatientDocumentAdd from "../../component/PatientDocumentAdd";
 
 const Patients = () => {
   const [patientsData, setPatientsData] = useState([]);
   const [showViewPatient, setShowViewPatient] = useState(false);
   const [showEditPatient, setShowEditPatient] = useState(false);
+  const [patientDocument, setPatientDocument] = useState(false);
 
   const [showAddPatient, setShowAddPatient] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -80,6 +82,16 @@ const Patients = () => {
     );
     setShowEditPatient(false);
   };
+  const updatePatientDocuments = (updatedPatient) => {
+    setPatientsData((prevPatients) =>
+      prevPatients.map((patient) =>
+        patient.patientId === updatedPatient.patientId
+          ? updatedPatient
+          : patient
+      )
+    );
+    setPatientDocument(false);
+  };
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -128,6 +140,16 @@ const Patients = () => {
   const handleEditClose = () => {
     setShowEditPatient(false);
     setSelectedPatient(null);
+  };
+
+  const handleAddDocuments = (patient) => {
+    setSelectedPatient(patient);
+    setPatientDocument(true);
+  };
+
+  const handleAddDocumentsClose = () => {
+    setSelectedPatient(null);
+    setPatientDocument(false);
   };
 
   // Toggle priority status
@@ -275,7 +297,7 @@ const Patients = () => {
                   Case History
                 </div>
                 <Link
-                  to={`/patient/${item._id}/estimate`}
+                  to={`/patient/${item.patientId}/estimate`}
                   className={`priority-button ${
                     index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                   }`}
@@ -295,6 +317,7 @@ const Patients = () => {
                   className={`priority-button ${
                     index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                   }`}
+                  onClick={() => handleAddDocuments(item)}
                 >
                   Documents
                 </button>
@@ -353,6 +376,21 @@ const Patients = () => {
         {showViewPatient && selectedPatient && (
           <div className="p-4">
             <ViewPatient handleClose={handleClose} patient={selectedPatient} />
+          </div>
+        )}
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll custom-scroll bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          patientDocument ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {patientDocument && selectedPatient && (
+          <div className="p-4">
+            <PatientDocumentAdd
+              handleClose={handleAddDocumentsClose}
+              patient={selectedPatient}
+              onUpdate={updatePatientDocuments}
+            />
           </div>
         )}
       </div>

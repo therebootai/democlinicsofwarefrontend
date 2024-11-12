@@ -75,8 +75,6 @@ const EditPrescription = () => {
         medicalHistory,
       };
 
-      console.log("Prepared data for update:", updatedPrescription);
-
       // API call to update the prescription
       await axios.put(
         `${
@@ -85,9 +83,7 @@ const EditPrescription = () => {
         updatedPrescription
       );
 
-      alert("Prescription updated successfully!");
-      console.log("prescription update successfully!", updatedPrescription);
-      // navigate(`/prescription/${patientId}/details/${prescriptionId}`);
+      navigate(`/prescription/${patientId}/details/${prescriptionId}`);
     } catch (error) {
       console.error("Error updating prescription:", error);
       alert("Failed to update prescription");

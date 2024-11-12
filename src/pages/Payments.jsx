@@ -6,19 +6,35 @@ import { BsEye } from "react-icons/bs";
 import { GoPerson, GoPlusCircle } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
 import { Link } from "react-router-dom";
+import ViewAllPayment from "../component/ViewAllPayment";
 
 const Payments = () => {
   const [patientsData, setPatientsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showViewPatient, setShowViewPatient] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [search, setSearch] = useState("");
+  const [dateFilter, setDateFilter] = useState({ startDate: "", endDate: "" });
 
   // Function to fetch patients data from the backend
-  const fetchPatients = async (page = 1) => {
+  const fetchPatients = async (
+    page = 1,
+    searchTerm = "",
+    startDate = "",
+    endDate = ""
+  ) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/patients/get",
+        `${import.meta.env.VITE_BASE_URL}/api/patients/get`,
         {
-          params: { page, limit: 20 },
+          params: {
+            page,
+            limit: 20,
+            search: searchTerm,
+            startdate: startDate,
+            enddate: endDate,
+          },
         }
       );
       setPatientsData(response.data.data);
@@ -29,10 +45,34 @@ const Payments = () => {
     }
   };
 
+  const handleViewPayments = (patient) => {
+    setSelectedPatient(patient);
+    setShowViewPatient(true);
+  };
+
+  const handleClose = () => {
+    setShowViewPatient(false);
+  };
+
   // Fetch data on component mount and when currentPage changes
   useEffect(() => {
-    fetchPatients(currentPage);
-  }, [currentPage]);
+    fetchPatients(
+      currentPage,
+      search,
+      dateFilter.startDate,
+      dateFilter.endDate
+    );
+  }, [currentPage, search, dateFilter]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setDateFilter({ startDate, endDate });
+    setCurrentPage(1);
+  };
+
+  const handleClearFilter = () => {
+    setDateFilter({ startDate: "", endDate: "" });
+    setCurrentPage(1);
+  };
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -64,10 +104,29 @@ const Payments = () => {
     return paginationButtons;
   };
 
+  const calculatePaymentSummary = (paymentDetails) => {
+    const totalPayment = paymentDetails.reduce(
+      (acc, payment) => acc + Number(payment.totalCharges || 0),
+      0
+    );
+    const totalPaid = paymentDetails.reduce(
+      (acc, payment) => acc + Number(payment.totalPaid || 0),
+      0
+    );
+    const totalDue = totalPayment - totalPaid;
+
+    return { totalPayment, totalPaid, totalDue };
+  };
+
   return (
     <AdminDashboardTemplate>
       <div>
-        <Topheader>
+        <Topheader
+          search={search} // Pass search state
+          setSearch={setSearch}
+          handleDateFilter={handleDateFilter}
+          handleClearFilter={handleClearFilter}
+        >
           <Link
             to="/payments/add-payment-charges"
             className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5] transition-colors duration-300 ease-in-out"
@@ -107,20 +166,30 @@ const Payments = () => {
                     </div>
                     <div className="flex flex-row gap-2 xlg:gap-4">
                       <button className="priority-button bg-white">
-                        Dr. {item.chooseDoctor}
+                        {item.chooseDoctorDetails
+                          ? `Dr. ${item.chooseDoctorDetails.name}, (${item.chooseDoctorDetails.doctorDegree})`
+                          : ""}
                       </button>
                       <button className="priority-button text-[#00B252]">
-                        <MdCurrencyRupee /> Paid {item.paymentDetails.paid || 0}
+                        <MdCurrencyRupee /> Paid{" "}
+                        {calculatePaymentSummary(item.paymentDetails)
+                          .totalPaid || 0}
                       </button>
                       <button className="priority-button text-[#E40000]">
-                        Due {item.paymentDetails.due || 0}
+                        Due{" "}
+                        {calculatePaymentSummary(item.paymentDetails)
+                          .totalDue || 0}
                       </button>
                       <button className="priority-button">
                         Total <MdCurrencyRupee />{" "}
-                        {item.paymentDetails.total || 0}
+                        {calculatePaymentSummary(item.paymentDetails)
+                          .totalPayment || 0}
                       </button>
                       <div className="flex flex-row items-center gap-2 xlg:gap-4">
-                        <button className="xlg:text-2xl text-xl font-medium text-[#7F03FA]">
+                        <button
+                          onClick={() => handleViewPayments(item)}
+                          className="xlg:text-2xl text-xl font-medium text-[#7F03FA]"
+                        >
                           <BsEye />
                         </button>
                         <Link
@@ -156,6 +225,15 @@ const Payments = () => {
             Next
           </button>
         </div>
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll custom-scroll bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          showViewPatient ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {showViewPatient && selectedPatient && (
+          <ViewAllPayment handleClose={handleClose} patient={selectedPatient} />
+        )}
       </div>
     </AdminDashboardTemplate>
   );

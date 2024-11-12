@@ -154,7 +154,7 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
 
       const itemExists = response.data.some(
         (item) =>
-          item.patientMedicalHistoryName.toLowerCase() ===
+          item?.patientMedicalHistoryName.toLowerCase() ===
           patientMedicalHistoryName.toLowerCase()
       );
 
