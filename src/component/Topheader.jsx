@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { FaCaretDown, FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
@@ -10,6 +10,7 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
+import { AuthContext } from "../context/AuthContext";
 
 const Topheader = ({
   children,
@@ -25,6 +26,9 @@ const Topheader = ({
   const profileImageRef = useRef(null);
   const profileDropdownRef = useRef(null);
   const modalRef = useRef(null);
+  const {
+    user: { name, role, clinicId },
+  } = useContext(AuthContext);
 
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen((prev) => !prev);
@@ -119,15 +123,19 @@ const Topheader = ({
           </button>
         )}
       </div>
-      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
-        <select className="block w-full appearance-none cursor-pointer truncate pe-2  bg-[#F5F5F5] focus:outline-none">
-          <option value="Dentity Dental Rajar">Dentity Dental Rajarhat</option>
-          <option value="Another Option 1">Another Option 1</option>
-          <option value="Another Option 2">Another Option 2</option>
-        </select>
+      {clinicId?.length === 0 && (
+        <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
+          <select className="block w-full appearance-none cursor-pointer truncate pe-2  bg-[#F5F5F5] focus:outline-none">
+            <option value="Dentity Dental Rajar">
+              Dentity Dental Rajarhat
+            </option>
+            <option value="Another Option 1">Another Option 1</option>
+            <option value="Another Option 2">Another Option 2</option>
+          </select>
 
-        <FaCaretDown className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-600" />
-      </div>
+          <FaCaretDown className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-600" />
+        </div>
+      )}
       <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-6 h-[2.5rem]">
         <input
           type="text"
@@ -158,8 +166,12 @@ const Topheader = ({
               className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
             >
               <div className="px-4 py-2 text-gray-700">
-                <span className="block text-sm font-semibold">Username</span>
-                <span className="block text-sm">Admin</span>
+                <span className="block text-sm font-semibold capitalize">
+                  {name}
+                </span>
+                <span className="block text-sm capitalize">
+                  {role.split("_").join(" ")}
+                </span>
               </div>
               <div className="border-t border-gray-200"></div>
               <Link
