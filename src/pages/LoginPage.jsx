@@ -1,19 +1,24 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
   const [emailorphone, setEmailorphone] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [generatedCaptcha, setGeneratedCaptcha] = useState("");
 
   const [emailorphoneError, setEmailorphoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [roleError, setRoleError] = useState("");
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const { setUser } = useContext(AuthContext);
   useEffect(() => {
     generateCaptcha();
   }, []);
@@ -32,18 +37,24 @@ const LoginPage = () => {
     e.preventDefault();
     let isValid = true;
 
-    if (!emailorphone) {
+    if (emailorphone === "") {
       setEmailorphoneError("Email or phone is required.");
       isValid = false;
     } else {
       setEmailorphoneError("");
     }
 
-    if (!password) {
+    if (password === "") {
       setPasswordError("Password is required.");
       isValid = false;
     } else {
       setPasswordError("");
+    }
+    if (role === "") {
+      setRoleError("Role is required.");
+      isValid = false;
+    } else {
+      setRoleError("");
     }
     if (!isValid) {
       setLoading(false);
@@ -52,18 +63,21 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/login`,
+        `${import.meta.env.VITE_BASE_URL}/api/user/login`,
         {
           emailOrPhone: emailorphone,
           password,
+          role,
         }
       );
-      const { token, name } = response.data;
+      const { token, name, user } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("name", name);
 
+      setUser(user);
+
       console.log("Login successful");
-      navigate("/admin/dashboard");
+      navigate("/doctor/dashboard");
     } catch (error) {
       if (error.response && error.response.data) {
         const errorMessage = error.response.data.message;
@@ -101,11 +115,15 @@ const LoginPage = () => {
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-2 ">
-            <label className="xlg:text-lg text-base font-[400]">
+            <label
+              className="xlg:text-lg text-base font-[400]"
+              htmlFor="emailOrPhone"
+            >
               Mobile Number/ Email ID:
             </label>
             <input
               type="text"
+              id="emailOrPhone"
               value={emailorphone}
               onChange={(e) => setEmailorphone(e.target.value)}
               className="bg-[#EFEFEF] text-[#333333]  placeholder-[#00000033] rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 text-sm xl:text-lg outline-none"
@@ -117,13 +135,17 @@ const LoginPage = () => {
             )}
           </div>
           <div className="flex flex-col  gap-2">
-            <label className="xlg:text-lg text-base font-[400]">
+            <label
+              className="xlg:text-lg text-base font-[400]"
+              htmlFor="password"
+            >
               Password:
             </label>
             <div className="flex h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem]  w-full items-center justify-between  rounded-sm xl:rounded-md bg-[#EFEFEF] ">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
+                id="password"
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-[#EFEFEF]  rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 w-full text-[#333333]  placeholder-[#00000033] text-sm xl:text-lg border-none focus:outline-none"
               />
@@ -139,18 +161,24 @@ const LoginPage = () => {
             )}
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="xlg:text-lg text-base font-[400]">
+            <label htmlFor="role" className="xlg:text-lg text-base font-[400]">
               Choose Your Role
             </label>
             <select
               name=""
-              id=""
-              className="bg-[#EFEFEF]  rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 w-full text-[#333333]  placeholder-[#00000033] text-sm xl:text-lg border-none focus:outline-none"
+              value={role}
+              id="role"
+              onChange={(e) => setRole(e.target.value)}
+              className="bg-[#EFEFEF]  rounded-sm xl:rounded-md h-[2.5rem] lg:h-[2.8rem] xl:h-[3rem] px-2 w-full text-[#333333] placeholder-[#00000033] text-sm xl:text-lg border-none focus:outline-none"
             >
               <option value="">Choose Your Role</option>
-              <option value="">Doctor</option>
-              <option value="">Staf</option>
+              <option value="doctor">Doctor</option>
+              <option value="staff">Staff</option>
+              <option value="super_admin">Admin</option>
             </select>
+            {roleError && (
+              <div className="text-red-500 text-sm mt-1">{roleError}</div>
+            )}
           </div>
           <div className="flex w-full justify-between items-center">
             <div className="flex flex-row gap-1 items-center xlg:text-lg text-base font-medium">
@@ -162,12 +190,12 @@ const LoginPage = () => {
             </div>
           </div>
           <div className="flex justify-center items-center">
-            <Link
-              to={"/doctor/dashboard"}
+            <button
+              type="submit"
               className="w-[30%] rounded xl:rounded-md sm:h-[2rem] xl:h-[2.5rem] flex justify-center items-center text-white text-base font-medium bg-[#27B3FF]"
             >
               {loading ? "Wait..." : "Login"}
-            </Link>
+            </button>
           </div>
         </form>
       </div>
