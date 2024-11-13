@@ -250,7 +250,7 @@ const Topheader = ({
           {modalToShow === "patientModal" && (
             <AddNewPatient
               handleClose={handleClose}
-              currentClinic={favClinc.clinicId}
+              currentClinic={favClinc?.clinicId}
             />
           )}
           {modalToShow === "formModal" && (
