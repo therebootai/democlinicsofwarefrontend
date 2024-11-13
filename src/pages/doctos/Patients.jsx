@@ -201,6 +201,20 @@ const Patients = () => {
     setShowAddPatient(true);
   };
 
+  const calculatePaymentSummary = (paymentDetails) => {
+    const totalPayment = paymentDetails.reduce(
+      (acc, payment) => acc + Number(payment.totalCharges || 0),
+      0
+    );
+    const totalPaid = paymentDetails.reduce(
+      (acc, payment) => acc + Number(payment.totalPaid || 0),
+      0
+    );
+    const totalDue = totalPayment - totalPaid;
+
+    return { totalPayment, totalPaid, totalDue };
+  };
+
   return (
     <AdminDashboardTemplate>
       <Topheader
@@ -267,7 +281,11 @@ const Patients = () => {
                     }`}
                   >
                     <MdCurrencyRupee />
-                    <span>{item.paid || 0} Paid</span>
+                    <span>
+                      {calculatePaymentSummary(item.paymentDetails).totalPaid ||
+                        0}{" "}
+                      Paid
+                    </span>
                   </div>
                   <div
                     className={`priority-button hover:text-[#E40000] text-[#E40000] ${
@@ -276,7 +294,8 @@ const Patients = () => {
                         : "bg-[#EEEEEE] hover:bg-[#eeeeee]"
                     }`}
                   >
-                    Due {item.due || 0}
+                    Due{" "}
+                    {calculatePaymentSummary(item.paymentDetails).totalDue || 0}
                   </div>
                   <Link
                     to={`/prescription/add/${item.patientId}`}
