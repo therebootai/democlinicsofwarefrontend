@@ -1,12 +1,14 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [favClinic, setFavClinic] = useState({});
-  const fetchCurrentUser = async (token) => {
+  const fetchCurrentUser = async () => {
+    const token = localStorage.getItem("token");
+
     if (!token) {
       return;
     }
@@ -27,11 +29,8 @@ const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      fetchCurrentUser(token);
-    }
-  }, [user]);
+    fetchCurrentUser();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, favClinic, setFavClinic }}>

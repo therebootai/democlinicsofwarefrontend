@@ -37,7 +37,7 @@ const Topheader = ({
     user: { name, role, clinicId },
     setFavClinic,
     setUser,
-    favClinc,
+    favClinic,
   } = useContext(AuthContext);
 
   const toggleProfileDropdown = () => {
@@ -250,7 +250,8 @@ const Topheader = ({
           {modalToShow === "patientModal" && (
             <AddNewPatient
               handleClose={handleClose}
-              currentClinic={favClinc?.clinicId}
+              currentClinic={favClinic._id}
+
             />
           )}
           {modalToShow === "formModal" && (

@@ -66,7 +66,17 @@ const Patients = () => {
         search,
         dateFilter.startDate,
         dateFilter.endDate,
-        favClinic.clinicId
+        "",
+        favClinic._id
+      );
+    } else if ((user.role === "admin" && user.designation === "Staff")) {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
       );
     } else {
       fetchPatients(
@@ -75,10 +85,10 @@ const Patients = () => {
         dateFilter.startDate,
         dateFilter.endDate,
         user.userId,
-        favClinic.clinicId
+        favClinic._id
       );
     }
-  }, [currentPage, search, dateFilter, user]);
+  }, [currentPage, search, dateFilter, user, favClinic]);
 
   const handleDateFilter = (startDate, endDate) => {
     setDateFilter({ startDate, endDate });
