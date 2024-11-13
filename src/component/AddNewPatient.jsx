@@ -433,9 +433,10 @@ const AddNewPatient = ({ handleClose, currentClinic }) => {
 
     const patientData = {
       ...data,
-      clinicId: currentClinic.clinicId,
+      clinicId: currentClinic,
       medicalHistory: checkedMedicalHistory, // Add medical history to patient data
     };
+    
 
     try {
       const response = await axios.post(

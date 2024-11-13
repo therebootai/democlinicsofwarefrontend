@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
 import PerformanceComponent from "../../component/PerformanceComponent";
 import Topheader from "../../component/Topheader";
@@ -11,6 +11,7 @@ import { MdCurrencyRupee } from "react-icons/md";
 import { Link } from "react-router-dom";
 import EditPatientData from "../../component/EditPatientData";
 import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const Dashboard = () => {
   const [patientsData, setPatientsData] = useState([]);
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
+  const { user, favClinic } = useContext(AuthContext);
   const [dateFilter, setDateFilter] = useState({
     startDate: "",
     endDate: "",
@@ -32,7 +34,9 @@ const Dashboard = () => {
     page = 1,
     searchTerm = "",
     startDate = "",
-    endDate = ""
+    endDate = "",
+    doctorId = "",
+    clinicId = ""
   ) => {
     try {
       const response = await axios.get(
@@ -44,6 +48,8 @@ const Dashboard = () => {
             search: searchTerm,
             startdate: startDate,
             enddate: endDate,
+            doctorId: doctorId,
+            clinicId: clinicId,
           },
         }
       );
@@ -57,13 +63,24 @@ const Dashboard = () => {
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchPatients(
-      currentPage,
-      search,
-      dateFilter.startDate,
-      dateFilter.endDate
-    );
-  }, [currentPage, search, dateFilter]);
+    if (user.role == "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.doctorId,
+        favClinic._id
+      );
+    }
+  }, [currentPage, search, dateFilter, favClinic]);
 
   const handleDateFilter = (startDate, endDate) => {
     setDateFilter({ startDate, endDate });
