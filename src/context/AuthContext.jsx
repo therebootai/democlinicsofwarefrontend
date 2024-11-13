@@ -1,11 +1,40 @@
-import { createContext, useState } from "react";
+import axios from "axios";
+import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
+  const [favClinic, setFavClinic] = useState({});
+  const fetchCurrentUser = async (token) => {
+    if (!token) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/user/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const userData = response.data;
+      setUser(userData);
+    } catch (error) {
+      console.error("Failed to fetch current user", error);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchCurrentUser(token);
+    }
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, favClinic, setFavClinic }}>
       {children}
     </AuthContext.Provider>
   );

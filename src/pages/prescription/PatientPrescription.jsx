@@ -10,6 +10,9 @@ const PatientPrescriptions = () => {
   const [patientName, setPatientName] = useState("");
   const navigate = useNavigate();
 
+  
+  
+
   // Fetch prescriptions for the patient
   useEffect(() => {
     const fetchPrescriptions = async () => {

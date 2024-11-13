@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
@@ -7,6 +7,7 @@ import { GoPerson, GoPlusCircle } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
 import { Link } from "react-router-dom";
 import ViewAllPayment from "../component/ViewAllPayment";
+import { AuthContext } from "../context/AuthContext";
 
 const Payments = () => {
   const [patientsData, setPatientsData] = useState([]);
@@ -16,13 +17,16 @@ const Payments = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState({ startDate: "", endDate: "" });
+  const { user, favClinic } = useContext(AuthContext);
 
   // Function to fetch patients data from the backend
   const fetchPatients = async (
     page = 1,
     searchTerm = "",
     startDate = "",
-    endDate = ""
+    endDate = "",
+    doctorId = "",
+    clinicId = ""
   ) => {
     try {
       const response = await axios.get(
@@ -34,6 +38,8 @@ const Payments = () => {
             search: searchTerm,
             startdate: startDate,
             enddate: endDate,
+            doctorId: doctorId,
+            clinicId: clinicId,
           },
         }
       );
@@ -56,12 +62,23 @@ const Payments = () => {
 
   // Fetch data on component mount and when currentPage changes
   useEffect(() => {
-    fetchPatients(
-      currentPage,
-      search,
-      dateFilter.startDate,
-      dateFilter.endDate
-    );
+    if (user.role === "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic.clinicId
+      );
+    }
   }, [currentPage, search, dateFilter]);
 
   const handleDateFilter = (startDate, endDate) => {
