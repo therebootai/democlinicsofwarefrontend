@@ -29,33 +29,6 @@ const CreateInvoice = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { favClinic } = useContext(AuthContext);
 
-  const handleKeyDown = (e) => {
-    if (searchResults.length > 0) {
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setActiveIndex((prevIndex) =>
-          prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
-        );
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setActiveIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
-        );
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        if (activeIndex >= 0 && searchResults[activeIndex]) {
-          const selected = searchResults[activeIndex];
-          setSelectedItem(selected);
-          setSearchTerm(`${selected.iteamName} - ${selected.iteamCharges}`);
-          setSearchResults([]);
-          setActiveIndex(-1); // Reset the active index after selection
-        } else if (selectedItem) {
-          handleAddItem();
-        }
-      }
-    }
-  };
-
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
@@ -221,6 +194,30 @@ const CreateInvoice = () => {
       .finally(() => {
         element.classList.remove("hide-action");
       });
+  };
+  const handleKeyDown = (e) => {
+    if (searchResults.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && searchResults[activeIndex]) {
+          const selected = searchResults[activeIndex];
+          setSelectedItem(selected);
+          setSearchTerm(`${selected.iteamName} - ${selected.iteamCharges}`);
+          setSearchResults([]);
+          setActiveIndex(-1);
+        }
+      }
+    }
   };
   return (
     <AdminDashboardTemplate>

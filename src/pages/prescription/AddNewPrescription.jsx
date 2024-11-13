@@ -13,6 +13,7 @@ import OnExamination from "../../component/prescription/OnExamination";
 import Investigation from "../../component/prescription/Investigation";
 import Radiography from "../../component/prescription/Radiography";
 import axios from "axios";
+import PreviewPrescription from "./PreviewPrescription";
 
 const AddNewPrescription = () => {
   const { patientId } = useParams();
@@ -27,8 +28,11 @@ const AddNewPrescription = () => {
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [medicalHistoryChanged, setMedicalHistoryChanged] = useState(false);
   const [prescriptionChanged, setPrescriptionChanged] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [previewData, setPreviewData] = useState(null);
 
   const handleMedicalHistoryChange = (updatedMedicalHistory) => {
+    console.log("Updated Medical History Data:", updatedMedicalHistory);
     setMedicalHistory(updatedMedicalHistory);
     setMedicalHistoryChanged(true);
   };
@@ -53,20 +57,22 @@ const AddNewPrescription = () => {
   const finishPrescription = async () => {
     setLoading(true);
 
-    const updatedMedicalHistory = medicalHistory
-      .filter((item) => item.checked)
-      .map(({ checked, medicalHistoryMedicine, ...rest }) => ({
-        ...rest,
-        medicalHistoryMedicine:
-          medicalHistoryMedicine.length > 0 ? medicalHistoryMedicine : [],
-      }));
+    const checkedMedicalHistory = Array.isArray(medicalHistory)
+      ? medicalHistory.filter((item) => item.checked)
+      : []; // Use an empty array as fallback if `medicalHistory` is not an array
+
+    const uncheckedMedicalHistoryNames = Array.isArray(medicalHistory)
+      ? medicalHistory
+          .filter((item) => !item.checked)
+          .map((item) => item.medicalHistoryName)
+      : [];
 
     try {
       // Update medical history if changed
       if (medicalHistoryChanged) {
         await axios.put(
           `${import.meta.env.VITE_BASE_URL}/api/patients/update/${patientId}`,
-          { medicalHistory: updatedMedicalHistory },
+          { checkedMedicalHistory, uncheckedMedicalHistoryNames },
           { headers: { "Content-Type": "application/json" } }
         );
       }
@@ -118,17 +124,16 @@ const AddNewPrescription = () => {
     }
   };
 
-  const previewprescription = async () => {
+  const previewPrescription = () => {
+    console.log("Chief Complain Data:", chiefComplainData);
     const cleanedChiefComplainData = chiefComplainData.map((item) => ({
       chiefComplainName: item.chiefComplainName,
     }));
 
-    const cleanedMedicalHistoryData = medicalHistory.map((item) => ({
-      medicalHistoryName: item.medicalHistoryName,
-      duration: item.duration,
-      medicalHistoryMedicine: item.medicalHistoryMedicine,
-      checked: item.checked,
-    }));
+    const checkedMedicalHistory = Array.isArray(medicalHistory)
+      ? medicalHistory.filter((item) => item.checked)
+      : [];
+    console.log(medicalHistory);
 
     const prescription = {
       chiefComplain: cleanedChiefComplainData,
@@ -137,11 +142,19 @@ const AddNewPrescription = () => {
       radiography: radiographyData,
       advices: adviceData,
       medications: medicationData,
-      medicalHistory: cleanedMedicalHistoryData,
+      medicalHistory: checkedMedicalHistory,
     };
 
-    console.log("Prescriptions data:", prescription);
+    console.log("Prescription Data to Preview:", prescription); // Log the data before setting it
+    setPreviewData(prescription);
+    setIsPreviewModalOpen(true);
   };
+
+  const closePreviewModal = () => {
+    setIsPreviewModalOpen(false);
+    setPreviewData(null);
+  };
+
   return (
     <>
       <TopHeaderMini />
@@ -193,20 +206,14 @@ const AddNewPrescription = () => {
           </button>
         </div>
         <div className="pr-16 xlg:pr-20 flex gap-9">
-          <Link
-            to={"/prescription/:id/details"}
+          <button
+            onClick={previewPrescription}
             type="button"
             className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
           >
             Preview
-          </Link>
-          <button
-            type="button"
-            onClick={previewprescription}
-            className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
-          >
-            Print
           </button>
+
           <button
             type="button"
             onClick={finishPrescription}
@@ -222,6 +229,39 @@ const AddNewPrescription = () => {
             <div className="loader animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
             <p className="text-white text-lg mt-4">Saving...</p>
           </div>
+        </div>
+      )}
+      {isPreviewModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center  overflow-auto no-scrollbar justify-center z-50">
+          <div className=" p-6 rounded-md w-[80%] max-w-4xl h-[80%]">
+            <button
+              onClick={closePreviewModal}
+              className="absolute top-4 right-4 text-xl font-bold text-black"
+            >
+              X
+            </button>
+            <PreviewPrescription
+              previewData={previewData}
+              prescriptiondate="2024-11-13"
+              prescriptiontime="10:00 AM"
+            />
+            <div className="flex justify-end gap-4 mt-4">
+              <button
+                onClick={closePreviewModal}
+                className="text-lg xl:text-xl font-semibold text-center text-white bg-gray-500 py-2 px-6 rounded"
+              >
+                {" "}
+                Close{" "}
+              </button>{" "}
+              <button
+                onClick={finishPrescription}
+                className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-2 px-6 rounded"
+              >
+                {" "}
+                Save{" "}
+              </button>{" "}
+            </div>{" "}
+          </div>{" "}
         </div>
       )}
     </>

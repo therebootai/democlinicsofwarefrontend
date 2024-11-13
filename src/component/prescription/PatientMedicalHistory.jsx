@@ -18,6 +18,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
   const medicineDropdownRef = useRef(null);
   const [medicineSuggestions, setMedicineSuggestions] = useState([]);
   const [showMedicineSuggestions, setShowMedicineSuggestions] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   useEffect(() => {
     const fetchPatientMedicalHistory = async () => {
@@ -116,6 +117,26 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
       setShowSuggestions(true);
     } catch (error) {
       console.error("Error fetching search suggestions:", error);
+    }
+  };
+
+  const handleSearchDown = (e) => {
+    if (showSuggestions && suggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
+        );
+      } else if (e.key === "Enter" && activeIndex >= 0) {
+        e.preventDefault();
+        handleSelectSuggestion(suggestions[activeIndex]);
+        setActiveIndex(-1); // Reset active index after selection
+      }
     }
   };
 
@@ -287,9 +308,10 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
     const updatedHistory = medicalHistory.map((entry) =>
       entry._id === id ? { ...entry, checked: !entry.checked } : entry
     );
+
     setMedicalHistory(updatedHistory);
 
-    // Notify the parent of the change
+    // Notify the parent with the entire updated array
     onMedicalHistoryChange(updatedHistory);
   };
 
@@ -360,11 +382,13 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
           <input
             type="text"
             ref={inputRef}
+            autoComplete="off"
             name="patientMedicalHistoryName"
             placeholder="Medical History"
             value={currentInput.patientMedicalHistoryName}
             onChange={handleInputChange}
             onFocus={fetchRandomSuggestions}
+            onKeyDown={handleSearchDown}
             className="p-3 h-[3rem] bg-white rounded outline-none"
           />
           {showSuggestions && suggestions.length > 0 && (
@@ -376,7 +400,9 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
                 <div
                   key={idx}
                   onClick={() => handleSelectSuggestion(suggestion)}
-                  className="p-2 cursor-pointer hover:bg-gray-100"
+                  className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                    idx === activeIndex ? "bg-gray-200" : ""
+                  }`}
                 >
                   {suggestion.patientMedicalHistoryName}
                 </div>
@@ -388,6 +414,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
           <input
             type="text"
             name="duration"
+            autoComplete="off"
             placeholder="2 Months"
             value={currentInput.duration}
             onChange={handleInputChange}
@@ -427,6 +454,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
               type="text"
               ref={medicineInputRef}
               placeholder="Add Medicine"
+              autoComplete="off"
               value={currentInput.medicineSearch || ""}
               onChange={handleMedicineInputChange}
               onKeyDown={(e) => handleMedicineKeyPress(e)}

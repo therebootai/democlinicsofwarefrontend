@@ -17,6 +17,31 @@ const OnExamination = ({ onChange, existingData = [] }) => {
     },
   ]);
 
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const handleKeyDown = (e, index) => {
+    const { searchResults, showSuggestions } = fields[index];
+
+    if (showSuggestions && searchResults.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < searchResults.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : searchResults.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && searchResults[activeIndex]) {
+          handleSelectSuggestion(searchResults[activeIndex], index);
+        }
+      }
+    }
+  };
+
   const fetchRandomSuggestions = async (index) => {
     try {
       const response = await axios.get(
@@ -230,6 +255,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
                       150
                     )
                   }
+                  onKeyDown={(e) => handleKeyDown(e, index)}
                 />
                 <button
                   type="button"
@@ -246,7 +272,9 @@ const OnExamination = ({ onChange, existingData = [] }) => {
                     <div
                       key={idx}
                       onMouseDown={() => handleSelectSuggestion(item, index)}
-                      className="p-2 cursor-pointer hover:bg-gray-100"
+                      className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                        idx === activeIndex ? "bg-gray-200" : ""
+                      }`}
                     >
                       {item.onExaminationName}
                     </div>

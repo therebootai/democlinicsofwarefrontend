@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import TopHeaderMini from "../../component/TopHeaderMini";
 import PatientMedicalHistory from "../../component/prescription/PatientMedicalHistory";
 import ChiefComplain from "../../component/prescription/ChiefComplain";
@@ -24,6 +24,10 @@ const EditPrescription = () => {
   const [radiography, setRadiography] = useState([]);
   const [advices, setAdvices] = useState([]);
   const [medications, setMedications] = useState([]);
+
+  // Flags to track if changes were made
+  const [medicalHistoryChanged, setMedicalHistoryChanged] = useState(false);
+  const [prescriptionChanged, setPrescriptionChanged] = useState(false);
 
   // Fetch data on component mount or when patientId/prescriptionId changes
   useEffect(() => {
@@ -61,49 +65,81 @@ const EditPrescription = () => {
     fetchPrescriptionData();
   }, [patientId, prescriptionId]);
 
+  // Update flags on change
+  const handleMedicalHistoryChange = (newMedicalHistory) => {
+    setMedicalHistory(newMedicalHistory);
+    setMedicalHistoryChanged(true); // Set flag to true when medical history is changed
+  };
+
+  const handlePrescriptionFieldChange = (setter) => (newData) => {
+    setter(newData);
+    setPrescriptionChanged(true); // Set flag to true when any prescription field is changed
+  };
+
   // Save updated prescription
   const saveUpdatedPrescription = async () => {
     setLoading(true);
+
+    const checkedMedicalHistory = Array.isArray(medicalHistory)
+      ? medicalHistory.filter((item) => item.checked)
+      : [];
+    const uncheckedMedicalHistoryNames = Array.isArray(medicalHistory)
+      ? medicalHistory
+          .filter((item) => !item.checked)
+          .map((item) => item.medicalHistoryName)
+      : [];
+
     try {
-      const updatedPrescription = {
-        chiefComplain,
-        onExamination,
-        investigation,
-        radiography,
-        advices,
-        medications,
-        medicalHistory,
-      };
+      // Update medical history if there are changes
+      if (medicalHistoryChanged) {
+        await axios.put(
+          `${import.meta.env.VITE_BASE_URL}/api/patients/update/${patientId}`,
+          { checkedMedicalHistory, uncheckedMedicalHistoryNames },
+          { headers: { "Content-Type": "application/json" } }
+        );
+        console.log("Medical history updated successfully.");
+      }
 
-      // API call to update the prescription
-      await axios.put(
-        `${
-          import.meta.env.VITE_BASE_URL
-        }/api/patients/update/prescriptions/${patientId}/${prescriptionId}`,
-        updatedPrescription
-      );
+      // Prepare and update the prescription only if there are changes
+      if (prescriptionChanged) {
+        const updatedPrescription = {
+          chiefComplain: chiefComplain.length ? chiefComplain : undefined,
+          onExamination: onExamination.length ? onExamination : undefined,
+          investigation: investigation.length ? investigation : undefined,
+          radiography: radiography.length ? radiography : undefined,
+          advices: advices.length ? advices : undefined,
+          medications: medications.length ? medications : undefined,
+        };
 
-      navigate(`/prescription/${patientId}/details/${prescriptionId}`);
+        // Filter out undefined fields
+        const cleanedPrescription = Object.fromEntries(
+          Object.entries(updatedPrescription).filter(
+            ([_, v]) => v !== undefined
+          )
+        );
+
+        if (Object.keys(cleanedPrescription).length > 0) {
+          await axios.put(
+            `${
+              import.meta.env.VITE_BASE_URL
+            }/api/patients/update/prescriptions/${patientId}/${prescriptionId}`,
+            cleanedPrescription,
+            { headers: { "Content-Type": "application/json" } }
+          );
+          console.log("Prescription updated successfully.");
+          navigate(`/prescription/${patientId}/details/${prescriptionId}`);
+        } else {
+          alert("No prescription data to save.");
+        }
+      } else if (medicalHistoryChanged && !prescriptionChanged) {
+        alert("Only medical history was updated.");
+      }
     } catch (error) {
-      console.error("Error updating prescription:", error);
-      alert("Failed to update prescription");
+      console.error("Error saving prescription or medical history:", error);
+      alert("Failed to save prescription or medical history");
     } finally {
       setLoading(false);
     }
-  };
-
-  const previewprescription = async () => {
-    const updatedPrescription = {
-      chiefComplain,
-      onExamination,
-      investigation,
-      radiography,
-      advices,
-      medications,
-      medicalHistory,
-    };
-
-    console.log("Prescriptions data:", updatedPrescription);
   };
 
   return (
@@ -113,24 +149,30 @@ const EditPrescription = () => {
         <div className="py-2 px-8 xl:px-6 flex flex-col gap-6">
           <PatientMedicalHistory
             patientId={patientId}
-            onMedicalHistoryChange={setMedicalHistory}
+            onMedicalHistoryChange={handleMedicalHistoryChange}
           />
           <ChiefComplain
-            onChange={setChiefComplain}
+            onChange={handlePrescriptionFieldChange(setChiefComplain)}
             existingComplaints={chiefComplain}
           />
           <OnExamination
-            onChange={setOnExamination}
+            onChange={handlePrescriptionFieldChange(setOnExamination)}
             existingData={onExamination}
           />
           <Investigation
-            onChange={setInvestigation}
+            onChange={handlePrescriptionFieldChange(setInvestigation)}
             existingData={investigation}
           />
-          <Radiography onChange={setRadiography} existingData={radiography} />
-          <Advices onChange={setAdvices} existingAdvices={advices} />
+          <Radiography
+            onChange={handlePrescriptionFieldChange(setRadiography)}
+            existingData={radiography}
+          />
+          <Advices
+            onChange={handlePrescriptionFieldChange(setAdvices)}
+            existingAdvices={advices}
+          />
           <Medications
-            onChange={setMedications}
+            onChange={handlePrescriptionFieldChange(setMedications)}
             existingMedications={medications}
           />
         </div>
@@ -142,13 +184,6 @@ const EditPrescription = () => {
           className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
         >
           {loading ? "Saving..." : "Save Changes"}
-        </button>
-        <button
-          type="button"
-          onClick={previewprescription}
-          className="text-lg xl:text-xl font-semibold text-center text-white bg-custom-blue py-4 px-8 xl:px-10 rounded"
-        >
-          Preview
         </button>
       </div>
       {loading && (
