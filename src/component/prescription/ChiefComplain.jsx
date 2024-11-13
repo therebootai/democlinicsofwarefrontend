@@ -1,6 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import axios from "axios";
+
+const useDebounce = (callback, delay) => {
+  const debounceCallback = useCallback(debounce(callback, delay), [
+    callback,
+    delay,
+  ]);
+
+  return debounceCallback;
+};
 
 const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
   const [fields, setFields] = useState([
@@ -11,6 +20,31 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
       showSuggestions: false,
     },
   ]);
+
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const handleKeyDown = (e, index) => {
+    if (fields[index].searchResults.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < fields[index].searchResults.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : fields[index].searchResults.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && fields[index].searchResults[activeIndex]) {
+          const selected = fields[index].searchResults[activeIndex];
+          handleSelectSuggestion(selected, index); // Select suggestion
+          setActiveIndex(-1); // Reset index
+        }
+      }
+    }
+  };
 
   // Fetch random suggestions when the input is empty
   const fetchRandomSuggestions = async (index) => {
@@ -30,7 +64,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
   };
 
   // Fetch suggestions based on search term
-  const fetchSuggestions = async (index) => {
+  const fetchSuggestions = useDebounce(async (index) => {
     const searchTerm = fields[index].searchTerm;
     if (searchTerm) {
       try {
@@ -46,7 +80,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
         updateField(index, { searchResults: [] });
       }
     }
-  };
+  }, 300);
 
   useEffect(() => {
     if (
@@ -70,13 +104,12 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
 
   // Update field based on index and changes
   const updateField = (index, updates) => {
-    const updatedFields = fields.map((field, i) =>
-      i === index ? { ...field, ...updates } : field
-    );
-    setFields(updatedFields);
-
-    // Pass the updated data back to the parent
-    onChange(updatedFields);
+    setFields((prevFields) => {
+      return prevFields.map((field, i) =>
+        i === index ? { ...field, ...updates } : field
+      );
+    });
+    onChange(fields); // Ensure onChange is called after the state is updated
   };
 
   // Handle adding new chief complaint
@@ -161,11 +194,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
                     const value = e.target.value;
                     updateField(index, { searchTerm: value });
 
-                    if (value.trim()) {
-                      fetchSuggestions(index); // Fetch specific suggestions
-                    } else {
-                      fetchRandomSuggestions(index); // Show random suggestions if input is empty
-                    }
+                    fetchSuggestions(index);
                   }}
                   onFocus={() => {
                     if (!field.searchTerm) fetchRandomSuggestions(index); // Show random suggestions on focus if input is empty
@@ -177,6 +206,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
                       150
                     )
                   }
+                  onKeyDown={(e) => handleKeyDown(e, index)}
                 />
                 <button
                   type="button"
@@ -193,7 +223,9 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
                     <div
                       key={idx}
                       onMouseDown={() => handleSelectSuggestion(item, index)}
-                      className="p-2 cursor-pointer hover:bg-gray-100"
+                      className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                        idx === activeIndex ? "bg-gray-200" : ""
+                      }`}
                     >
                       {item.chiefComplainName}
                     </div>
@@ -229,3 +261,11 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
 };
 
 export default ChiefComplain;
+
+function debounce(func, delay) {
+  let timer;
+  return (...args) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+}

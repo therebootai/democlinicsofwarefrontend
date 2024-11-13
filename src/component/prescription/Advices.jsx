@@ -7,6 +7,29 @@ const Advices = ({ onChange, existingAdvices = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const handleKeyDown = (e) => {
+    if (showSuggestions && suggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && suggestions[activeIndex]) {
+          handleSelectSuggestion(suggestions[activeIndex]);
+          setActiveIndex(-1); // Reset after selection
+        }
+      }
+    }
+  };
 
   // Predefined checkbox advices
   const predefinedAdvices = [
@@ -205,9 +228,9 @@ const Advices = ({ onChange, existingAdvices = [] }) => {
           className="bg-white rounded outline-none py-5 px-6 min-h-[20vmax] w-full resize-none text-sm text-custom-gray"
           value={textareaContent}
           onChange={handleTextareaChange}
-          onKeyDown={handleTextareaKeyDown}
           onFocus={handleTextareaFocus}
           onBlur={handleTextareaBlur}
+          onKeyDown={handleKeyDown}
         ></textarea>
         {showSuggestions && suggestions.length > 0 && (
           <div className="absolute bottom-[-5rem] bg-white w-full z-10 shadow-lg rounded-md">
@@ -215,7 +238,9 @@ const Advices = ({ onChange, existingAdvices = [] }) => {
               <div
                 key={idx}
                 onMouseDown={() => handleSelectSuggestion(suggestion)}
-                className="p-2 cursor-pointer hover:bg-gray-100"
+                className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                  idx === activeIndex ? "bg-gray-200" : ""
+                }`}
               >
                 {suggestion.advicesName}
               </div>

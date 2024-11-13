@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 
 const newMedicationTemplate = {
@@ -28,6 +28,36 @@ const Medications = ({ onChange, existingMedications = [] }) => {
 
   const [suggestion, setSuggestion] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const inputRefs = useRef([]);
+
+  inputRefs.current = medications.map(
+    (_, i) => inputRefs.current[i] || React.createRef()
+  );
+
+  const handleSearchDown = (index, e) => {
+    const { brandSuggestions, showBrandSuggestions } = medications[index];
+
+    if (showBrandSuggestions && brandSuggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex < brandSuggestions.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : brandSuggestions.length - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && brandSuggestions[activeIndex]) {
+          handleSelectSuggestion(index, brandSuggestions[activeIndex]);
+          setActiveIndex(-1); // Reset after selection
+        }
+      }
+    }
+  };
 
   const formatFrequency = (value) => {
     value = value.replace(/[^01]/g, "").slice(0, 4);
@@ -82,15 +112,13 @@ const Medications = ({ onChange, existingMedications = [] }) => {
 
   const handleKeyDown = (index, event) => {
     if (event.key === "Tab" && suggestion) {
-      event.preventDefault(); // Prevent the default tabbing behavior
+      event.preventDefault();
 
-      // Update the duration with the suggestion
       const updatedMedications = medications.map((med, i) =>
         i === index ? { ...med, duration: suggestion } : med
       );
       setMedications(updatedMedications);
 
-      // Clear the suggestion after applying it
       setSuggestion("");
     }
   };
@@ -163,6 +191,35 @@ const Medications = ({ onChange, existingMedications = [] }) => {
     }
   }, [medications]);
 
+  const handleSaveMedication = async (index) => {
+    const medication = medications[index];
+
+    // Split `medicineBrandName` into individual fields
+    let [brandName, composition, strength] =
+      medication.medicineBrandName.split(" - ");
+
+    // Prepare the data to send (set composition and strength to empty strings if not provided)
+    const dataToSend = {
+      medicineBrandName: brandName || medication.medicineBrandName,
+      medicineComposition: composition ? composition.trim() : "",
+      medicineStrength: strength ? strength.trim() : "",
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/medications/create`,
+        dataToSend
+      );
+
+      if (response.status === 201) {
+        alert("Medication saved successfully!");
+      }
+    } catch (error) {
+      console.error("Error saving medication:", error);
+      alert("Error saving medication. Please try again.");
+    }
+  };
+
   const handleAddField = () => {
     // Add a blank template entry to medications
     setMedications((prev) => [...prev, { ...newMedicationTemplate }]);
@@ -217,6 +274,9 @@ const Medications = ({ onChange, existingMedications = [] }) => {
       )
     );
     setIsEditing(false);
+    if (inputRefs.current[index]) {
+      inputRefs.current[index].current.focus();
+    }
   };
 
   return (
@@ -229,40 +289,39 @@ const Medications = ({ onChange, existingMedications = [] }) => {
           <div className="flex flex-col w-[90%] gap-2">
             <div className="flex flex-row gap-4 w-full">
               <div className="relative w-full">
-                <input
-                  type="text"
-                  name="medicineBrandName"
-                  autoComplete="off"
-                  placeholder="Search or select medicine"
-                  value={
-                    isEditing ||
-                    (!med.medicineBrandName &&
-                      !med.medicineComposition &&
-                      !med.medicineStrength)
-                      ? med.medicineBrandName || ""
-                      : `${med.medicineBrandName} - ${med.medicineComposition} - ${med.medicineStrength}`
-                  }
-                  onChange={(e) => handleInputChange(index, e)}
-                  onFocus={() => {
-                    setIsEditing(true); // Enter edit mode
-                    fetchRandomSuggestions(index);
-                  }}
-                  onBlur={() => {
-                    setIsEditing(false);
-                    setTimeout(
-                      () =>
-                        setMedications((prev) =>
-                          prev.map((med, i) =>
-                            i === index
-                              ? { ...med, showBrandSuggestions: false }
-                              : med
-                          )
-                        ),
-                      150
-                    );
-                  }}
-                  className="bg-white rounded py-4 w-full px-6 outline-none text-lg xl:text-xl"
-                />
+                <div className="bg-white flex px-4 xl:px-6 py-1 xl:py-1 rounded gap-2">
+                  <input
+                    type="text"
+                    ref={inputRefs.current[index]}
+                    name="medicineBrandName"
+                    autoComplete="off"
+                    placeholder="Search or select medicine"
+                    value={
+                      isEditing ||
+                      (!med.medicineBrandName &&
+                        !med.medicineComposition &&
+                        !med.medicineStrength)
+                        ? med.medicineBrandName || ""
+                        : `${med.medicineBrandName} - ${med.medicineComposition} - ${med.medicineStrength}`
+                    }
+                    onChange={(e) => handleInputChange(index, e)}
+                    onFocus={() => {
+                      setIsEditing(true); // Enter edit mode
+                      fetchRandomSuggestions(index);
+                    }}
+                    onKeyDown={(e) => handleSearchDown(index, e)}
+                    className="bg-white rounded py-4 w-full px-6 outline-none text-lg xl:text-xl"
+                  />
+                  <div className="flex justify-center items-center">
+                    <button
+                      type="button"
+                      className="px-3 h-[2rem] rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray"
+                      onClick={() => handleSaveMedication(index)} // Call the function here
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
 
                 {med.showBrandSuggestions &&
                   med.brandSuggestions.length > 0 && (
@@ -273,7 +332,9 @@ const Medications = ({ onChange, existingMedications = [] }) => {
                           onMouseDown={() =>
                             handleSelectSuggestion(index, suggestion)
                           }
-                          className="p-2 cursor-pointer hover:bg-gray-100"
+                          className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                            i === activeIndex ? "bg-gray-200" : ""
+                          }`}
                         >
                           {suggestion.displayText}
                         </div>

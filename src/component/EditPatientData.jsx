@@ -453,20 +453,20 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
   const onSubmit = async (data, event) => {
     event.preventDefault();
 
-    // Prepare updated medical history with unique entries
-    const updatedMedicalHistory = medicalHistory
-      .filter((item) => item.checked)
-      .map(({ checked, medicalHistoryMedicine, ...rest }) => ({
-        ...rest,
-        medicalHistoryMedicine:
-          medicalHistoryMedicine.length > 0 ? medicalHistoryMedicine : [],
-      }));
+    const checkedMedicalHistory = Array.isArray(medicalHistory)
+      ? medicalHistory.filter((item) => item.checked)
+      : [];
+
+    const uncheckedMedicalHistoryNames = Array.isArray(medicalHistory)
+      ? medicalHistory
+          .filter((item) => !item.checked)
+          .map((item) => item.medicalHistoryName)
+      : [];
 
     const updatedPatientData = {
       ...data,
-      ...(updatedMedicalHistory.length > 0 && {
-        medicalHistory: updatedMedicalHistory,
-      }),
+      checkedMedicalHistory,
+      uncheckedMedicalHistoryNames,
       chooseDoctor: selectedDoctorId,
     };
 
