@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
@@ -7,6 +7,7 @@ import { FaTrash } from "react-icons/fa";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
 import { GoPlusCircle } from "react-icons/go";
+import { AuthContext } from "../context/AuthContext";
 
 const CreateInvoice = () => {
   const { patientId } = useParams();
@@ -26,6 +27,7 @@ const CreateInvoice = () => {
   const [totalPaid, setTotalPaid] = useState("");
   const [anyDue, setAnyDue] = useState(0);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const { favClinic } = useContext(AuthContext);
 
   const handleKeyDown = (e) => {
     if (searchResults.length > 0) {
@@ -178,7 +180,7 @@ const CreateInvoice = () => {
         const response = await axios.put(
           `${
             import.meta.env.VITE_BASE_URL
-          }/api/patients/add/payment/${patientId}`,
+          }/api/patients/add/payment/${patientId}/${favClinic._id}`,
           {
             paymentMethod,
             paymentDetails: estimate,

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
 import Topheader from "../component/Topheader";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCurrencyRupee } from "react-icons/md";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const AddPaymentCharges = () => {
   const [nameOfItem, setNameOfItem] = useState("");
@@ -17,6 +18,7 @@ const AddPaymentCharges = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { favClinic } = useContext(AuthContext);
 
   const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -51,6 +53,7 @@ const AddPaymentCharges = () => {
           {
             iteamName: nameOfItem,
             iteamCharges: charges,
+            clinicId: favClinic._id,
           }
         );
 

@@ -67,7 +67,18 @@ const Payments = () => {
         currentPage,
         search,
         dateFilter.startDate,
-        dateFilter.endDate
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
       );
     } else {
       fetchPatients(
@@ -76,7 +87,7 @@ const Payments = () => {
         dateFilter.startDate,
         dateFilter.endDate,
         user.userId,
-        favClinic.clinicId
+        favClinic._id
       );
     }
   }, [currentPage, search, dateFilter]);
