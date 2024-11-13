@@ -4,7 +4,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import axios from "axios";
 import { CiCirclePlus } from "react-icons/ci";
 
-const AddNewPatient = ({ handleClose }) => {
+const AddNewPatient = ({ handleClose, currentClinic }) => {
   const {
     register,
     handleSubmit,
@@ -433,6 +433,7 @@ const AddNewPatient = ({ handleClose }) => {
 
     const patientData = {
       ...data,
+      clinicId: currentClinic.clinicId,
       medicalHistory: checkedMedicalHistory, // Add medical history to patient data
     };
 

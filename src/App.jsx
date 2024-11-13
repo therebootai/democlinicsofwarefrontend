@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/doctos/Dashboard";
 import Patients from "./pages/doctos/Patients";
@@ -18,8 +18,20 @@ import AddPaymentCharges from "./pages/AddPaymentCharges";
 import Direction from "./pages/Direction";
 import PatientPrescriptions from "./pages/prescription/PatientPrescription";
 import EditPrescription from "./pages/prescription/EditPrescription";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+
+    if (!user._id) {
+      navigate("/");
+    }
+  }, [user]);
+
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />

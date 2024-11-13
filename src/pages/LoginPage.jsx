@@ -18,10 +18,17 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
+
   useEffect(() => {
     generateCaptcha();
   }, []);
+
+  useEffect(() => {
+    if (!!user._id) {
+      navigate("/doctor/dashboard");
+    }
+  }, [user]);
 
   const generateCaptcha = () => {
     const chars =
@@ -70,9 +77,8 @@ const LoginPage = () => {
           role,
         }
       );
-      const { token, name, user } = response.data;
+      const { token, user } = response.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("name", name);
 
       setUser(user);
 
