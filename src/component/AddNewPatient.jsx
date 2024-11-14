@@ -4,7 +4,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import axios from "axios";
 import { CiCirclePlus } from "react-icons/ci";
 
-const AddNewPatient = ({ handleClose, currentClinic }) => {
+const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
   const {
     register,
     handleSubmit,
@@ -436,7 +436,6 @@ const AddNewPatient = ({ handleClose, currentClinic }) => {
       clinicId: currentClinic,
       medicalHistory: checkedMedicalHistory, // Add medical history to patient data
     };
-    
 
     try {
       const response = await axios.post(
@@ -451,6 +450,7 @@ const AddNewPatient = ({ handleClose, currentClinic }) => {
       setMessages("Patient created successfully.");
       setErrormsg("");
       reset();
+      handleAddPatient(response.data.data);
     } catch (error) {
       const errorMessage = error.response.data.error;
       if (errorMessage.includes("Patient already exists")) {

@@ -1,11 +1,15 @@
 import React from "react";
 
-const PerformanceComponent = () => {
+const PerformanceComponent = ({ totalPatients, totalPrescription }) => {
   const details = [
-    { icons: "/icons/patients.svg", totalnumber: "1268+", name: "Patients" },
+    {
+      icons: "/icons/patients.svg",
+      totalnumber: `${totalPatients}+`,
+      name: "Patients",
+    },
     {
       icons: "/icons/prescriptions.svg",
-      totalnumber: "1268+",
+      totalnumber: `${totalPrescription}`,
       name: "Prescription",
     },
     {

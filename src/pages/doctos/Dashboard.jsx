@@ -24,17 +24,28 @@ const Dashboard = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const { user, favClinic } = useContext(AuthContext);
+  const [totalPatients, setTotalPatients] = useState(0);
+  const [totalPrescription, setTotalPrescription] = useState(0);
+
+  const getTodayDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // months are zero-indexed
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
   const [dateFilter, setDateFilter] = useState({
-    startDate: "",
-    endDate: "",
+    startDate: getTodayDate(), // Default to today's date
+    endDate: getTodayDate(), // Default to today's date
   });
 
   // Function to fetch patients data from the backend
   const fetchPatients = async (
     page = 1,
     searchTerm = "",
-    startDate = "",
-    endDate = "",
+    startDate = dateFilter.startDate,
+    endDate = dateFilter.endDate,
     doctorId = "",
     clinicId = ""
   ) => {
@@ -55,6 +66,9 @@ const Dashboard = () => {
       );
       setPatientsData(response.data.data);
       setTotalPages(response.data.totalPages);
+      setTotalPatients(response.data.totalDocuments);
+      setTotalPrescription(response.data.totalPrescriptions);
+
       setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -63,6 +77,54 @@ const Dashboard = () => {
 
   // Fetch data on component mount
   useEffect(() => {
+    if (user.role === "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    }
+  }, [currentPage, search, dateFilter, favClinic]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setDateFilter({ startDate, endDate });
+    setCurrentPage(1); // Reset to the first page
+  };
+
+  const handleClearFilter = () => {
+    setDateFilter({ startDate: getTodayDate(), endDate: getTodayDate() });
+    setCurrentPage(1); // Reset to the first page
+  };
+  const updatePatientInList = (updatedPatient) => {
+    setPatientsData((prevPatients) =>
+      prevPatients.map((patient) =>
+        patient.patientId === updatedPatient.patientId
+          ? updatedPatient
+          : patient
+      )
+    );
+    setShowEditPatient(false);
     if (user.role == "super_admin") {
       fetchPatients(
         currentPage,
@@ -80,27 +142,6 @@ const Dashboard = () => {
         favClinic._id
       );
     }
-  }, [currentPage, search, dateFilter, favClinic]);
-
-  const handleDateFilter = (startDate, endDate) => {
-    setDateFilter({ startDate, endDate });
-    setCurrentPage(1);
-  };
-
-  const handleClearFilter = () => {
-    setDateFilter({ startDate: "", endDate: "" });
-    setCurrentPage(1);
-  };
-
-  const updatePatientInList = (updatedPatient) => {
-    setPatientsData((prevPatients) =>
-      prevPatients.map((patient) =>
-        patient.patientId === updatedPatient.patientId
-          ? updatedPatient
-          : patient
-      )
-    );
-    setShowEditPatient(false);
   };
 
   const handlePageChange = (page) => {
@@ -182,6 +223,36 @@ const Dashboard = () => {
     setShowAddPatient(true);
   };
 
+  const handleAddPatient = (newPatient) => {
+    setPatientsData((prevPatients) => [
+      ...prevPatients,
+      {
+        ...newPatient,
+        chooseDoctorDetails: {
+          name: newPatient.chooseDoctorDetails?.name || "N/A",
+          doctorDegree: newPatient.chooseDoctorDetails?.doctorDegree || "N/A",
+        },
+      },
+    ]);
+    if (user.role == "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.doctorId,
+        favClinic._id
+      );
+    }
+  };
+
   return (
     <AdminDashboardTemplate>
       <div className="">
@@ -193,6 +264,7 @@ const Dashboard = () => {
           setSearch={setSearch}
           handleDateFilter={handleDateFilter}
           handleClearFilter={handleClearFilter}
+          handleAddPatient={handleAddPatient}
         >
           <button
             onClick={handleAddNewClick}
@@ -205,7 +277,10 @@ const Dashboard = () => {
       </div>
       <div className="xlg:px-8 px-4 py-4 flex flex-col gap-2">
         <div>
-          <PerformanceComponent />
+          <PerformanceComponent
+            totalPatients={totalPatients}
+            totalPrescription={totalPrescription}
+          />
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-3 w-full lg:flex-row gap-4 justify-between overflow-x-hidden py-4  ">
           <div className="bg-white rounded boxsh flex items-center justify-center w-full ">

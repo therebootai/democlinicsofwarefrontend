@@ -69,7 +69,7 @@ const Patients = () => {
         "",
         favClinic._id
       );
-    } else if ((user.role === "admin" && user.designation === "Staff")) {
+    } else if (user.role === "admin" && user.designation === "Staff") {
       fetchPatients(
         currentPage,
         search,
@@ -119,6 +119,12 @@ const Patients = () => {
       )
     );
     setPatientDocument(false);
+    fetchPatients(
+      currentPage,
+      search,
+      dateFilter.startDate,
+      dateFilter.endDate
+    );
   };
 
   const handlePageChange = (page) => {
@@ -225,6 +231,25 @@ const Patients = () => {
     return { totalPayment, totalPaid, totalDue };
   };
 
+  const handleAddPatient = (newPatient) => {
+    setPatientsData((prevPatients) => [
+      ...prevPatients,
+      {
+        ...newPatient,
+        chooseDoctorDetails: {
+          name: newPatient.chooseDoctorDetails?.name || "N/A",
+          doctorDegree: newPatient.chooseDoctorDetails?.doctorDegree || "N/A",
+        },
+      },
+    ]);
+    fetchPatients(
+      currentPage,
+      search,
+      dateFilter.startDate,
+      dateFilter.endDate
+    );
+  };
+
   return (
     <AdminDashboardTemplate>
       <Topheader
@@ -235,6 +260,7 @@ const Patients = () => {
         setSearch={setSearch}
         handleDateFilter={handleDateFilter}
         handleClearFilter={handleClearFilter}
+        handleAddPatient={handleAddPatient}
       >
         <button
           onClick={handleAddNewClick}

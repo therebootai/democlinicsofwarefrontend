@@ -24,6 +24,7 @@ const Topheader = ({
   setSearch,
   handleDateFilter,
   handleClearFilter,
+  handleAddPatient,
 }) => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [addClinicShow, setAddClinicShow] = useState(false);
@@ -254,6 +255,7 @@ const Topheader = ({
             <AddNewPatient
               handleClose={handleClose}
               currentClinic={favClinic._id}
+              handleAddPatient={handleAddPatient}
             />
           )}
           {modalToShow === "formModal" && (
