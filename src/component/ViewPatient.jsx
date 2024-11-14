@@ -1,41 +1,17 @@
 import React from "react";
 import { RxCrossCircled } from "react-icons/rx";
 
-const ViewPatient = ({ handleClose }) => {
+const ViewPatient = ({ handleClose, patient }) => {
   const viewpatientdetails = [
-    {
-      name: "Patient Name",
-      details: "Parakash C. Roy",
-    },
-    {
-      name: "Gender",
-      details: "Male",
-    },
-    {
-      name: "Mobile",
-      details: "+91 12345 67890",
-    },
-    {
-      name: "Age",
-      details: "35 years",
-    },
-    {
-      name: "Location",
-      details: "Bidhannagar (Kolkata)",
-    },
-    {
-      name: "Doctor",
-      details: " Dr. Saikat Paul",
-    },
-    {
-      name: "Priority",
-      details: "FAst",
-    },
-    {
-      name: "Pay Mode",
-      details: "Cash",
-    },
+    { name: "Patient Name", details: patient.patientName },
+    { name: "Gender", details: patient.gender },
+    { name: "Mobile", details: `+91 ${patient.mobileNumber}` },
+    { name: "Age", details: `${patient.age} years` },
+    { name: "Location", details: patient.location },
+    { name: "Doctor", details: patient.chooseDoctorDetails?.name || "N/A" },
+    { name: "Priority", details: patient.priority || "N/A" },
   ];
+
   return (
     <div className="xlg:p-8 p-4 flex flex-col gap-16">
       <div className="flex flex-row justify-between items-center">

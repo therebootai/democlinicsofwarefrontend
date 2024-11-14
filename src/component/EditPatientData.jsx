@@ -4,12 +4,13 @@ import { RxCrossCircled } from "react-icons/rx";
 import axios from "axios";
 import { CiCirclePlus } from "react-icons/ci";
 
-const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
+const EditPatientData = ({ handleClose, patient, onUpdate }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
     reset,
+    formState: { errors },
   } = useForm();
   const [showMoreInputFiled, setShowMoreInputFiled] = useState(false);
   const [errormsg, setErrormsg] = useState("");
@@ -67,6 +68,31 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
     }
   };
 
+  const fetchDoctors = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/user/users`,
+        {
+          params: { designation: "Doctor" },
+        }
+      );
+      setDoctors(response.data);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    }
+  };
+
+  // Call `fetchDoctors` in `useEffect` to load doctors on component mount
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
+
+  const handleDoctorChange = (event) => {
+    const selectedDoctor = event.target.value;
+    setSelectedDoctorId(selectedDoctor); // Update local state
+    setValue("chooseDoctor", selectedDoctor); // Update react-hook-form state
+  };
+
   const handleKeyDown = (event) => {
     if (event.key === "Tab" && suggestion) {
       // Accept suggestion on Tab
@@ -118,6 +144,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
     if (!patientMedicalHistoryName) return; // Exit if no name is selected
 
     try {
+      // Check if the item exists in the backend
       const response = await axios.get(
         `${
           import.meta.env.VITE_BASE_URL
@@ -127,7 +154,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
 
       const itemExists = response.data.some(
         (item) =>
-          item.patientMedicalHistoryName.toLowerCase() ===
+          item?.patientMedicalHistoryName.toLowerCase() ===
           patientMedicalHistoryName.toLowerCase()
       );
 
@@ -150,22 +177,22 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
         );
       }
 
-      // Add to frontend state
+      // Add the new medical history entry to the frontend state
       setMedicalHistory((prev) => [
         ...prev,
         {
-          _id: Date.now().toString(),
-          patientMedicalHistoryName,
-          duration,
-          medicines, // Include medicines in the state
-          checked: true,
+          medicalHistoryName: patientMedicalHistoryName,
+          duration: duration || "", // Include duration even if empty
+          medicalHistoryMedicine: medicines.length ? medicines : [], // Include medicines even if empty
+          checked: true, // Display as checked by default
         },
       ]);
 
+      // Clear the input fields after adding
       setCurrentInput({
         patientMedicalHistoryName: "",
         duration: "",
-        medicines: [], // Reset medicines after adding
+        medicines: [],
       });
     } catch (error) {
       console.error("Error handling medical history:", error);
@@ -173,23 +200,32 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
   };
 
   useEffect(() => {
-    const fetchDefaultMedicalHistory = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/patientmedicalhistory/get`
-        );
-        const fetchedData = response.data.map((item) => ({
-          ...item,
-          checked: false, // Set default checked status to false
-        }));
-        setMedicalHistory(fetchedData); // Set the fetched data to state
-      } catch (error) {
-        console.error("Error fetching default medical history:", error);
-      }
-    };
+    if (patient) {
+      // Set basic patient details in form
+      Object.keys(patient).forEach((key) => {
+        setValue(key, patient[key]);
+      });
 
-    fetchDefaultMedicalHistory();
-  }, []);
+      if (patient.chooseDoctor) {
+        setSelectedDoctorId(patient.chooseDoctor);
+        setValue("chooseDoctor", patient.chooseDoctor); // Set the value in react-hook-form
+      }
+
+      // Map the existing medical history from patient data
+      if (patient.medicalHistory) {
+        const formattedHistory = patient.medicalHistory.map((item) => ({
+          _id: item._id,
+          medicalHistoryName: item.medicalHistoryName,
+          duration: item.duration || "", // Ensure duration is set
+          medicines: item.medicalHistoryMedicine
+            ? item.medicalHistoryMedicine
+            : [], // Ensure medicines are set
+          checked: true, // Assume existing history is "checked" by default
+        }));
+        setMedicalHistory(formattedHistory); // Set the fetched data to state
+      }
+    }
+  }, [patient, setValue]);
 
   const fetchMedicineSuggestions = async (
     patientMedicalHistoryName,
@@ -282,8 +318,8 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
   // Toggle checkbox
   const toggleCheckbox = (id) => {
     setMedicalHistory((prevHistory) =>
-      prevHistory.map((entry) =>
-        entry._id === id ? { ...entry, checked: !entry.checked } : entry
+      prevHistory.map((item) =>
+        item._id === id ? { ...item, checked: !item.checked } : item
       )
     );
   };
@@ -391,83 +427,74 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
       key: "bloodSugarPP",
     },
   ];
-  const fetchDoctors = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/user/users`,
-        {
-          params: { designation: "Doctor" },
-        }
-      );
-      setDoctors(response.data);
-    } catch (error) {
-      console.error("Error fetching doctors:", error);
-    }
-  };
 
-  // Call `fetchDoctors` in `useEffect` to load doctors on component mount
+  // Load patient data into form on component mount
   useEffect(() => {
-    fetchDoctors();
-  }, []);
+    if (patient) {
+      Object.keys(patient).forEach((key) => {
+        setValue(key, patient[key]);
+      });
+      const formattedHistory = patient.medicalHistory.map((item) => ({
+        ...item,
+        checked: true,
+      }));
+      setMedicalHistory(formattedHistory);
 
-  const handleDoctorChange = (event) => {
-    setSelectedDoctorId(event.target.value); // Store the userId of the selected doctor
-  };
+      basicPatientDetails.forEach((detail) => {
+        const valueWithUnit = patient[detail.key] || "";
+        const [numericValue] = valueWithUnit.split(" ");
+        setValue(detail.key, numericValue);
+      });
+    }
+  }, [patient, setValue]);
 
   // Handle form submission
-  const onSubmit = async (data) => {
-    data.age = parseInt(data.age, 10);
-    basicPatientDetails.forEach(({ key, unit }) => {
-      if (data[key]) {
-        data[key] = `${data[key]} ${unit}`;
-      }
-    });
 
-    const checkedMedicalHistory = medicalHistory
-      .filter((item) => item.checked)
-      .map((item) => ({
-        medicalHistoryName: item.patientMedicalHistoryName,
-        duration: item.duration || "", // default to empty if not provided
-        medicines: item.medicines || [], // default to empty array if not provided
-      }));
+  const onSubmit = async (data, event) => {
+    event.preventDefault();
 
-    const patientData = {
+    const checkedMedicalHistory = Array.isArray(medicalHistory)
+      ? medicalHistory.filter((item) => item.checked)
+      : [];
+
+    const uncheckedMedicalHistoryNames = Array.isArray(medicalHistory)
+      ? medicalHistory
+          .filter((item) => !item.checked)
+          .map((item) => item.medicalHistoryName)
+      : [];
+
+    const updatedPatientData = {
       ...data,
-      clinicId: currentClinic,
-      medicalHistory: checkedMedicalHistory, // Add medical history to patient data
+      checkedMedicalHistory,
+      uncheckedMedicalHistoryNames,
+      chooseDoctor: selectedDoctorId,
     };
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/patients/create`,
-        patientData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/api/patients/update/${
+          patient.patientId
+        }`,
+        updatedPatientData,
+        { headers: { "Content-Type": "application/json" } }
       );
-      setMessages("Patient created successfully.");
+
+      setMessages("Patient updated successfully.");
       setErrormsg("");
       reset();
-      handleAddPatient(response.data.data);
+
+      if (onUpdate) onUpdate(response.data.data); // Update parent component data
     } catch (error) {
-      const errorMessage = error.response.data.error;
-      if (errorMessage.includes("Patient already exists")) {
-        setErrormsg("Patient with this number already exists.");
-      } else {
-        setErrormsg("Error creating patient.");
-      }
-      console.error("Error creating patient:", error);
+      const errorMessage =
+        error.response?.data?.message || "Error updating patient.";
+      setErrormsg(errorMessage);
     }
   };
 
   return (
     <div className="xlg:p-8 p-4 flex flex-col gap-16">
       <div className="flex flex-row justify-between items-center">
-        <h1 className="text-2xl font-semibold text-[#333333]">
-          Create New Patient
-        </h1>
+        <h1 className="text-2xl font-semibold text-[#333333]">Edit Patient</h1>
         <button onClick={handleClose}>
           <RxCrossCircled size={24} />
         </button>
@@ -554,6 +581,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
           <div>
             <select
               {...register("chooseDoctor", { required: "Doctor is required" })}
+              value={selectedDoctorId}
               onChange={handleDoctorChange}
               className="priority-input"
             >
@@ -635,10 +663,11 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
                     <h3 className="text-black text-xs xlg:text-sm">{label}</h3>
                     <div className="bg-white flex px-4 xl:px-6 py-2 xlg:py-4 justify-between rounded gap-2 !w-full">
                       <input
-                        type="number"
+                        type="text"
                         placeholder={placeholder}
                         {...register(key)}
-                        className="bg-transparent outline-none text-sm xl:text-sm text-custom-gray !w-full"
+                        defaultValue={patient[key] || ""}
+                        className="bg-transparent outline-none text-sm xl:text-sm placeholder-custom-gray !w-full"
                       />
                       <span className="px-3 py-1 items-center justify-center text-sm text-custom-gray">
                         {unit}
@@ -652,7 +681,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
               <div className="pb-2 border-b border-[#00000033]">
                 <label htmlFor="">Medical History</label>
               </div>
-              <div className="py-9 grid grid-cols-3 gap-3">
+              <div className="py-9 flex flex-wrap gap-3">
                 {medicalHistory.map((data) => (
                   <div className="flex gap-2 items-center" key={data._id}>
                     <input
@@ -662,25 +691,28 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
                       onChange={() => toggleCheckbox(data._id)}
                       className="size-4 accent-custom-gray cursor-pointer"
                     />
+
                     <label
                       htmlFor={`checkbox-${data._id}`}
                       className="whitespace-nowrap text-sm xl:text-base text-custom-gray cursor-pointer"
                     >
-                      {data.patientMedicalHistoryName}
+                      {data.medicalHistoryName}
                     </label>
+                    {data.medicalHistoryMedicine &&
+                      data.medicalHistoryMedicine.length > 0 && (
+                        <span className="text-[#bcbcbc] text-sm py-1 px-3 rounded bg-white whitespace-nowrap">
+                          {data.medicalHistoryMedicine.join(", ")}
+                        </span>
+                      )}
                     {data.duration && (
                       <span className="text-[#bcbcbc] text-sm py-1 px-3 rounded bg-white whitespace-nowrap">
                         {data.duration}
                       </span>
                     )}
-                    {data.medicines && data.medicines.length > 0 && (
-                      <span className="text-[#bcbcbc] text-sm py-1 px-3 rounded bg-white whitespace-nowrap">
-                        {data.medicines.join(", ")}
-                      </span>
-                    )}
                   </div>
                 ))}
               </div>
+
               <div className="grid grid-cols-2 gap-3 pb-9 relative">
                 <div className="relative flex flex-col   rounded min-w-[20.4vmax] ">
                   <input
@@ -815,4 +847,4 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
   );
 };
 
-export default AddNewPatient;
+export default EditPatientData;

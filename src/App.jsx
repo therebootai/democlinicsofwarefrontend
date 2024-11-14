@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/doctos/Dashboard";
 import Patients from "./pages/doctos/Patients";
@@ -16,8 +16,22 @@ import CreateInvoice from "./pages/CreateInvoice";
 import AddPaymentCharges from "./pages/AddPaymentCharges";
 
 import Direction from "./pages/Direction";
+import PatientPrescriptions from "./pages/prescription/PatientPrescription";
+import EditPrescription from "./pages/prescription/EditPrescription";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+
+    if (!user._id) {
+      navigate("/");
+    }
+  }, [user]);
+
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
@@ -28,11 +42,22 @@ function App() {
       <Route path="/doctor/patients" element={<Patients />} />
 
       <Route
-        path="/prescription/:id/details"
+        path="/prescription/:patientId/details/:prescriptionId"
         element={<PrescriptionDetails />}
       />
-      <Route path="/patient/:id/estimate" element={<Estimate />} />
-      <Route path="/patient/:id/createinvoice" element={<CreateInvoice />} />
+      <Route
+        path="/prescription/:patientId/edit/:prescriptionId"
+        element={<EditPrescription />}
+      />
+      <Route path="/patient/:patientId/estimate" element={<Estimate />} />
+      <Route
+        path="/patient/:patientId/createinvoice"
+        element={<CreateInvoice />}
+      />
+      <Route
+        path="/patient/:patientId/prescriptions"
+        element={<PatientPrescriptions />}
+      />
 
       <Route path="/doctor/payments" element={<Payments />} />
       <Route
@@ -40,7 +65,10 @@ function App() {
         element={<AddPaymentCharges />}
       />
 
-      <Route path="/prescription/add" element={<AddNewPrescription />} />
+      <Route
+        path="/prescription/add/:patientId"
+        element={<AddNewPrescription />}
+      />
       <Route path="/forms" element={<Forms />} />
       <Route path="/directions" element={<Direction />} />
     </Routes>

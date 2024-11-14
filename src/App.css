@@ -38,3 +38,25 @@
   scrollbar-width: thin;
   scrollbar-color: #919495 #edf4f7;
 }
+
+.a4-container {
+  width: 210mm;
+  height: 297mm;
+
+  background-color: white; /* Ensures a white background */
+  box-sizing: border-box;
+}
+
+.pdf-center {
+  align-items: center;
+}
+
+.table-centered {
+  display: table;
+}
+
+.table-cell-centered {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
