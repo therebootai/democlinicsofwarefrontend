@@ -18,7 +18,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser, setFavClinic, setClinics } = useContext(AuthContext);
 
   useEffect(() => {
     generateCaptcha();
@@ -79,6 +79,17 @@ const LoginPage = () => {
       );
       const { token, user } = response.data;
       localStorage.setItem("token", token);
+      if (user.role !== "super_admin") {
+        setClinics(user.clinicId);
+        setFavClinic(user.clinicId[0]);
+      } else {
+        const clinicResponse = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/clinic/all`
+        );
+        const clinicData = clinicResponse.data;
+        setClinics(clinicData);
+        setFavClinic(clinicData[0]);
+      }
 
       setUser(user);
 

@@ -12,7 +12,6 @@ import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
 import { AuthContext } from "../context/AuthContext";
 import { MdAdd } from "react-icons/md";
-import axios from "axios";
 import AddNewClinic from "./AddNewClinic";
 
 const Topheader = ({
@@ -28,7 +27,6 @@ const Topheader = ({
 }) => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [addClinicShow, setAddClinicShow] = useState(false);
-  const [clinics, setClinics] = useState([]);
   const profileImageRef = useRef(null);
   const profileDropdownRef = useRef(null);
   const modalRef = useRef(null);
@@ -39,6 +37,8 @@ const Topheader = ({
     setFavClinic,
     setUser,
     favClinic,
+    clinics,
+    setClinics,
   } = useContext(AuthContext);
 
   const toggleProfileDropdown = () => {
@@ -62,30 +62,6 @@ const Topheader = ({
   const handleDateChange = (ranges) => {
     setDateRange([ranges.selection]);
   };
-
-  const fetchClinics = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/clinic/all`
-      );
-      const data = response.data;
-      setClinics(data);
-      setFavClinic(data[0]);
-    } catch (error) {
-      console.error("Failed to fetch Clinic: ", error);
-    }
-  };
-
-  useMemo(() => {
-    if (role === "super_admin") {
-      fetchClinics();
-    } else {
-      setClinics(clinicId);
-      clinicId?.forEach((clinic) => {
-        setFavClinic(clinic);
-      });
-    }
-  }, [role, favClinic]);
 
   const handleShow = () => {
     const startDate = format(dateRange[0].startDate, "yyyy-MM-dd");
@@ -122,6 +98,8 @@ const Topheader = ({
   const handelLogOut = () => {
     localStorage.removeItem("token");
     setUser({});
+    setFavClinic({});
+    setClinics([]);
     navigate("/");
   };
 
@@ -169,6 +147,7 @@ const Topheader = ({
       </div>
       <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
         <select
+          value={favClinic._id}
           onChange={(e) => {
             const selectedClinic = clinics.find(
               (clinic) => clinic._id === e.target.value
