@@ -80,8 +80,11 @@ const Topheader = ({
       fetchClinics();
     } else {
       setClinics(clinicId);
+      clinicId?.forEach((clinic) => {
+        setFavClinic(clinic);
+      });
     }
-  }, [role]);
+  }, [role, favClinic]);
 
   const handleShow = () => {
     const startDate = format(dateRange[0].startDate, "yyyy-MM-dd");
@@ -251,7 +254,6 @@ const Topheader = ({
             <AddNewPatient
               handleClose={handleClose}
               currentClinic={favClinic._id}
-
             />
           )}
           {modalToShow === "formModal" && (
