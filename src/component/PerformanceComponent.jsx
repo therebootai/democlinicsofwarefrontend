@@ -13,11 +13,11 @@ const PerformanceComponent = ({ totalPatients, totalPrescription }) => {
       name: "Prescription",
     },
     {
-      icons: "/icons/totalpatients.svg",
+      icons: "/icons/followup.svg",
       totalnumber: "1268+",
-      name: "Patients",
+      name: "Followup",
     },
-    { icons: "/icons/followup.svg", totalnumber: "1268+", name: "Followup" },
+    { icons: "/icons/totaldue.svg", totalnumber: "1268+", name: "Total Due" },
   ];
   return (
     <div className="flex flex-col gap-4">
@@ -35,7 +35,7 @@ const PerformanceComponent = ({ totalPatients, totalPrescription }) => {
                   className="xlg:h-[2rem] h-[1.5rem] xxl:h-[2.5rem]"
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
                 <h1 className="text-[#555555] text-base/[20px] xlg:text-lg/[20px] xxl:text-2xl/[32px] font-semibold ">
                   {item.totalnumber}
                 </h1>

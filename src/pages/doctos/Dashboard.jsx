@@ -26,6 +26,7 @@ const Dashboard = () => {
   const { user, favClinic } = useContext(AuthContext);
   const [totalPatients, setTotalPatients] = useState(0);
   const [totalPrescription, setTotalPrescription] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const getTodayDate = () => {
     const today = new Date();
@@ -49,6 +50,7 @@ const Dashboard = () => {
     doctorId = "",
     clinicId = ""
   ) => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/patients/get`,
@@ -72,6 +74,8 @@ const Dashboard = () => {
       setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching patients:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,7 +87,7 @@ const Dashboard = () => {
         search,
         dateFilter.startDate,
         dateFilter.endDate,
-        "",
+        user.userId,
         favClinic._id
       );
     } else if (user.role === "admin" && user.designation === "Staff") {
@@ -307,149 +311,161 @@ const Dashboard = () => {
             Recent Appointments
           </h1>
           <div className="flex flex-col gap-3">
-            {patientsData.map((item, index) => (
-              <section
-                key={item.patientId}
-                className={`xlg:py-2 p-3 xlg:px-6 rounded-md border border-[#E7E7E7] ${
-                  index % 2 === 0 ? "bg-[#F5F5F5]" : " bg-transparent "
-                }`}
-              >
-                <div className="flex flex-col gap-1">
-                  <div className="flex flex-row items-start justify-between">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex flex-row items-center gap-2">
-                        <span className="xlg:text-sm xxl:text-xl text-xs text-[#888888] font-medium">
-                          {item.patientId}.
-                        </span>
-                        <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-sm xxl:text-xl font-medium text-[#555555]">
-                          <GoPerson className="text-lg" />{" "}
-                          <span>{item.patientName}</span> |
-                          <span>{item.gender}</span> |{" "}
-                          <span>{item.age} Years</span>
+            {loading ? (
+              <div className="flex justify-center items-center h-[100px]">
+                <div className="loader">
+                  <div className="dot dot-1"></div>
+                  <div className="dot dot-2"></div>
+                  <div className="dot dot-3"></div>
+                  <div className="dot dot-4"></div>
+                  <div className="dot dot-5"></div>
+                </div>
+              </div>
+            ) : (
+              patientsData.map((item, index) => (
+                <section
+                  key={item.patientId}
+                  className={`xlg:py-2 p-3 xlg:px-6 rounded-md border border-[#E7E7E7] ${
+                    index % 2 === 0 ? "bg-[#F5F5F5]" : " bg-transparent "
+                  }`}
+                >
+                  <div className="flex flex-col gap-1">
+                    <div className="flex flex-row items-start justify-between">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex flex-row items-center gap-2">
+                          <span className="xlg:text-sm xxl:text-xl text-xs text-[#888888] font-medium">
+                            {item.patientId}.
+                          </span>
+                          <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-sm xxl:text-xl font-medium text-[#555555]">
+                            <GoPerson className="text-lg" />{" "}
+                            <span>{item.patientName}</span> |
+                            <span>{item.gender}</span> |{" "}
+                            <span>{item.age} Years</span>
+                          </div>
+                        </div>
+                        <div className="xlg:text-sm text-[13px] xxl:text-xl font-medium text-[#555555]">
+                          +91 {item.mobileNumber}
                         </div>
                       </div>
-                      <div className="xlg:text-sm text-[13px] xxl:text-xl font-medium text-[#555555]">
-                        +91 {item.mobileNumber}
+                      <div className="flex flex-row gap-4">
+                        <button
+                          onClick={() => togglePriority(index)}
+                          className={`priority-button ${
+                            item.priority === "High"
+                              ? "bg-blue-500 text-white"
+                              : index % 2 === 0
+                              ? "bg-white"
+                              : "bg-[#EEEEEE]"
+                          }`}
+                        >
+                          {item.priority || "Priority"}
+                        </button>
+                        <div
+                          className={`priority-button hover:text-[#00B252] text-[#00B252] ${
+                            index % 2 === 0
+                              ? "bg-white hover:bg-white"
+                              : "bg-[#EEEEEE] hover:bg-[#EEEEEE]"
+                          }`}
+                        >
+                          <MdCurrencyRupee />
+                          <span>{item.paid || 0} Paid</span>
+                        </div>
+                        <div
+                          className={`priority-button hover:text-[#E40000] text-[#E40000] ${
+                            index % 2 === 0
+                              ? "bg-white hover:bg-white"
+                              : "bg-[#EEEEEE] hover:bg-[#eeeeee]"
+                          }`}
+                        >
+                          Due {item.due || 0}
+                        </div>
+                        <Link
+                          to={`/prescription/add/${item.patientId}`}
+                          className={`priority-button ${
+                            index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                          }`}
+                        >
+                          Start Visit
+                        </Link>
                       </div>
                     </div>
-                    <div className="flex flex-row gap-4">
+
+                    <div className="flex flex-row justify-between items-center ">
                       <button
-                        onClick={() => togglePriority(index)}
-                        className={`priority-button ${
-                          item.priority === "High"
-                            ? "bg-blue-500 text-white"
-                            : index % 2 === 0
-                            ? "bg-white"
-                            : "bg-[#EEEEEE]"
-                        }`}
-                      >
-                        {item.priority || "Priority"}
-                      </button>
-                      <div
-                        className={`priority-button hover:text-[#00B252] text-[#00B252] ${
-                          index % 2 === 0
-                            ? "bg-white hover:bg-white"
-                            : "bg-[#EEEEEE] hover:bg-[#EEEEEE]"
-                        }`}
-                      >
-                        <MdCurrencyRupee />
-                        <span>{item.paid || 0} Paid</span>
-                      </div>
-                      <div
-                        className={`priority-button hover:text-[#E40000] text-[#E40000] ${
-                          index % 2 === 0
-                            ? "bg-white hover:bg-white"
-                            : "bg-[#EEEEEE] hover:bg-[#eeeeee]"
-                        }`}
-                      >
-                        Due {item.due || 0}
-                      </div>
-                      <Link
-                        to={`/prescription/add/${item.patientId}`}
                         className={`priority-button ${
                           index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                         }`}
                       >
-                        Start Visit
+                        {item.chooseDoctorDetails
+                          ? `${item.chooseDoctorDetails.name}, (${item.chooseDoctorDetails.doctorDegree})`
+                          : ""}
+                      </button>
+                      <Link
+                        to={`/patient/${item.patientId}/createinvoice`}
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Create Invoice
                       </Link>
+                      <div
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Case History
+                      </div>
+                      <Link
+                        to={`/patient/${item.patientId}/estimate`}
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Estimate
+                      </Link>
+
+                      <Link
+                        to={`/patient/${item.patientId}/prescriptions`}
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Prescription
+                      </Link>
+                      <button
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Documents
+                      </button>
+
+                      <button
+                        className={`priority-button ${
+                          index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                        }`}
+                      >
+                        Forms
+                      </button>
+                      <div className="flex flex-row items-center gap-2 xlg:gap-4">
+                        <button
+                          onClick={() => handleViewPatient(item)}
+                          className="xlg:text-2xl text-lg font-medium text-[#7F03FA]"
+                        >
+                          <BsEye />
+                        </button>
+                        <button
+                          onClick={() => handleEditPatient(item)}
+                          className="xlg:text-2xl text-lg font-medium text-[#00B252]"
+                        >
+                          <FaEdit />
+                        </button>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="flex flex-row justify-between items-center ">
-                    <button
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      {item.chooseDoctorDetails
-                        ? `${item.chooseDoctorDetails.name}, (${item.chooseDoctorDetails.doctorDegree})`
-                        : ""}
-                    </button>
-                    <Link
-                      to={`/patient/${item.patientId}/createinvoice`}
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      Create Invoice
-                    </Link>
-                    <div
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      Case History
-                    </div>
-                    <Link
-                      to={`/patient/${item.patientId}/estimate`}
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      Estimate
-                    </Link>
-
-                    <Link
-                      to={`/patient/${item.patientId}/prescriptions`}
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      Prescription
-                    </Link>
-                    <button
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      Documents
-                    </button>
-
-                    <button
-                      className={`priority-button ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
-                      }`}
-                    >
-                      Forms
-                    </button>
-                    <div className="flex flex-row items-center gap-2 xlg:gap-4">
-                      <button
-                        onClick={() => handleViewPatient(item)}
-                        className="xlg:text-2xl text-lg font-medium text-[#7F03FA]"
-                      >
-                        <BsEye />
-                      </button>
-                      <button
-                        onClick={() => handleEditPatient(item)}
-                        className="xlg:text-2xl text-lg font-medium text-[#00B252]"
-                      >
-                        <FaEdit />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            ))}
+                </section>
+              ))
+            )}
             <div className="flex justify-center items-center mt-4">
               <button
                 className="px-3 py-1 text-[#555555] mx-1"

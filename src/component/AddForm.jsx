@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RxCrossCircled } from "react-icons/rx";
 
-const AddForm = ({ handleClose, headerText }) => {
+const AddForm = ({ handleClose, headerText, fetchData }) => {
   const {
     register,
     handleSubmit,
@@ -25,7 +25,7 @@ const AddForm = ({ handleClose, headerText }) => {
     try {
       const response = await axios.post(uri, formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Ensure this is set
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -34,6 +34,7 @@ const AddForm = ({ handleClose, headerText }) => {
         title: "",
         file: null,
       });
+      fetchData();
     } catch (error) {
       console.error("Error adding file:", error);
 

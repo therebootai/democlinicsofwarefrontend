@@ -17,11 +17,6 @@ const AdminSideHeader = () => {
       name: "Patients",
       link: "/doctor/patients",
     },
-    {
-      icon: "/icons/estimate.svg",
-      name: "Estimate",
-      link: "/patient/:id/estimate",
-    },
 
     {
       icon: "/icons/payments.svg",

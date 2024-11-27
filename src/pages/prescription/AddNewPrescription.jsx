@@ -30,6 +30,7 @@ const AddNewPrescription = () => {
   const [prescriptionChanged, setPrescriptionChanged] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
+  const [followupDate, setFollowupDate] = useState("");
 
   const handleMedicalHistoryChange = (updatedMedicalHistory) => {
     console.log("Updated Medical History Data:", updatedMedicalHistory);
@@ -92,6 +93,7 @@ const AddNewPrescription = () => {
           radiography: radiographyData.length ? radiographyData : undefined,
           advices: adviceData.length ? adviceData : undefined,
           medications: medicationData.length ? medicationData : undefined,
+          followupdate: followupDate || undefined,
         };
 
         // Filter out empty fields
@@ -194,6 +196,15 @@ const AddNewPrescription = () => {
               handlePrescriptionDataChange(() => setMedicationData(data))
             }
           />
+          <div className="flex flex-row gap-4 w-full items-center">
+            Next Follow Up Date :{" "}
+            <input
+              type="date"
+              value={followupDate} // Set the value from state
+              onChange={(e) => setFollowupDate(e.target.value)} // Update state when the user selects a date
+              className="bg-white outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-fit rounded h-[3rem] px-8"
+            />
+          </div>
         </div>
       </div>
       <div className="border-t border-black/20 py-9 bg-[#EDF4F7] flex justify-between">

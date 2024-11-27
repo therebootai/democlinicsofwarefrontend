@@ -24,6 +24,7 @@ const EditPrescription = () => {
   const [radiography, setRadiography] = useState([]);
   const [advices, setAdvices] = useState([]);
   const [medications, setMedications] = useState([]);
+  const [followUpdateDate, setFollowUpdateDate] = useState("");
 
   // Flags to track if changes were made
   const [medicalHistoryChanged, setMedicalHistoryChanged] = useState(false);
@@ -57,6 +58,9 @@ const EditPrescription = () => {
           setAdvices(prescription.advices || []);
           setMedications(prescription.medications || []);
         }
+        if (prescription.followupdate) {
+          setFollowUpdateDate(prescription.followupdate);
+        }
       } catch (error) {
         console.error("Error fetching prescription data:", error);
       }
@@ -64,6 +68,11 @@ const EditPrescription = () => {
 
     fetchPrescriptionData();
   }, [patientId, prescriptionId]);
+
+  const handleFollowUpDateChange = (e) => {
+    setFollowUpdateDate(e.target.value);
+    setPrescriptionChanged(true); // Set flag to true when follow-up date is changed
+  };
 
   // Update flags on change
   const handleMedicalHistoryChange = (newMedicalHistory) => {
@@ -109,6 +118,7 @@ const EditPrescription = () => {
           radiography: radiography.length ? radiography : undefined,
           advices: advices.length ? advices : undefined,
           medications: medications.length ? medications : undefined,
+          followupdate: followUpdateDate || undefined,
         };
 
         // Filter out undefined fields
@@ -175,6 +185,15 @@ const EditPrescription = () => {
             onChange={handlePrescriptionFieldChange(setMedications)}
             existingMedications={medications}
           />
+          <div className="flex flex-row gap-4 w-full items-center">
+            Next Follow Up Date :
+            <input
+              type="date"
+              value={followUpdateDate}
+              onChange={handleFollowUpDateChange}
+              className="bg-white outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-fit rounded h-[3rem] px-8"
+            />
+          </div>
         </div>
       </div>
       <div className="border-t border-black/20 py-9 bg-[#EDF4F7] flex justify-end px-16">

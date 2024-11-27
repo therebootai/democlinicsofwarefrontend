@@ -54,29 +54,6 @@ const PrescriptionDetails = () => {
     }
   );
 
-  const buttonData = [
-    {
-      icon: <FiPrinter className="size-5" />,
-      text: "Print",
-    },
-    {
-      icon: <AiOutlineDownload className="size-5" />,
-      text: "Download",
-    },
-    {
-      icon: <PiMoneyWavy className="size-5" />,
-      text: "Payment",
-    },
-    {
-      icon: <TbMessageStar className="size-5" />,
-      text: "Google Review Link",
-    },
-    {
-      icon: <FaWhatsapp className="size-5" />,
-      text: "Send WhatsApp",
-    },
-  ];
-
   const ourclinics = [
     {
       address:
@@ -158,6 +135,34 @@ const PrescriptionDetails = () => {
     });
   };
 
+  const buttonData = [
+    {
+      icon: <FiPrinter className="size-5" />,
+      text: "Print",
+      onClick: handleDownload,
+    },
+    {
+      icon: <AiOutlineDownload className="size-5" />,
+      text: "Download",
+      onClick: "",
+    },
+    {
+      icon: <PiMoneyWavy className="size-5" />,
+      text: "Payment",
+      onClick: "",
+    },
+    {
+      icon: <TbMessageStar className="size-5" />,
+      text: "Google Review Link",
+      onClick: "",
+    },
+    {
+      icon: <FaWhatsapp className="size-5" />,
+      text: "Send WhatsApp",
+      onClick: "",
+    },
+  ];
+
   return (
     <>
       <TopHeaderMini />
@@ -178,6 +183,7 @@ const PrescriptionDetails = () => {
             {buttonData.map((button, index) => (
               <button
                 key={index}
+                onClick={button.onClick}
                 type="button"
                 className="inline-flex justify-center  items-center gap-2 rounded-3xl bg-custom-blue text-white px-6  h-[2.5rem]"
               >

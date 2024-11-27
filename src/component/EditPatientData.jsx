@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RxCrossCircled } from "react-icons/rx";
 import axios from "axios";
@@ -68,19 +68,22 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
     }
   };
 
-  const fetchDoctors = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/user/users`,
-        {
-          params: { designation: "Doctor" },
-        }
-      );
-      setDoctors(response.data);
-    } catch (error) {
-      console.error("Error fetching doctors:", error);
-    }
-  };
+  const fetchDoctors = useMemo(
+    () => async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/user/users`,
+          {
+            params: { designation: "Doctor" },
+          }
+        );
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    },
+    [] // Dependencies: Empty because the URL and function don't change
+  );
 
   // Call `fetchDoctors` in `useEffect` to load doctors on component mount
   useEffect(() => {
