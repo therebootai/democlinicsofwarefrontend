@@ -12,20 +12,18 @@ const Direction = () => {
   };
 
   const [formData, setFormData] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/direction/get`
+      );
 
+      setFormData(response.data);
+    } catch (error) {
+      console.error("Error fetching form data", error);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/direction/get`
-        );
-
-        setFormData(response.data);
-      } catch (error) {
-        console.error("Error fetching form data", error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -39,6 +37,7 @@ const Direction = () => {
           isModalShow={showAddForm}
           setIsModalShow={setShowAddForm}
           modalToShow={"directionModal"}
+          fetchData={fetchData}
         >
           <button
             onClick={handleAddNewClick}

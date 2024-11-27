@@ -24,6 +24,7 @@ const Topheader = ({
   handleDateFilter,
   handleClearFilter,
   handleAddPatient,
+  fetchData,
 }) => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [addClinicShow, setAddClinicShow] = useState(false);
@@ -78,6 +79,19 @@ const Topheader = ({
       { startDate: new Date(), endDate: new Date(), key: "selection" },
     ]); // Reset date range
   };
+
+  const MemoizedAddNewPatient = useMemo(() => {
+    if (isModalShow && modalToShow === "patientModal") {
+      return (
+        <AddNewPatient
+          handleClose={handleClose}
+          currentClinic={"someClinicId"}
+          handleAddPatient={handleAddPatient}
+        />
+      );
+    }
+    return null; // Render nothing when the modal is not open
+  }, [isModalShow, modalToShow, handleAddPatient]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -145,7 +159,7 @@ const Topheader = ({
           </button>
         )}
       </div>
-      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded px-2 xlg:px-6 h-[2.5rem] relative xl:text-base text-xs xlg:text-sm text-custom-gray">
+      <div className="flex items-center bg-[#F5F5F5] gap-3 rounded  relative xl:text-base text-xs xlg:text-sm text-custom-gray">
         <select
           value={favClinic._id}
           onChange={(e) => {
@@ -154,7 +168,7 @@ const Topheader = ({
             );
             setFavClinic(selectedClinic);
           }}
-          className="block w-full appearance-none cursor-pointer truncate pe-2 bg-[#F5F5F5] focus:outline-none"
+          className="block w-full appearance-none cursor-pointer truncate px-2 xlg:px-6 h-[2.5rem] pe-2 bg-[#F5F5F5] focus:outline-none"
         >
           {clinics?.length > 0 &&
             clinics.map((clinic) => (
@@ -230,18 +244,20 @@ const Topheader = ({
         }`}
       >
         <div className="p-4">
-          {modalToShow === "patientModal" && (
-            <AddNewPatient
+          {MemoizedAddNewPatient}
+          {modalToShow === "formModal" && (
+            <AddForm
               handleClose={handleClose}
-              currentClinic={favClinic._id}
-              handleAddPatient={handleAddPatient}
+              headerText={"Form"}
+              fetchData={fetchData}
             />
           )}
-          {modalToShow === "formModal" && (
-            <AddForm handleClose={handleClose} headerText={"Form"} />
-          )}
           {modalToShow === "directionModal" && (
-            <AddForm handleClose={handleClose} headerText={"Direction"} />
+            <AddForm
+              handleClose={handleClose}
+              headerText={"Direction"}
+              fetchData={fetchData}
+            />
           )}
           {addClinicShow && (
             <AddNewClinic handleClose={() => setAddClinicShow(false)} />

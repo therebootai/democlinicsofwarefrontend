@@ -18,6 +18,7 @@ const Payments = () => {
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState({ startDate: "", endDate: "" });
   const { user, favClinic } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   // Function to fetch patients data from the backend
   const fetchPatients = async (
@@ -29,6 +30,7 @@ const Payments = () => {
     clinicId = ""
   ) => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/patients/get`,
         {
@@ -48,6 +50,8 @@ const Payments = () => {
       setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching patients:", error);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -90,7 +94,7 @@ const Payments = () => {
         favClinic._id
       );
     }
-  }, [currentPage, search, dateFilter]);
+  }, [currentPage, search, dateFilter, user, favClinic]);
 
   const handleDateFilter = (startDate, endDate) => {
     setDateFilter({ startDate, endDate });
@@ -168,70 +172,82 @@ const Payments = () => {
         <div className="bg-white rounded-lg flex flex-col gap-4">
           <h1 className="xlg:text-2xl text-xl font-semibold">Patients</h1>
           <div className="w-full flex flex-col gap-6">
-            {patientsData.map((item, index) => (
-              <section
-                key={item.patientId}
-                className={`xlg:p-4 xxl:p-6 p-3 rounded-md border border-[#E7E7E7] ${
-                  index % 2 === 0 ? "bg-[#F5F5F5]" : " bg-transparent "
-                }`}
-              >
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-row items-center justify-between">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex flex-row items-center gap-2">
-                        <span className="xlg:text-sm text-sm xxl:text-xl text-[#888888] font-medium ">
-                          {item.patientId}.
-                        </span>
-                        <div className="flex flex-row items-center gap-1 text-[13px] xxl:text-xl xlg:text-base font-medium text-[#555555]">
-                          <GoPerson /> <span>{item.patientName}</span> |
-                          <span>{item.gender}</span> |
-                          <span>{item.age} Years</span>
+            {loading ? (
+              <div className="flex justify-center items-center h-[200px]">
+                <div className="loader">
+                  <div className="dot dot-1"></div>
+                  <div className="dot dot-2"></div>
+                  <div className="dot dot-3"></div>
+                  <div className="dot dot-4"></div>
+                  <div className="dot dot-5"></div>
+                </div>
+              </div>
+            ) : (
+              patientsData.map((item, index) => (
+                <section
+                  key={item.patientId}
+                  className={`xlg:p-4 xxl:p-6 p-3 rounded-md border border-[#E7E7E7] ${
+                    index % 2 === 0 ? "bg-[#F5F5F5]" : " bg-transparent "
+                  }`}
+                >
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-row items-center justify-between">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex flex-row items-center gap-2">
+                          <span className="xlg:text-sm text-sm xxl:text-xl text-[#888888] font-medium ">
+                            {item.patientId}.
+                          </span>
+                          <div className="flex flex-row items-center gap-1 text-[13px] xxl:text-xl xlg:text-base font-medium text-[#555555]">
+                            <GoPerson /> <span>{item.patientName}</span> |
+                            <span>{item.gender}</span> |
+                            <span>{item.age} Years</span>
+                          </div>
+                        </div>
+                        <div className="xlg:text-base text-[13px] xxl:text-xl font-medium text-[#555555]">
+                          +91 {item.mobileNumber}
                         </div>
                       </div>
-                      <div className="xlg:text-base text-[13px] xxl:text-xl font-medium text-[#555555]">
-                        +91 {item.mobileNumber}
-                      </div>
-                    </div>
-                    <div className="flex flex-row gap-2 xlg:gap-4">
-                      <button className="priority-button bg-white">
-                        {item.chooseDoctorDetails
-                          ? `Dr. ${item.chooseDoctorDetails.name}, (${item.chooseDoctorDetails.doctorDegree})`
-                          : ""}
-                      </button>
-                      <button className="priority-button text-[#00B252]">
-                        <MdCurrencyRupee /> Paid{" "}
-                        {calculatePaymentSummary(item.paymentDetails)
-                          .totalPaid || 0}
-                      </button>
-                      <button className="priority-button text-[#E40000]">
-                        Due{" "}
-                        {calculatePaymentSummary(item.paymentDetails)
-                          .totalDue || 0}
-                      </button>
-                      <button className="priority-button">
-                        Total <MdCurrencyRupee />{" "}
-                        {calculatePaymentSummary(item.paymentDetails)
-                          .totalPayment || 0}
-                      </button>
-                      <div className="flex flex-row items-center gap-2 xlg:gap-4">
-                        <button
-                          onClick={() => handleViewPayments(item)}
-                          className="xlg:text-2xl text-xl font-medium text-[#7F03FA]"
-                        >
-                          <BsEye />
+                      <div className="flex flex-row gap-2 xlg:gap-4">
+                        <button className="priority-button bg-white">
+                          {item.chooseDoctorDetails
+                            ? `Dr. ${item.chooseDoctorDetails.name}, (${item.chooseDoctorDetails.doctorDegree})`
+                            : ""}
                         </button>
-                        <Link
-                          to={`/patient/${item.patientId}/createinvoice`}
-                          className="xlg:text-2xl text-xl font-medium text-[#00B252]"
-                        >
-                          <GoPlusCircle />
-                        </Link>
+                        <button className="priority-button text-[#00B252]">
+                          <MdCurrencyRupee /> Paid{" "}
+                          {calculatePaymentSummary(item.paymentDetails)
+                            .totalPaid || 0}
+                        </button>
+                        <button className="priority-button text-[#E40000]">
+                          Due{" "}
+                          {calculatePaymentSummary(item.paymentDetails)
+                            .totalDue || 0}
+                        </button>
+                        <button className="priority-button">
+                          Total <MdCurrencyRupee />{" "}
+                          {calculatePaymentSummary(item.paymentDetails)
+                            .totalPayment || 0}
+                        </button>
+                        <div className="flex flex-row items-center gap-2 xlg:gap-4">
+                          <button
+                            onClick={() => handleViewPayments(item)}
+                            className="xlg:text-2xl text-xl font-medium text-[#7F03FA]"
+                          >
+                            <BsEye />
+                          </button>
+                          <Link
+                            to={`/patient/${item.patientId}/createinvoice`}
+                            className="xlg:text-2xl text-xl font-medium text-[#00B252]"
+                          >
+                            <GoPlusCircle />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </section>
-            ))}
+                </section>
+              ))
+            )}
           </div>
         </div>
 

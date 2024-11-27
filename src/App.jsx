@@ -20,13 +20,13 @@ import PatientPrescriptions from "./pages/prescription/PatientPrescription";
 import EditPrescription from "./pages/prescription/EditPrescription";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
+import PatientTCCard from "./pages/PatientTCCard";
 
 function App() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-
     if (!user._id) {
       navigate("/");
     }
@@ -58,6 +58,7 @@ function App() {
         path="/patient/:patientId/prescriptions"
         element={<PatientPrescriptions />}
       />
+      <Route path="/patient/:patientId/tccard" element={<PatientTCCard />} />
 
       <Route path="/doctor/payments" element={<Payments />} />
       <Route
