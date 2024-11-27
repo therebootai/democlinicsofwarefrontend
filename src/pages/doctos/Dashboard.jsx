@@ -360,6 +360,14 @@ const Dashboard = () => {
                         >
                           {item.priority || "Priority"}
                         </button>
+                        <Link
+                          to={`/patient/${item.patientId}/tccard`}
+                          className={`priority-button ${
+                            index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
+                          }`}
+                        >
+                          TC Card
+                        </Link>
                         <div
                           className={`priority-button hover:text-[#00B252] text-[#00B252] ${
                             index % 2 === 0
