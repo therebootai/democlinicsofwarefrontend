@@ -106,7 +106,6 @@ const EditPrescription = () => {
           { checkedMedicalHistory, uncheckedMedicalHistoryNames },
           { headers: { "Content-Type": "application/json" } }
         );
-        console.log("Medical history updated successfully.");
       }
 
       // Prepare and update the prescription only if there are changes
@@ -136,7 +135,7 @@ const EditPrescription = () => {
             cleanedPrescription,
             { headers: { "Content-Type": "application/json" } }
           );
-          console.log("Prescription updated successfully.");
+
           navigate(`/prescription/${patientId}/details/${prescriptionId}`);
         } else {
           alert("No prescription data to save.");

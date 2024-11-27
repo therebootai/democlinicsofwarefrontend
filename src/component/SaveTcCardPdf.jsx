@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
 
-const SaveTcCardPdf = ({ tcCardId, patientId }) => {
+const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
   const [tcCardData, setTcCardData] = useState(null);
   const [patientData, setPatientData] = useState(null);
   const [clinicData, setClinicData] = useState(null);
@@ -89,8 +89,9 @@ const SaveTcCardPdf = ({ tcCardId, patientId }) => {
           },
         }
       );
-
-      console.log("TC Card updated successfully:", response.data);
+      if (response.status === 200) {
+        fetchTCCards();
+      }
     } catch (error) {
       console.error("Error updating TC Card:", error);
     } finally {
@@ -104,6 +105,24 @@ const SaveTcCardPdf = ({ tcCardId, patientId }) => {
       handlePrint();
     }
   }, [tcCardData, clinicData, patientData]);
+
+  const handleDownload = () => {
+    const element = containerRef.current;
+    element.classList.add("hide-action");
+
+    html2pdf()
+      .from(element)
+      .set({
+        filename: `${patientData.patientName}-${formattedDate},${formattedTime}prescription.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      })
+      .save()
+      .finally(() => {
+        element.classList.remove("hide-action");
+      }, 300);
+  };
 
   if (!tcCardData) {
     return <div>Loading...</div>;
@@ -225,6 +244,14 @@ const SaveTcCardPdf = ({ tcCardId, patientId }) => {
               </div>
             ))}
           </div>
+        </div>
+        <div className="flex justify-end items-end">
+          <button
+            onClick={handleDownload}
+            className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium "
+          >
+            Print
+          </button>
         </div>
       </div>
     </div>

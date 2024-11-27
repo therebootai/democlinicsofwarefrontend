@@ -23,7 +23,6 @@ const PrescriptionDetails = () => {
           import.meta.env.VITE_BASE_URL
         }/api/patients/get/${patientId}`;
 
-        // Check if prescriptionId is provided and add it as a query parameter
         const finalUrl = prescriptionId
           ? `${url}?prescriptionId=${prescriptionId}`
           : url;

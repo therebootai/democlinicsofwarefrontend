@@ -6,7 +6,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { useParams } from "react-router-dom";
 import SaveTcCardPdf from "./SaveTcCardPdf";
 
-const AddNewTC = ({ handleClose }) => {
+const AddNewTC = ({ handleClose, fetchTCCards }) => {
   const { patientId } = useParams();
   const [entries, setEntries] = useState([]);
   const [formData, setFormData] = useState({
@@ -75,6 +75,18 @@ const AddNewTC = ({ handleClose }) => {
         const tcCardId = response.data.tcCardId;
         setTcCardId(tcCardId);
         setShowPopup(true);
+        setEntries([]);
+        setFormData({
+          typeOfWork: "",
+          tc: "",
+          stepDone: "",
+          nextAppointment: "",
+          nextStep: "",
+          payment: "",
+          due: "",
+          comment: "",
+        });
+        fetchTCCards();
       }
     } catch (error) {
       console.error("Error saving TC Card:", error);
@@ -217,7 +229,11 @@ const AddNewTC = ({ handleClose }) => {
             <button onClick={handleClosePopup} className="close-popup-btn">
               Close
             </button>
-            <SaveTcCardPdf tcCardId={tcCardId} patientId={patientId} />
+            <SaveTcCardPdf
+              tcCardId={tcCardId}
+              patientId={patientId}
+              fetchTCCards={fetchTCCards}
+            />
           </div>
         </div>
       )}

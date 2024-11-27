@@ -18,18 +18,20 @@ const PatientTCCard = () => {
   const [selectedTcCard, setSelectedTcCard] = useState(null);
   const [mode, setMode] = useState("add");
 
-  // Fetch patient data from the API when the component mounts
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_BASE_URL}/api/patients/get/${patientId}`)
-      .then((response) => {
-        setPatientData(response.data); // Store patient data
-      })
-      .catch((error) => {
-        console.error("Error fetching patient data:", error);
-      });
-  }, [patientId]);
+  const fetchTCCards = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/patients/get/${patientId}`
+      );
+      setPatientData(response.data); // Store patient data
+    } catch (error) {
+      console.error("Error fetching patient data:", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchTCCards();
+  }, [patientId]);
   const handleAddNewClick = () => {
     setSelectedTcCard(null); // Reset for new TC card
     setMode("add");
@@ -59,6 +61,23 @@ const PatientTCCard = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isModalShow]);
+
+  const handlePrint = (pdfUrl) => {
+    const printWindow = window.open(pdfUrl, "_blank");
+    printWindow.onload = function () {
+      printWindow.print();
+    };
+  };
+
+  // Function to handle the downloading of the PDF
+  const handleDownload = (pdfUrl) => {
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.download = pdfUrl.split("/").pop();
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <AdminDashboardTemplate>
@@ -93,14 +112,24 @@ const PatientTCCard = () => {
                         ></iframe>
                       </div>
                       <div className="flex flex-row gap-2">
-                        <button className="flex flex-row gap-1 rounded items-center h-[2rem] justify-center px-2 bg-custom-blue text-white text-sm">
+                        <button
+                          onClick={() =>
+                            handlePrint(tcCard.tccardPdf.secure_url)
+                          }
+                          className="flex flex-row gap-1 rounded items-center h-[2rem] justify-center px-2 bg-custom-blue text-white text-sm"
+                        >
                           <IoPrintSharp />
                           Print
                         </button>
-                        <button className="flex flex-row gap-1 rounded items-center h-[2rem] justify-center px-2 bg-custom-blue text-white text-sm">
+                        <button
+                          onClick={() =>
+                            handleDownload(tcCard.tccardPdf.secure_url)
+                          }
+                          className="flex flex-row gap-1 rounded items-center h-[2rem] justify-center px-2 bg-custom-blue text-white text-sm"
+                        >
                           <LiaDownloadSolid />
                           Download
-                        </button>{" "}
+                        </button>
                         <button
                           onClick={() => handleEditClick(tcCard.tcCardId)}
                           className="flex flex-row gap-1 rounded items-center h-[2rem] justify-center px-2 bg-custom-blue text-white text-sm"
@@ -128,9 +157,13 @@ const PatientTCCard = () => {
         }`}
       >
         {mode === "add" ? (
-          <AddNewTC handleClose={handleClose} />
+          <AddNewTC handleClose={handleClose} fetchTCCards={fetchTCCards} />
         ) : (
-          <EditTcCard handleClose={handleClose} tcCardId={selectedTcCard} />
+          <EditTcCard
+            handleClose={handleClose}
+            tcCardId={selectedTcCard}
+            fetchTCCards={fetchTCCards}
+          />
         )}
       </div>
     </AdminDashboardTemplate>
