@@ -39,7 +39,6 @@ const PatientDocumentAdd = ({ patient, handleClose, onUpdate }) => {
           },
         }
       );
-      alert("Document added successfully!");
 
       if (onUpdate) onUpdate(response.data.data);
       handleClose();
@@ -48,6 +47,40 @@ const PatientDocumentAdd = ({ patient, handleClose, onUpdate }) => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteDocument = async (documentId) => {
+    if (!patient || !documentId) {
+      setError("Invalid document or patient ID.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this document?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/patients//delete/patient/${
+          patient.patientId
+        }/document/${documentId}`
+      );
+
+      if (response.status === 200) {
+        const updatedDocuments = patient.patientDocuments.filter(
+          (doc) => doc.documentId !== documentId
+        );
+        patient.patientDocuments = updatedDocuments;
+        if (onUpdate) onUpdate(patient);
+      }
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      setError("Error deleting document. Please try again.");
     }
   };
 
@@ -131,7 +164,10 @@ const PatientDocumentAdd = ({ patient, handleClose, onUpdate }) => {
                       >
                         <FaExternalLinkAlt />
                       </button>
-                      <button className=" text-custom-orange text-2xl">
+                      <button
+                        onClick={() => handleDeleteDocument(doc.documentId)}
+                        className=" text-custom-orange text-2xl"
+                      >
                         <MdDeleteForever />
                       </button>
                     </div>

@@ -59,6 +59,7 @@ const Topheader = ({
   ]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isDateFiltered, setIsDateFiltered] = useState(false);
+  const [showFilterApplied, setShowFilterApplied] = useState(false);
 
   const handleDateChange = (ranges) => {
     setDateRange([ranges.selection]);
@@ -67,9 +68,10 @@ const Topheader = ({
   const handleShow = () => {
     const startDate = format(dateRange[0].startDate, "yyyy-MM-dd");
     const endDate = format(dateRange[0].endDate, "yyyy-MM-dd");
-    handleDateFilter(startDate, endDate); // Call parent function with selected dates
-    setIsDateFiltered(true); // Mark filter as active
-    setShowDatePicker(false); // Close date picker
+    handleDateFilter(startDate, endDate);
+    setIsDateFiltered(true);
+    setShowDatePicker(false);
+    setShowFilterApplied(true);
   };
 
   const handleClear = () => {
@@ -77,7 +79,14 @@ const Topheader = ({
     handleClearFilter(); // Call parent function to clear filter
     setDateRange([
       { startDate: new Date(), endDate: new Date(), key: "selection" },
-    ]); // Reset date range
+    ]);
+    setShowFilterApplied(false);
+  };
+
+  const handleDateClick = () => {
+    if (!showFilterApplied) {
+      setShowDatePicker(!showDatePicker); // Allow toggling the date picker
+    }
   };
 
   const MemoizedAddNewPatient = useMemo(() => {
@@ -85,7 +94,7 @@ const Topheader = ({
       return (
         <AddNewPatient
           handleClose={handleClose}
-          currentClinic={"someClinicId"}
+          currentClinic={favClinic}
           handleAddPatient={handleAddPatient}
         />
       );
@@ -126,10 +135,10 @@ const Topheader = ({
             readOnly
             value={`From: ${format(
               dateRange[0].startDate,
-              "MM/dd/yyyy"
-            )} To: ${format(dateRange[0].endDate, "MM/dd/yyyy")}`}
+              "dd/MM/yyyy"
+            )} To: ${format(dateRange[0].endDate, "dd/MM/yyyy")}`}
             className="h-[2.5rem] px-6 rounded-md bg-[#F5F5F5] text-sm cursor-pointer outline-none"
-            onClick={() => setShowDatePicker(!showDatePicker)}
+            onClick={handleDateClick}
           />
 
           {showDatePicker && (

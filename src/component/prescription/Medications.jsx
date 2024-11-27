@@ -279,6 +279,17 @@ const Medications = ({ onChange, existingMedications = [] }) => {
     }
   };
 
+  const handleBlur = (index) => {
+    setTimeout(() => {
+      // Hide suggestions after a small delay (100ms)
+      setMedications((prev) =>
+        prev.map((med, i) =>
+          i === index ? { ...med, showBrandSuggestions: false } : med
+        )
+      );
+    }, 100); // Delay hiding suggestions
+  };
+
   return (
     <div className="flex flex-col gap-9">
       <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
@@ -309,6 +320,7 @@ const Medications = ({ onChange, existingMedications = [] }) => {
                       setIsEditing(true); // Enter edit mode
                       fetchRandomSuggestions(index);
                     }}
+                    onBlur={() => handleBlur(index)}
                     onKeyDown={(e) => handleSearchDown(index, e)}
                     className="bg-white rounded py-4 w-full px-6 outline-none text-lg xl:text-xl"
                   />

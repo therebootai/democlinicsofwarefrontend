@@ -197,10 +197,10 @@ const Payments = () => {
                           <span className="xlg:text-sm text-sm xxl:text-xl text-[#888888] font-medium ">
                             {item.patientId}.
                           </span>
-                          <div className="flex flex-row items-center gap-1 text-[13px] xxl:text-xl xlg:text-base font-medium text-[#555555]">
+                          <div className="flex flex-row items-center gap-1 text-[13px] xxl:text-xl xlg:text-sm font-medium text-[#555555]">
                             <GoPerson /> <span>{item.patientName}</span> |
                             <span>{item.gender}</span> |
-                            <span>{item.age} Years</span>
+                            <span>{item.age} Y</span>
                           </div>
                         </div>
                         <div className="xlg:text-base text-[13px] xxl:text-xl font-medium text-[#555555]">
