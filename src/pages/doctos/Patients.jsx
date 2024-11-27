@@ -123,12 +123,34 @@ const Patients = () => {
       )
     );
     setPatientDocument(false);
-    fetchPatients(
-      currentPage,
-      search,
-      dateFilter.startDate,
-      dateFilter.endDate
-    );
+    if (user.role === "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    }
   };
 
   const handlePageChange = (page) => {
@@ -246,12 +268,34 @@ const Patients = () => {
         },
       },
     ]);
-    fetchPatients(
-      currentPage,
-      search,
-      dateFilter.startDate,
-      dateFilter.endDate
-    );
+    if (user.role === "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    }
   };
 
   return (
@@ -304,8 +348,7 @@ const Patients = () => {
                       <div className="flex flex-row items-center gap-1 text-[13px] xlg:text-sm xxl:text-xl font-medium text-[#555555]">
                         <GoPerson className="text-lg" />{" "}
                         <span>{item.patientName}</span> |
-                        <span>{item.gender}</span> |{" "}
-                        <span>{item.age} Years</span>
+                        <span>{item.gender}</span> | <span>{item.age} Y</span>
                       </div>
                     </div>
                     <div className="xlg:text-sm text-[13px] xxl:text-xl font-medium text-[#555555]">

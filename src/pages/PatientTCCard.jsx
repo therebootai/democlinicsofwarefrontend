@@ -9,14 +9,16 @@ import { IoPrintSharp } from "react-icons/io5";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { FaEdit } from "react-icons/fa";
 import EditTcCard from "../component/EditTcCard";
+import { MdDelete } from "react-icons/md";
 
 const PatientTCCard = () => {
   const [isModalShow, setIsModalShow] = useState(false);
-  const [patientData, setPatientData] = useState(null); // Store the fetched patient data
+  const [patientData, setPatientData] = useState(null);
   const modalRef = useRef(null);
   const { patientId } = useParams();
   const [selectedTcCard, setSelectedTcCard] = useState(null);
   const [mode, setMode] = useState("add");
+  const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
 
   const fetchTCCards = async () => {
     try {
@@ -79,6 +81,31 @@ const PatientTCCard = () => {
     document.body.removeChild(link);
   };
 
+  const handleDeleteClick = (tcCardId) => {
+    setSelectedTcCard(tcCardId); // Set the selected TC card for deletion
+    setIsDeletePopupVisible(true); // Show the delete confirmation popup
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/patients/delete/tccard/${patientId}/${selectedTcCard}`
+      );
+      fetchTCCards(); // Refresh the TC cards list after deletion
+      setIsDeletePopupVisible(false); // Close the delete confirmation popup
+    } catch (error) {
+      console.error("Error deleting TC Card:", error);
+      setIsDeletePopupVisible(false); // Close the popup in case of an error
+    }
+  };
+
+  // Function to cancel deletion and close the popup
+  const handleCancelDelete = () => {
+    setIsDeletePopupVisible(false); // Close the delete confirmation popup
+  };
+
   return (
     <AdminDashboardTemplate>
       <Topheader />
@@ -137,6 +164,13 @@ const PatientTCCard = () => {
                           <FaEdit />
                           Edit
                         </button>
+                        <button
+                          onClick={() => handleDeleteClick(tcCard.tcCardId)}
+                          className="flex flex-row gap-1 rounded items-center h-[2rem] justify-center px-2 bg-custom-blue text-white text-sm"
+                        >
+                          <MdDelete />
+                          Delete
+                        </button>
                       </div>
                     </div>
                   );
@@ -166,6 +200,30 @@ const PatientTCCard = () => {
           />
         )}
       </div>
+
+      {isDeletePopupVisible && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg py-16 flex flex-col gap-8">
+            <h3 className="text-lg font-bold mb-4">
+              Are you sure you want to delete this TC Card?
+            </h3>
+            <div className="flex gap-4">
+              <button
+                onClick={handleConfirmDelete}
+                className="bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Yes
+              </button>
+              <button
+                onClick={handleCancelDelete}
+                className="bg-gray-300 text-black px-4 py-2 rounded"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminDashboardTemplate>
   );
 };

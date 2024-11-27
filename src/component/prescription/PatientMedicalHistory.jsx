@@ -290,16 +290,55 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
   };
 
   const handleMedicineKeyPress = (event) => {
-    if (event.key === "Enter" && event.target.value) {
+    // Handle ArrowDown and ArrowUp key events for navigating through suggestions
+    if (
+      event.key === "ArrowDown" &&
+      showMedicineSuggestions &&
+      medicineSuggestions.length > 0
+    ) {
       event.preventDefault();
-      const newMedicine = event.target.value.trim();
-      if (!currentInput.medicines.includes(newMedicine)) {
-        setCurrentInput((prev) => ({
-          ...prev,
-          medicines: [...prev.medicines, newMedicine],
-        }));
+      setActiveIndex((prevIndex) =>
+        prevIndex < medicineSuggestions.length - 1 ? prevIndex + 1 : 0
+      );
+    } else if (
+      event.key === "ArrowUp" &&
+      showMedicineSuggestions &&
+      medicineSuggestions.length > 0
+    ) {
+      event.preventDefault();
+      setActiveIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : medicineSuggestions.length - 1
+      );
+    }
+
+    // Handle Enter key for selecting a suggestion or adding a new medicine
+    else if (event.key === "Enter") {
+      event.preventDefault();
+
+      if (activeIndex >= 0 && medicineSuggestions[activeIndex]) {
+        // If there's a selected suggestion, add it to the list
+        const selectedMedicine = medicineSuggestions[activeIndex];
+        if (!currentInput.medicines.includes(selectedMedicine)) {
+          setCurrentInput((prev) => ({
+            ...prev,
+            medicines: [...prev.medicines, selectedMedicine],
+            medicineSearch: "", // Clear the input after selection
+          }));
+        }
+      } else if (event.target.value.trim()) {
+        // If no suggestion is selected, add the manually typed medicine to the list
+        const newMedicine = event.target.value.trim();
+        if (!currentInput.medicines.includes(newMedicine)) {
+          setCurrentInput((prev) => ({
+            ...prev,
+            medicines: [...prev.medicines, newMedicine],
+            medicineSearch: "", // Clear the input field after adding
+          }));
+        }
       }
-      event.target.value = ""; // Clear input
+
+      // Clear the medicine search input field
+      event.target.value = "";
     }
   };
 
@@ -389,7 +428,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
             onChange={handleInputChange}
             onFocus={fetchRandomSuggestions}
             onKeyDown={handleSearchDown}
-            className="p-3 h-[3rem] bg-white rounded outline-none"
+            className="p-3 h-[4rem] bg-white rounded outline-none"
           />
           {showSuggestions && suggestions.length > 0 && (
             <div
@@ -419,7 +458,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
             value={currentInput.duration}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            className="p-3 h-[3rem] bg-white rounded outline-none w-full"
+            className="p-3 h-[4rem] bg-white rounded outline-none w-full"
           />
           {suggestion && (
             <span
@@ -434,7 +473,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
           )}
         </div>
         <div className="relative">
-          <div className="bg-white flex flex-wrap items-center gap-2 px-4 py-2 rounded">
+          <div className="bg-white flex flex-wrap items-center gap-2  rounded">
             {currentInput.medicines.map((medicine, idx) => (
               <span
                 key={idx}
@@ -459,7 +498,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
               onChange={handleMedicineInputChange}
               onKeyDown={(e) => handleMedicineKeyPress(e)}
               onFocus={() => setShowMedicineSuggestions(true)}
-              className="outline-none text-sm text-gray-600 w-full"
+              className="outline-none text-sm text-gray-600 w-full h-[4rem] p-3"
             />
           </div>
           {showMedicineSuggestions && medicineSuggestions.length > 0 && (
@@ -471,7 +510,9 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
                 <div
                   key={idx}
                   onClick={() => handleMedicineSelect(medicine)}
-                  className="p-2 cursor-pointer hover:bg-gray-100"
+                  className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                    idx === activeIndex ? "bg-gray-200" : ""
+                  }`}
                 >
                   {medicine}
                 </div>
@@ -483,7 +524,7 @@ const PatientMedicalHistory = ({ patientId, onMedicalHistoryChange }) => {
         <button
           type="button"
           onClick={handleAddHistory}
-          className="h-[3rem] flex px-4 gap-2 items-center text-base text-custom-gray bg-white rounded"
+          className="h-[4rem] flex px-4 gap-2 items-center text-base text-custom-gray bg-white rounded"
         >
           <CiCirclePlus />
           Add More

@@ -39,16 +39,17 @@ export default function GaugeChart({ icon, text }) {
         {/* Reduce chart size */}
         <Pie
           data={data}
-          cx={150} // Adjust the position of the center
-          cy={120} // Adjust vertical position
+          cx={150}
+          cy={120}
           startAngle={180}
           endAngle={0}
           labelLine={false}
           label={renderCustomizedLabel}
-          innerRadius={80} // Reduce radius for a smaller chart
+          innerRadius={80}
           outerRadius={93}
           fill="#ccc"
           dataKey="value"
+          className=" !outline-none"
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

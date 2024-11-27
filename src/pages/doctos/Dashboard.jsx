@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import EditPatientData from "../../component/EditPatientData";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import PatientDocumentAdd from "../../component/PatientDocumentAdd";
 
 const Dashboard = () => {
   const [patientsData, setPatientsData] = useState([]);
@@ -27,6 +28,7 @@ const Dashboard = () => {
   const [totalPatients, setTotalPatients] = useState(0);
   const [totalPrescription, setTotalPrescription] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [patientDocument, setPatientDocument] = useState(false);
 
   const getTodayDate = () => {
     const today = new Date();
@@ -129,12 +131,23 @@ const Dashboard = () => {
       )
     );
     setShowEditPatient(false);
-    if (user.role == "super_admin") {
+    if (user.role === "super_admin") {
       fetchPatients(
         currentPage,
         search,
         dateFilter.startDate,
-        dateFilter.endDate
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
       );
     } else {
       fetchPatients(
@@ -142,7 +155,7 @@ const Dashboard = () => {
         search,
         dateFilter.startDate,
         dateFilter.endDate,
-        user.doctorId,
+        user.userId,
         favClinic._id
       );
     }
@@ -227,6 +240,55 @@ const Dashboard = () => {
     setShowAddPatient(true);
   };
 
+  const handleAddDocuments = (patient) => {
+    setSelectedPatient(patient);
+    setPatientDocument(true);
+  };
+
+  const handleAddDocumentsClose = () => {
+    setSelectedPatient(null);
+    setPatientDocument(false);
+  };
+
+  const updatePatientDocuments = (updatedPatient) => {
+    setPatientsData((prevPatients) =>
+      prevPatients.map((patient) =>
+        patient.patientId === updatedPatient.patientId
+          ? updatedPatient
+          : patient
+      )
+    );
+    setPatientDocument(false);
+    if (user.role === "super_admin") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
+      );
+    } else {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    }
+  };
+
   const handleAddPatient = (newPatient) => {
     setPatientsData((prevPatients) => [
       ...prevPatients,
@@ -238,12 +300,23 @@ const Dashboard = () => {
         },
       },
     ]);
-    if (user.role == "super_admin") {
+    if (user.role === "super_admin") {
       fetchPatients(
         currentPage,
         search,
         dateFilter.startDate,
-        dateFilter.endDate
+        dateFilter.endDate,
+        user.userId,
+        favClinic._id
+      );
+    } else if (user.role === "admin" && user.designation === "Staff") {
+      fetchPatients(
+        currentPage,
+        search,
+        dateFilter.startDate,
+        dateFilter.endDate,
+        "",
+        favClinic._id
       );
     } else {
       fetchPatients(
@@ -251,7 +324,7 @@ const Dashboard = () => {
         search,
         dateFilter.startDate,
         dateFilter.endDate,
-        user.doctorId,
+        user.userId,
         favClinic._id
       );
     }
@@ -340,7 +413,7 @@ const Dashboard = () => {
                             <GoPerson className="text-lg" />{" "}
                             <span>{item.patientName}</span> |
                             <span>{item.gender}</span> |{" "}
-                            <span>{item.age} Years</span>
+                            <span>{item.age} Y</span>
                           </div>
                         </div>
                         <div className="xlg:text-sm text-[13px] xxl:text-xl font-medium text-[#555555]">
@@ -441,6 +514,7 @@ const Dashboard = () => {
                         Prescription
                       </Link>
                       <button
+                        onClick={() => handleAddDocuments(item)}
                         className={`priority-button ${
                           index % 2 === 0 ? "bg-white" : "bg-[#EEEEEE]"
                         }`}
@@ -521,6 +595,22 @@ const Dashboard = () => {
                   handleClose={handleEditClose}
                   patient={selectedPatient}
                   onUpdate={updatePatientInList}
+                />
+              </div>
+            )}
+          </div>
+
+          <div
+            className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll custom-scroll bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+              patientDocument ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {patientDocument && selectedPatient && (
+              <div className="p-4">
+                <PatientDocumentAdd
+                  handleClose={handleAddDocumentsClose}
+                  patient={selectedPatient}
+                  onUpdate={updatePatientDocuments}
                 />
               </div>
             )}
