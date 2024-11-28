@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import AdminDashboardTemplate from "../template/AdminDashboardTemplate";
-import Topheader from "../component/Topheader";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCurrencyRupee } from "react-icons/md";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import TopHeaderMini from "../component/TopHeaderMini";
 
 const AddPaymentCharges = () => {
   const [nameOfItem, setNameOfItem] = useState("");
@@ -126,7 +126,7 @@ const AddPaymentCharges = () => {
   return (
     <AdminDashboardTemplate>
       <div>
-        <Topheader />
+        <TopHeaderMini />
       </div>
       <div className="flex flex-col gap-8 mt-8 xlg:px-8 px-4 ">
         <div className="flex flex-row gap-8">
@@ -173,7 +173,15 @@ const AddPaymentCharges = () => {
           </div>
 
           {loading ? (
-            <div>Loading...</div>
+            <div className="flex justify-center items-center h-[200px]">
+              <div className="loader">
+                <div className="dot dot-1"></div>
+                <div className="dot dot-2"></div>
+                <div className="dot dot-3"></div>
+                <div className="dot dot-4"></div>
+                <div className="dot dot-5"></div>
+              </div>
+            </div>
           ) : (
             <div className="flex flex-col">
               {chargeList.map((item, index) => (
