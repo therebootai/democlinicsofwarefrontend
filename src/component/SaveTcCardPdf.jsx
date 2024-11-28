@@ -245,14 +245,14 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
             ))}
           </div>
         </div>
-        <div className="flex justify-end items-end">
-          <button
-            onClick={handleDownload}
-            className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium "
-          >
-            Print
-          </button>
-        </div>
+      </div>
+      <div className="flex justify-end items-end fixed h-fit bottom-4 right-8">
+        <button
+          onClick={handleDownload}
+          className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium "
+        >
+          Print
+        </button>
       </div>
     </div>
   );
