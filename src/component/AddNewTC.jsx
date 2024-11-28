@@ -226,7 +226,10 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
       {showPopup && tcCardId && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <button onClick={handleClosePopup} className="close-popup-btn">
+            <button
+              onClick={handleClosePopup}
+              className="close-popup-btn fixed left-3 inset-0 top-5 w-fit h-fit"
+            >
               Close
             </button>
             <SaveTcCardPdf
