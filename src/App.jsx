@@ -21,6 +21,7 @@ import EditPrescription from "./pages/prescription/EditPrescription";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import PatientTCCard from "./pages/PatientTCCard";
+import Medicines from "./pages/Medicines";
 
 function App() {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ function App() {
         path="/payments/add-payment-charges"
         element={<AddPaymentCharges />}
       />
+      <Route path="/add-and-manage-medicines" element={<Medicines />} />
 
       <Route
         path="/prescription/add/:patientId"

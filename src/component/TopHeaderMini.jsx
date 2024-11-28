@@ -22,7 +22,7 @@ const TopHeaderMini = () => {
     navigate("/");
   };
   return (
-    <header className="flex justify-between px-20 py-5 border-b border-black/20 bg-white">
+    <header className="flex justify-between px-20 py-3 border-b border-black/20 bg-white">
       <Link to="/doctor/dashboard">
         <img
           src="/images/dentitydentallogo.png"
