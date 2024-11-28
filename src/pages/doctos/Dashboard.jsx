@@ -38,10 +38,7 @@ const Dashboard = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const [dateFilter, setDateFilter] = useState({
-    startDate: getTodayDate(), // Default to today's date
-    endDate: getTodayDate(), // Default to today's date
-  });
+  const [dateFilter, setDateFilter] = useState({ startDate: "", endDate: "" });
 
   // Function to fetch patients data from the backend
   const fetchPatients = async (
@@ -119,8 +116,8 @@ const Dashboard = () => {
   };
 
   const handleClearFilter = () => {
-    setDateFilter({ startDate: getTodayDate(), endDate: getTodayDate() });
-    setCurrentPage(1); // Reset to the first page
+    setDateFilter({ startDate: "", endDate: "" });
+    setCurrentPage(1);
   };
   const updatePatientInList = (updatedPatient) => {
     setPatientsData((prevPatients) =>
