@@ -33,7 +33,6 @@ const AddNewPrescription = () => {
   const [followupDate, setFollowupDate] = useState("");
 
   const handleMedicalHistoryChange = (updatedMedicalHistory) => {
-    console.log("Updated Medical History Data:", updatedMedicalHistory);
     setMedicalHistory(updatedMedicalHistory);
     setMedicalHistoryChanged(true);
   };
@@ -60,7 +59,7 @@ const AddNewPrescription = () => {
 
     const checkedMedicalHistory = Array.isArray(medicalHistory)
       ? medicalHistory.filter((item) => item.checked)
-      : []; // Use an empty array as fallback if `medicalHistory` is not an array
+      : [];
 
     const uncheckedMedicalHistoryNames = Array.isArray(medicalHistory)
       ? medicalHistory
@@ -69,7 +68,6 @@ const AddNewPrescription = () => {
       : [];
 
     try {
-      // Update medical history if changed
       if (medicalHistoryChanged) {
         await axios.put(
           `${import.meta.env.VITE_BASE_URL}/api/patients/update/${patientId}`,
@@ -78,7 +76,6 @@ const AddNewPrescription = () => {
         );
       }
 
-      // Proceed with prescription save only if prescriptionChanged is true and data exists
       if (prescriptionChanged) {
         const prescription = {
           chiefComplain: chiefComplainData.length
@@ -96,18 +93,16 @@ const AddNewPrescription = () => {
           followupdate: followupDate || undefined,
         };
 
-        // Filter out empty fields
         const cleanedPrescription = Object.fromEntries(
           Object.entries(prescription).filter(([_, v]) => v !== undefined)
         );
 
-        // Only save if there is actual data in the prescription
         if (Object.keys(cleanedPrescription).length > 0) {
           const response = await axios.put(
             `${
               import.meta.env.VITE_BASE_URL
             }/api/patients/update/prescriptions/${patientId}`,
-            { prescriptions: [cleanedPrescription] }
+            { prescriptions: [cleanedPrescription], prescriptionPdf: null }
           );
 
           const savedPrescriptionId = response.data.prescriptionIds[0];
