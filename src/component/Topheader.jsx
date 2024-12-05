@@ -13,6 +13,8 @@ import { format } from "date-fns";
 import { AuthContext } from "../context/AuthContext";
 import { MdAdd } from "react-icons/md";
 import AddNewClinic from "./AddNewClinic";
+import PatientDataImportInExcel from "./PatientDataImportInExcel";
+import PatientDataExportInExcel from "./PatientDataExportInExcel";
 
 const Topheader = ({
   children,
@@ -203,6 +205,13 @@ const Topheader = ({
           <IoSearch />
         </button>
       </div>
+      {role === "super_admin" && (
+        <>
+          <PatientDataExportInExcel clinicId={favClinic._id} />
+          <PatientDataImportInExcel handleAddPatient={handleAddPatient} />
+        </>
+      )}
+
       {children}
       <div className="flex items-center justify-center relative group">
         <span ref={profileImageRef} className="sm:w-[3rem] lg:w-fit">

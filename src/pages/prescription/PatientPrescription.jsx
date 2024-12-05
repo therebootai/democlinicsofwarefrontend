@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
 import Topheader from "../../component/Topheader";
 
 const PatientPrescriptions = () => {
-  const { patientId } = useParams(); // Get the patientId from the route params
+  const { patientId } = useParams();
   const [prescriptions, setPrescriptions] = useState([]);
   const [patientName, setPatientName] = useState("");
   const navigate = useNavigate();
-
-  
-  
 
   // Fetch prescriptions for the patient
   useEffect(() => {
@@ -30,7 +27,7 @@ const PatientPrescriptions = () => {
   }, [patientId]);
 
   const handleViewPrescription = (prescription) => {
-    navigate(`/prescription/${patientId}/details/${prescription}`);
+    navigate(`/prescription/${patientId}/details/${prescription}?view=true`);
   };
 
   return (
@@ -42,26 +39,52 @@ const PatientPrescriptions = () => {
         </h1>
         <div className="grid grid-cols-3 gap-4">
           {prescriptions.length > 0 ? (
-            prescriptions.map((prescription, index) => (
-              <div
-                key={prescription._id}
-                className={`border border-gray-300 p-4 mb-3 rounded-md shadow-sm ${
-                  index % 2 === 0 ? "bg-[#F5F5F5]" : " bg-transparent "
-                }`}
-              >
-                <p>Prescription ID: {prescription.prescriptionId}</p>
-                <p>
-                  Created At:{" "}
-                  {new Date(prescription.createdAt).toLocaleString()}
-                </p>
-                <button
-                  onClick={() => handleViewPrescription(prescription._id)}
-                  className="mt-2 px-4 py-2 bg-custom-orange text-white rounded hover:bg-blue-600 transition"
+            prescriptions.map((prescription, index) => {
+              // Check if prescriptionPdf exists and is valid
+              const isPdfAvailable =
+                prescription.prescriptionPdf &&
+                prescription.prescriptionPdf.secure_url;
+
+              return (
+                <div
+                  key={prescription._id}
+                  className={`border border-gray-300 p-4 mb-3 rounded-md shadow-sm ${
+                    index % 2 === 0 ? "bg-[#F5F5F5]" : " bg-transparent "
+                  }`}
                 >
-                  View
-                </button>
-              </div>
-            ))
+                  {isPdfAvailable ? (
+                    <iframe
+                      src={prescription.prescriptionPdf.secure_url}
+                      title={`Prescription ${index + 1}`}
+                      className="!w-full !h-[15rem] no-scrollbar"
+                    ></iframe>
+                  ) : (
+                    <p className="text-red-500">
+                      No prescription PDF available
+                    </p>
+                  )}
+                  <p>Prescription ID: {prescription.prescriptionId}</p>
+                  <p>
+                    Created At:{" "}
+                    {new Date(prescription.createdAt).toLocaleString()}
+                  </p>
+                  <div className="flex flex-row gap-4">
+                    <button
+                      onClick={() => handleViewPrescription(prescription._id)}
+                      className="mt-2 px-4 py-2 bg-custom-orange text-white rounded hover:bg-blue-600 transition"
+                    >
+                      View
+                    </button>
+                    <Link
+                      to={`/prescription/${patientId}/edit/${prescription._id}`}
+                      className="mt-2 px-4 py-2 bg-custom-blue text-white rounded hover:bg-blue-600 transition"
+                    >
+                      Edit
+                    </Link>
+                  </div>
+                </div>
+              );
+            })
           ) : (
             <p>No prescriptions found for this patient.</p>
           )}

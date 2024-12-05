@@ -8,15 +8,18 @@ import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
 import html2pdf from "html2pdf.js";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import PrescriptionWhatsapp from "../../component/prescription/PrescriptionWhatsapp";
 
 const PrescriptionDetails = () => {
   const { patientId, prescriptionId } = useParams();
   const [prescriptionData, setPrescriptionData] = useState(null);
   const prescriptionRef = useRef();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
+  const [isWhatsappModalOpen, setIsWhatsappModalOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch prescription details using patientId and prescriptionId
     const fetchPrescriptionData = async () => {
       try {
         const url = `${
@@ -34,8 +37,64 @@ const PrescriptionDetails = () => {
       }
     };
 
+    const isViewMode = new URLSearchParams(location.search).has("view");
+    setIsViewing(isViewMode); // If `view` query param exists, set to true
     fetchPrescriptionData();
-  }, [patientId, prescriptionId]);
+  }, [patientId, prescriptionId, location.search]);
+
+  const handlePrint = async () => {
+    const element = prescriptionRef.current;
+    element.classList.add("hide-action");
+    setIsLoading(true);
+
+    try {
+      const pdfBlob = await html2pdf()
+        .from(element)
+        .set({
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .outputPdf("blob");
+
+      if (pdfBlob.type !== "application/pdf") {
+        console.error("The generated file is not a PDF.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append(
+        "prescriptionPdf",
+        pdfBlob,
+        `${prescriptionData.patientName}-${prescriptiondate},${prescriptiontime}prescription.pdf`
+      );
+
+      const response = await axios.put(
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/patients/update/prescriptions/${patientId}/${prescriptionId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200) {
+      }
+    } catch (error) {
+      console.error("Error updating Prescription:", error);
+    } finally {
+      element.classList.remove("hide-action");
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (prescriptionData && prescriptionData.prescriptions && !isViewing) {
+      handlePrint();
+    }
+  }, [prescriptionData]);
+
   if (!prescriptionData || !prescriptionData.prescriptions) {
     return <p>Loading...</p>;
   }
@@ -134,6 +193,14 @@ const PrescriptionDetails = () => {
     });
   };
 
+  const handleSendWhatsApp = () => {
+    setIsWhatsappModalOpen(true); // Show the modal
+  };
+
+  const closeWhatsappModal = () => {
+    setIsWhatsappModalOpen(false); // Close the modal
+  };
+
   const buttonData = [
     {
       icon: <FiPrinter className="size-5" />,
@@ -158,7 +225,7 @@ const PrescriptionDetails = () => {
     {
       icon: <FaWhatsapp className="size-5" />,
       text: "Send WhatsApp",
-      onClick: "",
+      onClick: handleSendWhatsApp,
     },
   ];
 
@@ -193,6 +260,11 @@ const PrescriptionDetails = () => {
           </div>
         </div>
         <div className="flex flex-col w-[80%] gap-4  rounded ">
+          {isLoading && (
+            <div className="fullscreen-loader">
+              <div className="spinner"></div>
+            </div>
+          )}
           <div className="flex flex-col gap-4" ref={prescriptionRef}>
             <div className="bg-white  flex flex-col a4-container ">
               <div className="flex flex-row gap-4 p-2 w-full items-center">
@@ -459,6 +531,14 @@ const PrescriptionDetails = () => {
           </div>
         </div>
       </div>
+
+      {isWhatsappModalOpen && (
+        <PrescriptionWhatsapp
+          patientId={patientId}
+          prescriptionId={prescriptionId}
+          closeModal={closeWhatsappModal}
+        />
+      )}
     </>
   );
 };
