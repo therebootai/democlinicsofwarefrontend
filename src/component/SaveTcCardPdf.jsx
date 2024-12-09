@@ -8,6 +8,7 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
   const [clinicData, setClinicData] = useState(null);
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentdate, setCurrentdate] = useState(false);
 
   useEffect(() => {
     const fetchTcCardData = async () => {
@@ -18,11 +19,15 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
           }/api/patients/get/${patientId}?tccardId=${tcCardId}`
         );
         setPatientData(response.data);
+
         const tcCard = response.data.patientTcCard.find(
           (card) => card.tcCardId === tcCardId
         );
+
         if (tcCard) {
           setTcCardData(tcCard);
+
+          setCurrentdate(new Date(tcCardData.createdAt).toLocaleDateString());
         } else {
           console.error("TC Card not found for the provided tcCardId");
         }
@@ -198,11 +203,13 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
             <div className="w-[5%] py-3 px-2 border-r border-[#00000033]">
               Sl. No
             </div>
-
+            <div className="w-[10%] py-3 px-2 border-r border-[#00000033]">
+              Date
+            </div>
             <div className="w-[20%] py-3 px-2 border-r border-[#00000033]">
               Step Done
             </div>
-            <div className="w-[20%] py-3 px-2 border-r border-[#00000033]">
+            <div className="w-[15%] py-3 px-2 border-r border-[#00000033] break-words">
               Next Appointment
             </div>
             <div className="w-[20%] py-3 px-2 border-r border-[#00000033]">
@@ -212,9 +219,12 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
               Payment
             </div>
             <div className="w-[10%] py-3 px-2 border-r border-[#00000033]">
+              Payment Method
+            </div>
+            <div className="w-[10%] py-3 px-2 border-r border-[#00000033]">
               Due
             </div>
-            <div className="w-[20%] py-3 px-2">Comment</div>
+            <div className="w-[10%] py-3 px-2">Comment</div>
           </div>
           <div className="border-b border-x border-[#00000033]">
             {tcCardData.patientTcCardDetails?.map((entry, index) => (
@@ -225,10 +235,14 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
                 <div className="w-[5%] py-3 px-2 border-r border-[#00000033]">
                   {index + 1}
                 </div>
+                <div className="w-[10%] py-3 px-2 border-r border-[#00000033] text-[10px]">
+                  {currentdate}
+                </div>
+
                 <div className="w-[20%] py-3 px-2  border-r border-[#00000033]">
                   {entry.stepDone}
                 </div>
-                <div className="w-[20%] py-3 px-2 border-r border-[#00000033] ">
+                <div className="w-[15%] py-3 px-2 border-r border-[#00000033] ">
                   {entry.nextAppointment}
                 </div>
                 <div className="w-[20%] py-3 px-2  border-r border-[#00000033]">
@@ -236,11 +250,14 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
                 </div>
                 <div className="w-[10%] py-3 px-2 border-r border-[#00000033] ">
                   {entry.payment}
-                </div>{" "}
+                </div>
+                <div className="w-[10%] py-3 px-2  border-r border-[#00000033]">
+                  {entry.paymentMethod}
+                </div>
                 <div className="w-[10%] py-3 px-2  border-r border-[#00000033]">
                   {entry.due}
                 </div>
-                <div className="w-[20%] py-3 px-2 ">{entry.comment}</div>
+                <div className="w-[10%] py-3 px-2 ">{entry.comment}</div>
               </div>
             ))}
           </div>

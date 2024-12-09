@@ -17,6 +17,7 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
     nextStep: "",
     payment: "",
     due: "",
+    paymentMethod: "",
     comment: "",
   });
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
@@ -44,6 +45,7 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
       nextStep: "",
       payment: "",
       due: "",
+      paymentMethod: "",
       comment: "",
     });
   };
@@ -84,6 +86,7 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
           nextStep: "",
           payment: "",
           due: "",
+          paymentMethod: "",
           comment: "",
         });
         fetchTCCards();
@@ -111,19 +114,15 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
       {/* Form Inputs */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-row gap-2 w-fit">
-          <select
+          <input
             name="typeOfWork"
+            type="text"
+            placeholder="Type Of Work"
             value={formData.typeOfWork}
             onChange={handleInputChange}
             className="w-[20%] h-[2.5rem] rounded boxsh px-2 outline-none"
-          >
-            <option value="">Type of Work</option>
-            <option value="Tooth Extraction">Tooth Extraction</option>
-            <option value="Consultation Charges">Consultation Charges</option>
-            <option value=" Restoration of (Cervical / Occlusal / Proximal / Composite/GIC)">
-              Restoration of (Cervical / Occlusal / Proximal / Composite/GIC)
-            </option>
-          </select>
+          />
+
           <input
             name="tc"
             value={formData.tc}
@@ -172,6 +171,16 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
             placeholder="Due"
             className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
           />
+          <select
+            name="paymentMethod"
+            value={formData.paymentMethod}
+            onChange={handleInputChange}
+            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+          >
+            <option value="">Payment Method</option>
+            <option value="Cash">Cash</option>
+            <option value="Online">Online</option>
+          </select>
           <input
             name="comment"
             value={formData.comment}

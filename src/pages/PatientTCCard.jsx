@@ -186,7 +186,7 @@ const PatientTCCard = () => {
 
       <div
         ref={modalRef}
-        className={`fixed top-0 right-0 h-screen w-[80%] xl:w-[75%] overflow-scroll z-[100] custom-scroll bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-screen w-[90%] xl:w-[85%] overflow-scroll z-[100] custom-scroll bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
           isModalShow ? "translate-x-0" : "translate-x-full"
         }`}
       >
