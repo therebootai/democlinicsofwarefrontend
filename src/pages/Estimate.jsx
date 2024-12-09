@@ -19,6 +19,7 @@ const Estimate = () => {
   const estimateRef = useRef();
   const [patientData, setPatientData] = useState(null);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [clinicData, setClinicData] = useState(null);
 
   const handleKeyDown = (e) => {
     if (searchResults.length > 0) {
@@ -54,6 +55,18 @@ const Estimate = () => {
           `${import.meta.env.VITE_BASE_URL}/api/patients/get/${patientId}`
         );
         setPatientData(response.data);
+        const clinicResponse = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/clinic/all`
+        );
+
+        const clinic = clinicResponse.data.find(
+          (clinic) => clinic._id === response.data.clinicId
+        );
+        if (clinic) {
+          setClinicData(clinic);
+        } else {
+          console.error("Clinic not found for the provided clinicId");
+        }
       } catch (error) {
         console.error("Error fetching details:", error);
       }
@@ -205,7 +218,7 @@ const Estimate = () => {
                     Dentity Dental
                   </h1>
                   <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C] text-right">
-                    Rajarhat Newtown, Kolkata
+                    {clinicData?.clinic_name || "N/A"}
                   </p>
                 </div>
                 <img
