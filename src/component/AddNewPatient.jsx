@@ -32,6 +32,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
   const [showMedicineSuggestions, setShowMedicineSuggestions] = useState(false);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const suggestDuration = (input) => {
     input = input.toLowerCase();
@@ -436,6 +437,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
       clinicId: currentClinic,
       medicalHistory: checkedMedicalHistory, // Add medical history to patient data
     };
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -459,6 +461,8 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
         setErrormsg("Error creating patient.");
       }
       console.error("Error creating patient:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -584,7 +588,7 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
         {/* Additional Fields */}
         {showMoreInputFiled && (
           <div className="flex flex-col gap-8">
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 gap-8">
               <div>
                 <input
                   type="text"
@@ -601,6 +605,8 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
                   <option value="Durgapur">Durgapur</option>
                 </select>
               </div>
+            </div>
+            <div className="grid grid-cols-2 gap-8">
               <div>
                 <input
                   type="text"
@@ -609,22 +615,10 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
                   className="priority-input"
                 />
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-8">
               <div>
                 <select {...register("priority")} className="priority-input">
                   <option value="">Priority</option>
                   <option value="High">High</option>
-                </select>
-              </div>
-              <div>
-                <select
-                  {...register("paymentMethod")}
-                  className="priority-input"
-                >
-                  <option value="">Payment Method</option>
-                  <option value="Online">Online</option>
-                  <option value="Offline">Offline</option>
                 </select>
               </div>
             </div>
@@ -802,9 +796,10 @@ const AddNewPatient = ({ handleClose, currentClinic, handleAddPatient }) => {
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="h-[2.5rem] transition-colors duration-300 ease-in-out boxsh flex w-full justify-center items-center bg-custom-blue hover:text-custom-blue hover:bg-white hover:border-2 border-custom-blue rounded-md text-base text-white font-medium"
             >
-              Submit
+              {loading ? <div className="button-spinner"></div> : "Submit"}
             </button>
           </div>
           <div className="text-red-600 text-sm font-medium">{errormsg}</div>

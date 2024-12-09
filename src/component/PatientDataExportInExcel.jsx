@@ -74,13 +74,9 @@ const PatientDataExportInExcel = ({ clinicId }) => {
       <button
         className="h-[2.5rem] flex justify-center items-center bg-custom-purple text-white text-lg font-semibold rounded px-3"
         onClick={handleExportClick}
-        disabled={loading} // Disable button while loading
+        disabled={loading}
       >
-        {loading ? (
-          <FaSpinner className="spinner" /> // Show loading spinner when loading
-        ) : (
-          <ImDownload />
-        )}
+        {loading ? <FaSpinner className="button-spinner" /> : <ImDownload />}
       </button>
     </div>
   );
