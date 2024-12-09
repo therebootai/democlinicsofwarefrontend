@@ -20,8 +20,9 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
     paymentMethod: "",
     comment: "",
   });
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [showPopup, setShowPopup] = useState(false);
   const [tcCardId, setTcCardId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -61,19 +62,21 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
       alert("Please add at least one entry.");
       return;
     }
+    setLoading(true);
+
+    const payload = {
+      tcCardDetails: entries,
+      tccardPdf: null,
+    };
 
     try {
-      const payload = {
-        tcCardDetails: entries,
-        tccardPdf: null,
-      };
-
       const response = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/patients/add/tccard/${patientId}`,
         payload
       );
 
-      if (response.status === 200) {
+      if (response.data && response.data.tcCardId) {
+        // Assuming response.data.tcCardId exists
         const tcCardId = response.data.tcCardId;
         setTcCardId(tcCardId);
         setShowPopup(true);
@@ -90,10 +93,15 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
           comment: "",
         });
         fetchTCCards();
+      } else {
+        throw new Error("Invalid response from server");
       }
     } catch (error) {
+      // Handle error gracefully
       console.error("Error saving TC Card:", error);
       alert("Failed to save TC Card. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -224,10 +232,11 @@ const AddNewTC = ({ handleClose, fetchTCCards }) => {
         </div>
         <div className="flex justify-end items-end ">
           <button
+            disabled={loading}
             onClick={handleSave}
             className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium "
           >
-            Save
+            {loading ? <div className="button-spinner"></div> : "Save"}
           </button>
         </div>
       </div>

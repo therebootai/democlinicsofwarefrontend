@@ -26,8 +26,7 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
 
         if (tcCard) {
           setTcCardData(tcCard);
-
-          setCurrentdate(new Date(tcCardData.createdAt).toLocaleDateString());
+          setCurrentdate(new Date(tcCard.createdAt).toLocaleDateString());
         } else {
           console.error("TC Card not found for the provided tcCardId");
         }
@@ -168,7 +167,7 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
                   Date & Time: {formattedDate}, {formattedTime}
                 </div>
 
-                <div>{clinicData?.clinic_address || "N/A"}</div>
+                <div>{clinicData?.clinic_name || "N/A"}</div>
               </div>
             </div>
           </div>

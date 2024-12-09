@@ -33,6 +33,7 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
   const [showMedicineSuggestions, setShowMedicineSuggestions] = useState(false);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const suggestDuration = (input) => {
     input = input.toLowerCase();
@@ -473,6 +474,8 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
       chooseDoctor: selectedDoctorId,
     };
 
+    setLoading(true);
+
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/patients/update/${
@@ -491,6 +494,8 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
       const errorMessage =
         error.response?.data?.message || "Error updating patient.";
       setErrormsg(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -837,9 +842,10 @@ const EditPatientData = ({ handleClose, patient, onUpdate }) => {
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="h-[2.5rem] transition-colors duration-300 ease-in-out boxsh flex w-full justify-center items-center bg-custom-blue hover:text-custom-blue hover:bg-white hover:border-2 border-custom-blue rounded-md text-base text-white font-medium"
             >
-              Submit
+              {loading ? <div className="button-spinner"></div> : "Submit"}
             </button>
           </div>
           <div className="text-red-600 text-sm font-medium">{errormsg}</div>

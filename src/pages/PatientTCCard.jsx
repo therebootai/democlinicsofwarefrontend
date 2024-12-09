@@ -12,7 +12,7 @@ import EditTcCard from "../component/EditTcCard";
 import { MdDelete } from "react-icons/md";
 
 const PatientTCCard = () => {
-  const [isModalShow, setIsModalShow] = useState(false);
+  const [isTcModalShow, setIsTCModalShow] = useState(false);
   const [patientData, setPatientData] = useState(null);
   const modalRef = useRef(null);
   const { patientId } = useParams();
@@ -37,24 +37,24 @@ const PatientTCCard = () => {
   const handleAddNewClick = () => {
     setSelectedTcCard(null); // Reset for new TC card
     setMode("add");
-    setIsModalShow(true);
+    setIsTCModalShow(true);
   };
 
   // Open the modal to edit an existing TC card
   const handleEditClick = (tcCard) => {
     setSelectedTcCard(tcCard); // Set the selected TC card data for editing
     setMode("edit");
-    setIsModalShow(true);
+    setIsTCModalShow(true);
   };
 
   const handleClose = () => {
-    setIsModalShow(false);
+    setIsTCModalShow(false);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setIsModalShow(false);
+        setIsTCModalShow(false);
       }
     };
 
@@ -62,7 +62,7 @@ const PatientTCCard = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isModalShow]);
+  }, [isTcModalShow]);
 
   const handlePrint = (pdfUrl) => {
     const printWindow = window.open(pdfUrl, "_blank");
@@ -187,7 +187,7 @@ const PatientTCCard = () => {
       <div
         ref={modalRef}
         className={`fixed top-0 right-0 h-screen w-[90%] xl:w-[85%] overflow-scroll z-[100] custom-scroll bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isModalShow ? "translate-x-0" : "translate-x-full"
+          isTcModalShow ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {mode === "add" ? (

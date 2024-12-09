@@ -20,7 +20,8 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
     paymentMethod: "",
     comment: "",
   });
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Fetch existing TC card data on component mount
   useEffect(() => {
@@ -93,7 +94,7 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
       alert("Please add at least one entry.");
       return;
     }
-
+    setLoading(true);
     try {
       const payload = {
         tcCardDetails: entries,
@@ -126,6 +127,8 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
     } catch (error) {
       console.error("Error saving TC Card:", error);
       alert("Failed to save TC Card. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -258,10 +261,11 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
 
         <div className="flex justify-end items-end">
           <button
+            disabled={loading}
             onClick={handleSave}
-            className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium"
+            className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium "
           >
-            Save
+            {loading ? <div className="button-spinner"></div> : "Update"}
           </button>
         </div>
       </div>
