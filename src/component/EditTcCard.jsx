@@ -17,6 +17,7 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
     nextStep: "",
     payment: "",
     due: "",
+    paymentMethod: "",
     comment: "",
   });
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
@@ -75,6 +76,7 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
       nextStep: "",
       payment: "",
       due: "",
+      paymentMethod: "",
       comment: "",
     });
   };
@@ -116,6 +118,7 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
           nextStep: "",
           payment: "",
           due: "",
+          paymentMethod: "",
           comment: "",
         });
         fetchTCCards();
@@ -142,19 +145,15 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
       {/* Form Inputs */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-row gap-2 w-fit">
-          <select
+          <input
             name="typeOfWork"
             value={formData.typeOfWork}
             onChange={handleInputChange}
+            type="text"
+            placeholder="Type Of Work"
             className="w-[20%] h-[2.5rem] rounded boxsh px-2 outline-none"
-          >
-            <option value="">Type of Work</option>
-            <option value="Tooth Extraction">Tooth Extraction</option>
-            <option value="Consultation Charges">Consultation Charges</option>
-            <option value="Restoration of (Cervical / Occlusal / Proximal / Composite/GIC)">
-              Restoration of (Cervical / Occlusal / Proximal / Composite/GIC)
-            </option>
-          </select>
+          />
+
           <input
             name="tc"
             value={formData.tc}
@@ -203,6 +202,16 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
             placeholder="Due"
             className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
           />
+          <select
+            name="paymentMethod"
+            value={formData.paymentMethod}
+            onChange={handleInputChange}
+            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+          >
+            <option value="">Payment Method</option>
+            <option value="Cash">Cash</option>
+            <option value="Online">Online</option>
+          </select>
           <input
             name="comment"
             value={formData.comment}
@@ -232,6 +241,8 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
               <div className="w-[10%]  px-2">{entry.nextStep}</div>
               <div className="w-[10%]  px-2">{entry.payment}</div>
               <div className="w-[10%]  px-2">{entry.due}</div>
+              <div className="w-[10%]  px-2">{entry.paymentMethod}</div>
+
               <div className="w-[10%]  px-2">{entry.comment}</div>
               <div className="w-[5%]  px-2">
                 <button
