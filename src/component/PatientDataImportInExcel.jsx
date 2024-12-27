@@ -60,6 +60,7 @@ const PatientDataImportInCSV = ({ handleAddPatient }) => {
       {/* Button to trigger file input */}
       <button
         className="h-[2.5rem] flex justify-center items-center bg-custom-green text-white text-lg font-semibold rounded px-3"
+        title="Import"
         onClick={() => document.getElementById("csv-upload").click()} // Open file picker
       >
         <FaFileImport />
