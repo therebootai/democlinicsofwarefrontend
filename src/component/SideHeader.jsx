@@ -35,9 +35,14 @@ const AdminSideHeader = () => {
       link: "/directions",
     },
     {
-      icon: "/icons/direction.svg",
+      icon: "/icons/medicine.png",
       name: "Medicines",
       link: "/add-and-manage-medicines",
+    },
+    {
+      icon: "/icons/stock.png",
+      name: "Stock",
+      link: "/add-and-manage-stocks",
     },
   ];
 
