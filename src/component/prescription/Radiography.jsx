@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import axios from "axios";
+import DentalChartDesign from "../DentalChartDesign";
 
 const Radiography = ({ onChange, existingData = [] }) => {
   const [fields, setFields] = useState([
@@ -9,10 +10,12 @@ const Radiography = ({ onChange, existingData = [] }) => {
       searchTerm: "",
       searchResults: [],
       showSuggestions: false,
+      dentalChart: [],
     },
   ]);
 
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [showDentalChart, setShowDentalChart] = useState(null);
 
   const handleKeyDown = (e, index) => {
     const { searchResults, showSuggestions } = fields[index];
@@ -86,6 +89,7 @@ const Radiography = ({ onChange, existingData = [] }) => {
         radiographyName: radiography.radiographyName || "",
         searchTerm: radiography.radiographyName || "",
         searchResults: [],
+        dentalChart: radiography.dentalChart || [],
         showSuggestions: false,
       }));
       setFields(initialFields);
@@ -96,6 +100,7 @@ const Radiography = ({ onChange, existingData = [] }) => {
     if (typeof onChange === "function") {
       const filteredData = fields.map((field) => ({
         radiographyName: field.radiographyName,
+        dentalChart: field.dentalChart || [],
       }));
       onChange(filteredData);
     }
@@ -103,11 +108,29 @@ const Radiography = ({ onChange, existingData = [] }) => {
 
   // Update field based on index and changes
   const updateField = (index, updates) => {
-    setFields((prevFields) =>
-      prevFields.map((field, i) =>
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
         i === index ? { ...field, ...updates } : field
-      )
-    );
+      );
+
+      onChange(updatedFields);
+      return updatedFields;
+    });
+  };
+
+  const handleDentalChart = (index) => {
+    setShowDentalChart(index);
+  };
+
+  const addDentalChartSelection = (selectedValues, index) => {
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
+        i === index ? { ...field, dentalChart: [...selectedValues] } : field
+      );
+      onChange(updatedFields);
+      return updatedFields;
+    });
+    setShowDentalChart(null);
   };
 
   // Handle adding new radiography entry
@@ -154,6 +177,7 @@ const Radiography = ({ onChange, existingData = [] }) => {
         searchTerm: "",
         searchResults: [],
         showSuggestions: false,
+        dentalChart: [],
       },
     ]);
   };
@@ -231,6 +255,18 @@ const Radiography = ({ onChange, existingData = [] }) => {
                 </div>
               )}
             </div>
+            {field.dentalChart.length > 0 && (
+              <div className="text-sm text-gray-500 mt-2">
+                Selected Dental Chart: {field.dentalChart.join(", ")}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => handleDentalChart(index)}
+              className="text-custom-gray inline-flex items-center gap-2 justify-center bg-white rounded px-4 py-2 text-base"
+            >
+              <CiCirclePlus className="text-xl font-bold" /> DC
+            </button>
 
             <div className="flex flex-col gap-5 flex-1">
               <div className="flex flex-row gap-2 justify-between flex-1">
@@ -253,6 +289,21 @@ const Radiography = ({ onChange, existingData = [] }) => {
             </div>
           </div>
         ))}
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          showDentalChart !== null ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {showDentalChart !== null && (
+          <DentalChartDesign
+            handleClose={() => setShowDentalChart(null)}
+            onSelect={(selectedValues) =>
+              addDentalChartSelection(selectedValues, showDentalChart)
+            }
+            selectedValues={fields[showDentalChart]?.dentalChart || []} // Pass current selections
+          />
+        )}
       </div>
     </div>
   );

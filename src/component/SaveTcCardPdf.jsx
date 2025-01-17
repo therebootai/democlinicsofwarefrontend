@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import RenderDentalChart from "./dentalchartedesign/RenderDentalChart";
 
 const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
   const [tcCardData, setTcCardData] = useState(null);
@@ -178,23 +179,28 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
         </div>
         <div className="flex flex-col ">
           <div className="flex flex-row bg-[#F1F1F1] border-b border-[#00000033] text-[#333333] text-base gap-2">
-            <div className="w-[50%] py-3 px-6  border-r border-[#00000033]">
+            <div className="w-[60%] py-3 px-6  border-r border-[#00000033]">
               Type Of work
             </div>
-            <div className="w-[50%] py-3 px-6 ">TC</div>
+            <div className="w-[40%] py-3 px-6 ">TC</div>
           </div>
           <div>
-            {tcCardData.patientTcCardDetails?.map((entry, index) => (
+            {tcCardData.patientTcworkTypeDetails?.map((entry, index) => (
               <div
                 key={index}
                 className=" flex flex-row border-b border-[#00000033] text-[#888888] text-base gap-2"
               >
-                <div className="w-[50%] py-3 px-6  border-r border-[#00000033]">
-                  {entry.typeOfWork}
+                <div className="w-[60%] py-3 px-6 flex flex-row items-center gap-3  border-r border-[#00000033]">
+                  {entry.typeOfWork}{" "}
+                  <RenderDentalChart dentalChart={entry.dentalChart} />
                 </div>
-                <div className="w-[50%] py-3 px-6 ">{entry.tc}</div>
+                <div className="w-[40%] py-3 px-6 ">{entry.tcamount}</div>
               </div>
             ))}
+          </div>
+          <div className="flex flex-row ">
+            <div className="w-[60%] px-6">Total Amount</div>
+            <div className="w-[40%] px-6">{tcCardData.totalPayment}</div>
           </div>
         </div>
         <div className="flex flex-col p-4 ">
@@ -235,14 +241,26 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
                   {index + 1}
                 </div>
                 <div className="w-[10%] py-3 px-2 border-r border-[#00000033] text-[10px]">
-                  {currentdate}
+                  {entry.createdAt
+                    ? new Intl.DateTimeFormat("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      }).format(new Date(entry.createdAt))
+                    : "N/A"}
                 </div>
 
                 <div className="w-[20%] py-3 px-2  border-r border-[#00000033]">
                   {entry.stepDone}
                 </div>
                 <div className="w-[15%] py-3 px-2 border-r border-[#00000033] ">
-                  {entry.nextAppointment}
+                  {entry.nextAppointment
+                    ? new Intl.DateTimeFormat("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      }).format(new Date(entry.nextAppointment))
+                    : "N/A"}
                 </div>
                 <div className="w-[20%] py-3 px-2  border-r border-[#00000033]">
                   {entry.nextStep}

@@ -125,7 +125,17 @@ const AddNewPrescription = () => {
     console.log("Chief Complain Data:", chiefComplainData);
     const cleanedChiefComplainData = chiefComplainData.map((item) => ({
       chiefComplainName: item.chiefComplainName,
+      dentalChart: item.dentalChart,
     }));
+
+    const cleanedOnExaminationData = onExaminationData.map((item) => ({
+      onExaminationName: item.onExaminationName,
+      onExaminationArea: item.onExaminationArea,
+      onExaminationAdditionalNotes: item.onExaminationAdditionalNotes,
+
+      dentalChart: item.dentalChart,
+    }));
+    console.log("On Examination Data:", cleanedOnExaminationData);
 
     const checkedMedicalHistory = Array.isArray(medicalHistory)
       ? medicalHistory.filter((item) => item.checked)
