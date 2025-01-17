@@ -22,6 +22,7 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import PatientTCCard from "./pages/PatientTCCard";
 import Medicines from "./pages/Medicines";
+import Stocks from "./pages/Stocks";
 
 function App() {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ function App() {
         element={<AddPaymentCharges />}
       />
       <Route path="/add-and-manage-medicines" element={<Medicines />} />
+      <Route path="/add-and-manage-stocks" element={<Stocks />} />
 
       <Route
         path="/prescription/add/:patientId"

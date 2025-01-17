@@ -19,6 +19,7 @@ const PrescriptionDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isViewing, setIsViewing] = useState(false);
   const [isWhatsappModalOpen, setIsWhatsappModalOpen] = useState(false);
+  const [clinicData, setClinicData] = useState(null);
 
   useEffect(() => {
     const fetchPrescriptionData = async () => {
@@ -32,6 +33,12 @@ const PrescriptionDetails = () => {
           : url;
 
         const response = await axios.get(finalUrl);
+        const clinicResponse = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/clinic/${
+            response.data.clinicId
+          }`
+        );
+        setClinicData(clinicResponse.data);
         setPrescriptionData(response.data);
       } catch (error) {
         console.error("Error fetching prescription data:", error);
@@ -280,6 +287,9 @@ const PrescriptionDetails = () => {
                   <h1 className="text-lg font-semibold text-[#333333]">
                     A Unit of Multiplicity Dental Clinic Chain in Kolkata & W.B.
                   </h1>
+                  <h3 className="text-sm font-semibold text-[#333333] text-center">
+                    {clinicData.clinic_name}, {clinicData.clinic_address}
+                  </h3>
                   <div className="grid grid-cols-2 gap-x-8 text-sm font-medium text-[#000000] ">
                     <div>Name: {prescriptionData.patientName}</div>
                     <div>
@@ -456,6 +466,9 @@ const PrescriptionDetails = () => {
                   <h1 className="text-lg font-semibold text-[#333333]">
                     A Unit of Multiplicity Dental Clinic Chain in Kolkata & W.B.
                   </h1>
+                  <h3 className="text-sm font-semibold text-[#333333] text-center">
+                    {clinicData.clinic_name}, {clinicData.clinic_address}
+                  </h3>
                   <div className="grid grid-cols-2 gap-x-8 text-sm font-medium text-[#000000] ">
                     <div>Name: {prescriptionData.patientName}</div>
                     <div>

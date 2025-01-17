@@ -97,8 +97,8 @@ const Patients = () => {
   }, [currentPage, search, dateFilter, user, favClinic, doctorFilter]);
 
   useEffect(() => {
-    getDoctorsOfCurrentClinic(favClinic._id);
-  }, [favClinic]);
+    getDoctorsOfCurrentClinic();
+  }, []);
 
   const handleDateFilter = (startDate, endDate) => {
     setDateFilter({ startDate, endDate });
@@ -304,16 +304,15 @@ const Patients = () => {
     }
   };
 
-  async function getDoctorsOfCurrentClinic(clinicId) {
+  async function getDoctorsOfCurrentClinic() {
     try {
       const response = await axios.get(
-        `${
-          import.meta.env.VITE_BASE_URL
-        }/api/patients/clinic/doctors/${clinicId}`
+        `${import.meta.env.VITE_BASE_URL}/api/user/users?designation=Doctor`
       );
       const result = await response.data;
       console.log(result);
-      setDoctors(result.doctors);
+
+      setDoctors(result);
     } catch (error) {
       console.error("Error fetching Doctor", error);
     }
@@ -341,8 +340,8 @@ const Patients = () => {
               <option value="">Choose Doctor</option>
               {doctors?.length > 0 &&
                 doctors.map((doctor) => (
-                  <option value={doctor} key={doctor}>
-                    {doctor}
+                  <option value={doctor.userId} key={doctor._id}>
+                    {doctor.name}
                   </option>
                 ))}
             </select>
