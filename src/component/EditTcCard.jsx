@@ -5,13 +5,12 @@ import { GoPlusCircle } from "react-icons/go";
 import { RxCrossCircled } from "react-icons/rx";
 import { useParams } from "react-router-dom";
 import SaveTcCardPdf from "./SaveTcCardPdf";
+import DentalChartDesign from "./DentalChartDesign";
 
 const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
   const { patientId } = useParams();
-  const [entries, setEntries] = useState([]);
-  const [formData, setFormData] = useState({
-    typeOfWork: "",
-    tc: "",
+  const [form1Data, setForm1Data] = useState({ typeOfWork: "", tcamount: "" });
+  const [form2Data, setForm2Data] = useState({
     stepDone: "",
     nextAppointment: "",
     nextStep: "",
@@ -20,58 +19,69 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
     paymentMethod: "",
     comment: "",
   });
-  const [showPopup, setShowPopup] = useState(false);
+  const [form1Entries, setForm1Entries] = useState([]);
+  const [form2Entries, setForm2Entries] = useState([]);
+  const [selectedDentalValues, setSelectedDentalValues] = useState([]);
+  const [showDentalChart, setShowDentalChart] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
-  // Fetch existing TC card data on component mount
+  // Fetch existing TC card data
   useEffect(() => {
-    const fetchTCData = async () => {
+    const fetchTcCardData = async () => {
       try {
         const response = await axios.get(
           `${
             import.meta.env.VITE_BASE_URL
           }/api/patients/get/${patientId}?tccardId=${tcCardId}`
         );
-        const data = response.data;
+        const tcCard = response.data.patientTcCard.find(
+          (card) => card.tcCardId === tcCardId
+        );
 
-        // Assuming 'patientTcCard' contains the TC card data and 'patientTcCardDetails' contains the details
-        if (data.patientTcCard && data.patientTcCard.length > 0) {
-          const patientTcCard = data.patientTcCard[0]; // Get the first patient TC Card
-          if (patientTcCard.patientTcCardDetails) {
-            setEntries(patientTcCard.patientTcCardDetails); // Set the entries with patientTcCardDetails
-          }
-        }
-
-        // Optionally pre-fill the form with the first entry
-        if (data.patientTcCard && data.patientTcCard.length > 0) {
-          const firstEntry = data.patientTcCard[0].patientTcCardDetails[0];
+        if (tcCard) {
+          setForm1Entries(tcCard.patientTcworkTypeDetails || []);
+          setForm2Entries(tcCard.patientTcCardDetails || []);
         }
       } catch (error) {
         console.error("Error fetching TC card data:", error);
-        alert("Failed to fetch TC card data. Please try again.");
+        alert("Failed to fetch TC card data.");
       }
     };
 
-    fetchTCData();
+    fetchTcCardData();
   }, [patientId, tcCardId]);
 
-  // Handle input changes for form data
-  const handleInputChange = (e) => {
+  const handleForm1Change = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setForm1Data({ ...form1Data, [name]: value });
   };
 
-  // Add new entry to the list (same as AddNewTC)
-  const handleAdd = () => {
-    if (formData.typeOfWork.trim() === "") {
-      alert("Please select the Type of Work.");
+  const handleForm2Change = (e) => {
+    const { name, value } = e.target;
+    setForm2Data({ ...form2Data, [name]: value });
+  };
+
+  const addForm1Entry = () => {
+    if (!form1Data.typeOfWork || !form1Data.tcamount) {
+      alert("Please fill all fields in Form 1");
       return;
     }
+    setForm1Entries((prevEntries) => [
+      ...prevEntries,
+      { ...form1Data, dentalChart: selectedDentalValues },
+    ]);
+    setForm1Data({ typeOfWork: "", tcamount: "" });
+    setSelectedDentalValues([]);
+  };
 
-    setEntries([...entries, formData]);
-    setFormData({
-      typeOfWork: "",
-      tc: "",
+  const addForm2Entry = () => {
+    if (!form2Data.stepDone) {
+      alert("Please fill all fields in Form 2");
+      return;
+    }
+    setForm2Entries((prevEntries) => [...prevEntries, form2Data]);
+    setForm2Data({
       stepDone: "",
       nextAppointment: "",
       nextStep: "",
@@ -82,23 +92,33 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
     });
   };
 
-  // Remove an entry from the list
-  const handleRemove = (index) => {
-    const updatedEntries = entries.filter((_, i) => i !== index);
-    setEntries(updatedEntries);
+  const removeForm1Entry = (index) => {
+    setForm1Entries((prevEntries) => prevEntries.filter((_, i) => i !== index));
   };
 
-  // Handle saving the data
+  const removeForm2Entry = (index) => {
+    setForm2Entries((prevEntries) => prevEntries.filter((_, i) => i !== index));
+  };
+
+  const handleDentalChart = () => {
+    setShowDentalChart(true);
+  };
+
+  const handleCloseDentalChart = () => {
+    setShowDentalChart(false);
+  };
+
   const handleSave = async () => {
-    if (entries.length === 0) {
-      alert("Please add at least one entry.");
+    if (form1Entries.length === 0 || form2Entries.length === 0) {
+      alert("Please add entries to both forms before saving");
       return;
     }
+
     setLoading(true);
     try {
       const payload = {
-        tcCardDetails: entries,
-        tccardPdf: null,
+        tcTypeOfWork: form1Entries,
+        tcCardDetails: form2Entries,
       };
 
       const response = await axios.put(
@@ -110,34 +130,24 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
 
       if (response.status === 200) {
         setShowPopup(true);
-        setEntries([]);
-        setFormData({
-          typeOfWork: "",
-          tc: "",
-          stepDone: "",
-          nextAppointment: "",
-          nextStep: "",
-          payment: "",
-          due: "",
-          paymentMethod: "",
-          comment: "",
-        });
         fetchTCCards();
+      } else {
+        alert("Failed to update TC Card. Please try again.");
       }
     } catch (error) {
-      console.error("Error saving TC Card:", error);
-      alert("Failed to save TC Card. Please try again.");
+      console.error("Error updating TC Card:", error);
+      alert("Failed to update TC Card. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleClosePopup = () => {
-    setShowPopup(false); // Close popup
+    setShowPopup(false);
   };
 
   return (
-    <div className="xlg:p-8 p-4 flex flex-col gap-16 w-full">
+    <div className="p-8 flex flex-col gap-16 w-full relative">
       <div className="flex flex-row justify-between items-center">
         <h1 className="text-2xl font-semibold text-[#333333]">Edit TC Card</h1>
         <button onClick={handleClose}>
@@ -145,71 +155,108 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
         </button>
       </div>
 
-      {/* Form Inputs */}
+      {/* Form 1 */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row gap-2 w-fit">
+        <h2 className="text-xl font-semibold">Edit Work Type</h2>
+        <div className="flex flex-row gap-4">
           <input
             name="typeOfWork"
-            value={formData.typeOfWork}
-            onChange={handleInputChange}
+            value={form1Data.typeOfWork}
+            onChange={handleForm1Change}
             type="text"
             placeholder="Type Of Work"
-            className="w-[20%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[50%] h-[2.5rem] rounded px-2 outline-none"
           />
-
           <input
-            name="tc"
-            value={formData.tc}
-            onChange={handleInputChange}
+            name="tcamount"
+            value={form1Data.tcamount}
+            onChange={handleForm1Change}
             type="text"
-            placeholder="TC"
-            className="w-[20%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            placeholder="TC Amount"
+            className="w-[25%] h-[2.5rem] rounded px-2 outline-none"
           />
+          <button
+            onClick={handleDentalChart}
+            className="w-[20%] h-[2.5rem] flex items-center justify-center bg-white rounded"
+          >
+            <GoPlusCircle /> Dental Chart
+          </button>
+          <button
+            onClick={addForm1Entry}
+            className="w-[5%] text-green-500 text-2xl"
+          >
+            <GoPlusCircle />
+          </button>
+        </div>
+        {showDentalChart && (
+          <DentalChartDesign
+            handleClose={handleCloseDentalChart}
+            onSelect={setSelectedDentalValues}
+            selectedValues={selectedDentalValues}
+          />
+        )}
+        <div>
+          {form1Entries.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <span className="w-[50%]">{entry.typeOfWork}</span>
+              <span className="w-[25%]">{entry.tcamount}</span>
+              <span className="w-[20%]">{entry.dentalChart.join(", ")}</span>
+              <button onClick={() => removeForm1Entry(index)}>
+                <FiMinusCircle className="text-red-500" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Form 2 */}
+      <div className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">Edit Appointment Details</h2>
+        <div className="flex flex-row gap-2">
           <input
             name="stepDone"
-            value={formData.stepDone}
-            onChange={handleInputChange}
+            value={form2Data.stepDone}
+            onChange={handleForm2Change}
             type="text"
             placeholder="Step Done"
-            className="w-[15%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[20%] h-[2.5rem] rounded px-2 outline-none"
           />
           <input
             name="nextAppointment"
-            value={formData.nextAppointment}
-            onChange={handleInputChange}
+            value={form2Data.nextAppointment}
+            onChange={handleForm2Change}
             type="date"
-            placeholder="Next Appointment"
-            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[20%] h-[2.5rem] rounded px-2 outline-none"
           />
           <input
             name="nextStep"
-            value={formData.nextStep}
-            onChange={handleInputChange}
+            value={form2Data.nextStep}
+            onChange={handleForm2Change}
             type="text"
             placeholder="Next Step"
-            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[10%] h-[2.5rem] rounded px-2 outline-none"
           />
           <input
             name="payment"
-            value={formData.payment}
-            onChange={handleInputChange}
+            value={form2Data.payment}
+            onChange={handleForm2Change}
             type="text"
             placeholder="Payment"
-            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[10%] h-[2.5rem] rounded px-2 outline-none"
           />
           <input
             name="due"
-            value={formData.due}
-            onChange={handleInputChange}
+            value={form2Data.due}
+            onChange={handleForm2Change}
             type="text"
             placeholder="Due"
-            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[10%] h-[2.5rem] rounded px-2 outline-none"
           />
           <select
             name="paymentMethod"
-            value={formData.paymentMethod}
-            onChange={handleInputChange}
-            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            value={form2Data.paymentMethod}
+            onChange={handleForm2Change}
+            className="w-[10%] h-[2.5rem] rounded px-2 outline-none"
           >
             <option value="">Payment Method</option>
             <option value="Cash">Cash</option>
@@ -217,60 +264,49 @@ const EditTcCard = ({ handleClose, tcCardId, fetchTCCards }) => {
           </select>
           <input
             name="comment"
-            value={formData.comment}
-            onChange={handleInputChange}
+            value={form2Data.comment}
+            onChange={handleForm2Change}
             type="text"
             placeholder="Comment"
-            className="w-[10%] h-[2.5rem] rounded boxsh px-2 outline-none"
+            className="w-[15%] h-[2.5rem] rounded px-2 outline-none"
           />
           <button
-            onClick={handleAdd}
-            className="w-[5%] text-custom-green text-2xl px-2 font-semibold"
+            onClick={addForm2Entry}
+            className="w-[5%] text-green-500 text-2xl"
           >
             <GoPlusCircle />
           </button>
         </div>
-
-        <div className="flex flex-col gap-4">
-          {entries.map((entry, index) => (
-            <div
-              key={index}
-              className="flex flex-row border-b border-[#00000033] text-[#888888] text-base gap-2"
-            >
-              <div className="w-[20%] px-2">{entry.typeOfWork}</div>
-              <div className="w-[20%]  px-2">{entry.tc}</div>
-              <div className="w-[15%]  px-2">{entry.stepDone}</div>
-              <div className="w-[10%]  px-2">{entry.nextAppointment}</div>
-              <div className="w-[10%]  px-2">{entry.nextStep}</div>
-              <div className="w-[10%]  px-2">{entry.payment}</div>
-              <div className="w-[10%]  px-2">{entry.due}</div>
-              <div className="w-[10%]  px-2">{entry.paymentMethod}</div>
-
-              <div className="w-[10%]  px-2">{entry.comment}</div>
-              <div className="w-[5%]  px-2">
-                <button
-                  onClick={() => handleRemove(index)}
-                  className="text-red-500 text-2xl"
-                >
-                  <FiMinusCircle />
-                </button>
-              </div>
+        <div>
+          {form2Entries.map((entry, index) => (
+            <div key={index} className="flex gap-2">
+              <span className="w-[20%]">{entry.stepDone}</span>
+              <span className="w-[20%]">{entry.nextAppointment}</span>
+              <span className="w-[10%]">{entry.nextStep}</span>
+              <span className="w-[10%]">{entry.payment}</span>
+              <span className="w-[10%]">{entry.due}</span>
+              <span className="w-[10%]">{entry.paymentMethod}</span>
+              <span className="w-[15%]">{entry.comment}</span>
+              <button onClick={() => removeForm2Entry(index)}>
+                <FiMinusCircle className="text-red-500" />
+              </button>
             </div>
           ))}
         </div>
-
-        <div className="flex justify-end items-end">
-          <button
-            disabled={loading}
-            onClick={handleSave}
-            className="px-8 h-[2.5rem] flex justify-center items-center bg-custom-blue rounded text-white text-lg font-medium "
-          >
-            {loading ? <div className="button-spinner"></div> : "Update"}
-          </button>
-        </div>
       </div>
 
-      {showPopup && tcCardId && (
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={loading}
+          className="px-8 py-2 bg-blue-500 text-white rounded"
+        >
+          {loading ? "Saving..." : "Save"}
+        </button>
+      </div>
+
+      {showPopup && (
         <div className="popup-overlay">
           <div className="popup-content">
             <button

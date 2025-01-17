@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import axios from "axios";
+import DentalChartDesign from "../DentalChartDesign";
 
 const OnExamination = ({ onChange, existingData = [] }) => {
   const [fields, setFields] = useState([
@@ -14,10 +15,12 @@ const OnExamination = ({ onChange, existingData = [] }) => {
       showSuggestions: false,
       searchResults: [],
       showAreaDropdown: false,
+      dentalChart: [],
     },
   ]);
 
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [showDentalChart, setShowDentalChart] = useState(null);
 
   const handleKeyDown = (e, index) => {
     const { searchResults, showSuggestions } = fields[index];
@@ -88,6 +91,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
         notes: examination.onExaminationAdditionalNotes || "",
         searchTerm: examination.onExaminationName || "",
         searchResults: [],
+        dentalChart: examination.dentalChart || [],
         showSuggestions: false,
       }));
       setFields(initialFields);
@@ -95,11 +99,14 @@ const OnExamination = ({ onChange, existingData = [] }) => {
   }, [existingData]);
 
   const updateField = (index, updates) => {
-    setFields((prevFields) =>
-      prevFields.map((field, i) =>
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
         i === index ? { ...field, ...updates } : field
-      )
-    );
+      );
+
+      onChange(updatedFields);
+      return updatedFields;
+    });
   };
 
   useEffect(() => {
@@ -108,6 +115,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
         onExaminationName: field.onExamination,
         onExaminationArea: field.area,
         onExaminationAdditionalNotes: field.notes,
+        dentalChart: field.dentalChart || [],
       }));
       onChange(filteredData);
     }
@@ -177,6 +185,21 @@ const OnExamination = ({ onChange, existingData = [] }) => {
     });
   };
 
+  const handleDentalChart = (index) => {
+    setShowDentalChart(index);
+  };
+
+  const addDentalChartSelection = (selectedValues, index) => {
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
+        i === index ? { ...field, dentalChart: [...selectedValues] } : field
+      );
+      onChange(updatedFields);
+      return updatedFields;
+    });
+    setShowDentalChart(null);
+  };
+
   const handleAddArea = (area, index) => {
     if (area && !fields[index].area.includes(area)) {
       const updatedAreas = [...fields[index].area, area];
@@ -205,6 +228,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
         showSuggestions: false,
         searchResults: [],
         showAreaDropdown: false,
+        dentalChart: [],
       },
     ]);
   };
@@ -226,7 +250,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
       <div className="pt-4">
         {fields.map((field, index) => (
           <div key={index} className="flex gap-5 py-1">
-            <div className="flex flex-col gap-2 min-w-[26.4vmax] relative">
+            <div className="flex flex-col gap-2 min-w-[25.4vmax] relative">
               <div className="bg-white flex px-4 xl:px-6 py-3 xl:py-4 rounded gap-2">
                 <input
                   type="text"
@@ -283,7 +307,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
               )}
             </div>
 
-            <div className="bg-white flex flex-wrap items-center gap-2 px-4 xl:px-6 py-3 xl:py-4 rounded min-w-[26.4vmax] relative">
+            <div className="bg-white flex flex-wrap items-center gap-2 px-4 xl:px-6 py-3 xl:py-4 rounded min-w-[25.4vmax] relative">
               {field.area.map((area, idx) => (
                 <span
                   key={idx}
@@ -331,7 +355,7 @@ const OnExamination = ({ onChange, existingData = [] }) => {
               )}
             </div>
 
-            <div className="bg-white flex px-4 xl:px-6 py-3 xl:py-4 rounded gap-2 min-w-[26.4vmax]">
+            <div className="bg-white flex px-4 xl:px-6 py-3 xl:py-4 rounded gap-2 min-w-[25.4vmax]">
               <input
                 type="text"
                 name="notes"
@@ -342,8 +366,21 @@ const OnExamination = ({ onChange, existingData = [] }) => {
               />
             </div>
 
-            <div className="flex flex-col gap-5 flex-1">
+            {field.dentalChart.length > 0 && (
+              <div className="text-sm text-gray-500 mt-2">
+                Selected Dental Chart: {field.dentalChart.join(", ")}
+              </div>
+            )}
+
+            <div className="flex flex-row  flex-1 ">
               <div className="flex flex-row gap-2 justify-between flex-1">
+                <button
+                  type="button"
+                  onClick={() => handleDentalChart(index)}
+                  className="text-custom-gray inline-flex items-center gap-2 justify-center bg-white rounded px-4 py-2 text-base"
+                >
+                  <CiCirclePlus className="text-xl font-bold" /> DC
+                </button>
                 <button
                   type="button"
                   className="text-custom-green inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base"
@@ -363,6 +400,21 @@ const OnExamination = ({ onChange, existingData = [] }) => {
             </div>
           </div>
         ))}
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          showDentalChart !== null ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {showDentalChart !== null && (
+          <DentalChartDesign
+            handleClose={() => setShowDentalChart(null)}
+            onSelect={(selectedValues) =>
+              addDentalChartSelection(selectedValues, showDentalChart)
+            }
+            selectedValues={fields[showDentalChart]?.dentalChart || []} // Pass current selections
+          />
+        )}
       </div>
     </div>
   );

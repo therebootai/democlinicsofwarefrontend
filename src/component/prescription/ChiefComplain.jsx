@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import axios from "axios";
+import DentalChartDesign from "../DentalChartDesign";
 
 const useDebounce = (callback, delay) => {
   const debounceCallback = useCallback(debounce(callback, delay), [
@@ -18,10 +19,12 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
       searchTerm: "",
       searchResults: [],
       showSuggestions: false,
+      dentalChart: [],
     },
   ]);
 
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [showDentalChart, setShowDentalChart] = useState(null);
 
   const handleKeyDown = (e, index) => {
     if (fields[index].searchResults.length > 0) {
@@ -97,6 +100,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
           searchTerm: complaint.chiefComplainName,
           searchResults: [],
           showSuggestions: false,
+          dentalChart: complaint.dentalChart || [],
         }))
       );
     }
@@ -105,11 +109,13 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
   // Update field based on index and changes
   const updateField = (index, updates) => {
     setFields((prevFields) => {
-      return prevFields.map((field, i) =>
+      const updatedFields = prevFields.map((field, i) =>
         i === index ? { ...field, ...updates } : field
       );
+
+      onChange(updatedFields);
+      return updatedFields;
     });
-    onChange(fields); // Ensure onChange is called after the state is updated
   };
 
   // Handle adding new chief complaint
@@ -147,6 +153,21 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
     });
   };
 
+  const handleDentalChart = (index) => {
+    setShowDentalChart(index);
+  };
+
+  const addDentalChartSelection = (selectedValues, index) => {
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
+        i === index ? { ...field, dentalChart: [...selectedValues] } : field
+      );
+      onChange(updatedFields);
+      return updatedFields;
+    });
+    setShowDentalChart(null);
+  };
+
   // Add a new input field for chief complaint
   const addField = () => {
     setFields([
@@ -156,6 +177,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
         searchTerm: "",
         searchResults: [],
         showSuggestions: false,
+        dentalChart: [],
       },
     ]);
   };
@@ -208,6 +230,7 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
                   }
                   onKeyDown={(e) => handleKeyDown(e, index)}
                 />
+
                 <button
                   type="button"
                   className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray"
@@ -233,6 +256,18 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
                 </div>
               )}
             </div>
+            {field.dentalChart.length > 0 && (
+              <div className="text-sm text-gray-500 mt-2">
+                Selected Dental Chart: {field.dentalChart.join(", ")}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => handleDentalChart(index)}
+              className="text-custom-gray inline-flex items-center gap-2 justify-center bg-white rounded px-4 py-2 text-base"
+            >
+              <CiCirclePlus className="text-xl font-bold" /> DC
+            </button>
 
             <div className="flex flex-col gap-5 flex-1">
               <div className="flex flex-row gap-2 justify-between flex-1">
@@ -255,6 +290,21 @@ const ChiefComplain = ({ onChange, existingComplaints = [] }) => {
             </div>
           </div>
         ))}
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          showDentalChart !== null ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {showDentalChart !== null && (
+          <DentalChartDesign
+            handleClose={() => setShowDentalChart(null)}
+            onSelect={(selectedValues) =>
+              addDentalChartSelection(selectedValues, showDentalChart)
+            }
+            selectedValues={fields[showDentalChart]?.dentalChart || []} // Pass current selections
+          />
+        )}
       </div>
     </div>
   );

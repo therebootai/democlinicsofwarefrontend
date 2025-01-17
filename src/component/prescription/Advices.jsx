@@ -1,275 +1,308 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import axios from "axios";
+import DentalChartDesign from "../DentalChartDesign";
+
+const useDebounce = (callback, delay) => {
+  const debounceCallback = useCallback(debounce(callback, delay), [
+    callback,
+    delay,
+  ]);
+
+  return debounceCallback;
+};
 
 const Advices = ({ onChange, existingAdvices = [] }) => {
-  const [checkedAdvices, setCheckedAdvices] = useState([]);
-  const [textareaContent, setTextareaContent] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [fields, setFields] = useState([
+    {
+      advicesName: "",
+      searchTerm: "",
+      searchResults: [],
+      showSuggestions: false,
+      dentalChart: [],
+    },
+  ]);
 
-  const handleKeyDown = (e) => {
-    if (showSuggestions && suggestions.length > 0) {
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [showDentalChart, setShowDentalChart] = useState(null);
+
+  const handleKeyDown = (e, index) => {
+    if (fields[index].searchResults.length > 0) {
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setActiveIndex((prevIndex) =>
-          prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
+          prevIndex < fields[index].searchResults.length - 1 ? prevIndex + 1 : 0
         );
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setActiveIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
+          prevIndex > 0 ? prevIndex - 1 : fields[index].searchResults.length - 1
         );
       } else if (e.key === "Enter") {
         e.preventDefault();
-        if (activeIndex >= 0 && suggestions[activeIndex]) {
-          handleSelectSuggestion(suggestions[activeIndex]);
-          setActiveIndex(-1); // Reset after selection
+        if (activeIndex >= 0 && fields[index].searchResults[activeIndex]) {
+          const selected = fields[index].searchResults[activeIndex];
+          handleSelectSuggestion(selected, index); // Select suggestion
+          setActiveIndex(-1); // Reset index
         }
       }
     }
   };
 
-  // Predefined checkbox advices
-  const predefinedAdvices = [
-    "Mouth Gargle",
-    "After eating use every night tooth brush",
-    "Please take some bed rest",
-  ];
-
-  useEffect(() => {
-    if (
-      Array.isArray(existingAdvices) &&
-      existingAdvices.length > 0 &&
-      checkedAdvices.length === 0 &&
-      existingAdvices.some((advice) => advice.advicesName) // Ensure there is meaningful data
-    ) {
-      const initialAdvices = existingAdvices
-        .filter((advice) => advice.advicesName) // Filter out any items without `advicesName`
-        .map((advice) => advice.advicesName);
-      setCheckedAdvices(initialAdvices);
-      setTextareaContent(initialAdvices.join("\n"));
-    }
-  }, [existingAdvices]);
-
-  // Format advices as array of objects with { advicesName }
-  const formatAdvices = () => {
-    const allAdvices = [
-      ...checkedAdvices,
-      ...textareaContent.split("\n").map((advice) => advice.trim()),
-    ];
-
-    // Use a Set to remove duplicates and filter out empty strings
-    const uniqueAdvices = Array.from(new Set(allAdvices))
-      .filter((advice) => advice) // Filter out empty strings
-      .map((advice) => ({
-        advicesName: advice,
-      }));
-
-    return uniqueAdvices;
-  };
-
-  // Sync textarea with all advice selections
-  const updateTextareaContent = () => {
-    const allAdvices = [
-      ...new Set([
-        ...checkedAdvices,
-        ...textareaContent.split("\n").map((advice) => advice.trim()),
-      ]),
-    ];
-    setTextareaContent(allAdvices.join("\n"));
-
-    if (onChange) {
-      onChange(formatAdvices());
-    }
-  };
-
-  // Handle checkbox change
-  const handleCheckboxChange = (advice) => {
-    setCheckedAdvices((prev) => {
-      const updatedAdvices = prev.includes(advice)
-        ? prev.filter((item) => item !== advice) // Remove if already selected
-        : [...prev, advice]; // Add if not selected
-
-      updateTextareaContent(updatedAdvices); // Update textarea with unique items
-
-      if (onChange) {
-        onChange(formatAdvices()); // Pass formatted data to parent
-      }
-      return updatedAdvices;
-    });
-  };
-
-  // Fetch random suggestions
-  const fetchRandomSuggestions = async () => {
+  const fetchRandomSuggestions = async (index) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/advices/getdropdown/random`,
         { params: { limit: 5 } }
       );
-      setSuggestions(response.data);
+      updateField(index, {
+        searchResults: Array.isArray(response.data) ? response.data : [],
+        showSuggestions: true,
+      });
     } catch (error) {
       console.error("Error fetching random suggestions:", error);
+      updateField(index, { searchResults: [] });
     }
   };
 
-  // Fetch search suggestions based on user input
-  const fetchSearchSuggestions = async () => {
-    if (searchTerm.trim() === "") return;
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/advices/getdropdown`,
-        { params: { query: searchTerm } }
-      );
-      setSuggestions(response.data);
-      setShowSuggestions(true);
-    } catch (error) {
-      console.error("Error fetching search suggestions:", error);
-    }
-  };
-
-  // Call fetchSearchSuggestions whenever searchTerm changes
-  useEffect(() => {
+  const fetchSuggestions = useDebounce(async (index) => {
+    const searchTerm = fields[index].searchTerm;
     if (searchTerm) {
-      fetchSearchSuggestions();
-    } else {
-      setSuggestions([]);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/advices/getdropdown`,
+          { params: { query: searchTerm } }
+        );
+        updateField(index, {
+          searchResults: Array.isArray(response.data) ? response.data : [],
+        });
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        updateField(index, { searchResults: [] });
+      }
     }
-  }, [searchTerm]);
+  }, 300);
 
-  // Update textarea content whenever checkedAdvices changes
   useEffect(() => {
-    updateTextareaContent();
-  }, [checkedAdvices]);
-
-  // Handle suggestion selection
-  const handleSelectSuggestion = (suggestion) => {
-    const suggestionText =
-      typeof suggestion === "string" ? suggestion : suggestion.advicesName;
-
-    // Only add to checkedAdvices if it's not already there
-    if (suggestionText && !checkedAdvices.includes(suggestionText)) {
-      setCheckedAdvices((prev) => {
-        const updatedAdvices = [...prev, suggestionText];
-        updateTextareaContent(updatedAdvices); // Update textarea with unique items
-
-        if (onChange) {
-          onChange(formatAdvices()); // Pass formatted data to parent
-        }
-        return updatedAdvices;
-      });
+    if (
+      Array.isArray(existingAdvices) &&
+      existingAdvices.length > 0 &&
+      existingAdvices.some((advice) => advice.advicesName) &&
+      fields[0].advicesName === ""
+    ) {
+      setFields(
+        existingAdvices.map((advice) => ({
+          advicesName: advice.advicesName,
+          searchTerm: advice.advicesName,
+          searchResults: [],
+          showSuggestions: false,
+          dentalChart: advice.dentalChart || [],
+        }))
+      );
     }
+  }, [existingAdvices]);
 
-    setSearchTerm("");
-    setSuggestions([]);
+  const updateField = (index, updates) => {
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
+        i === index ? { ...field, ...updates } : field
+      );
+
+      onChange(updatedFields);
+      return updatedFields;
+    });
   };
 
-  // Handle Enter key in textarea to save new advice
-  const handleTextareaKeyDown = async (e) => {
-    if (e.key === "Enter" && searchTerm.trim()) {
-      e.preventDefault();
+  const handleAddAdvice = async (index) => {
+    const { searchTerm } = fields[index];
+    const existing = fields.some((field) => field.advicesName === searchTerm);
+    if (existing) {
+      alert("Advice already exists.");
+      return;
+    }
 
-      const existsInDatabase = suggestions.some(
-        (s) => s.advicesName.toLowerCase() === searchTerm.toLowerCase()
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/advices/create`,
+        { advicesName: searchTerm }
       );
 
-      if (!existsInDatabase) {
-        try {
-          await axios.post(
-            `${import.meta.env.VITE_BASE_URL}/api/advices/create`,
-            { advicesName: searchTerm }
-          );
-          alert("Advice saved successfully!");
-        } catch (error) {
-          console.error("Error saving new advice:", error);
-        }
+      if (response.status === 201) {
+        alert("Advice Created Successfully");
       }
-      setTextareaContent((prevContent) =>
-        `${prevContent}\n${searchTerm}`.trim()
-      );
-      if (onChange) {
-        onChange(formatAdvices()); // Pass formatted data to parent
-      }
-      setSearchTerm("");
-      setSuggestions([]);
+    } catch (error) {
+      console.error("Error creating Advice:", error);
     }
   };
 
-  // Show random suggestions on textarea focus
-  const handleTextareaFocus = () => {
-    fetchRandomSuggestions();
-    setShowSuggestions(true);
+  const handleSelectSuggestion = (selectedItem, index) => {
+    updateField(index, {
+      advicesName: selectedItem.advicesName,
+      searchTerm: selectedItem.advicesName,
+      searchResults: [],
+      showSuggestions: false,
+    });
   };
 
-  // Hide suggestions on textarea blur
-  const handleTextareaBlur = () => {
-    setTimeout(() => setShowSuggestions(false), 150);
+  const handleDentalChart = (index) => {
+    setShowDentalChart(index);
   };
 
-  // Handle direct typing in textarea
-  const handleTextareaChange = (e) => {
-    const value = e.target.value;
-    setTextareaContent(value);
+  const addDentalChartSelection = (selectedValues, index) => {
+    setFields((prevFields) => {
+      const updatedFields = prevFields.map((field, i) =>
+        i === index ? { ...field, dentalChart: [...selectedValues] } : field
+      );
+      onChange(updatedFields);
+      return updatedFields;
+    });
+    setShowDentalChart(null);
+  };
 
-    if (onChange) {
-      onChange(formatAdvices()); // Pass formatted data to parent
+  const addField = () => {
+    setFields([
+      ...fields,
+      {
+        advicesName: "",
+        searchTerm: "",
+        searchResults: [],
+        showSuggestions: false,
+        dentalChart: [],
+      },
+    ]);
+  };
+
+  const removeField = (index) => {
+    if (fields.length > 1) {
+      const updatedFields = fields.filter((_, i) => i !== index);
+      setFields(updatedFields);
+
+      onChange(updatedFields);
     }
   };
 
   return (
-    <div className="flex flex-col gap-9">
-      <h1 className="text-custom-gray text-lg xl:text-xl font-semibold py-4 border-b border-black/20">
-        Advices
-      </h1>
-      <div className="relative w-full">
-        <textarea
-          placeholder="Any Advices"
-          className="bg-white rounded outline-none py-5 px-6 min-h-[20vmax] w-full resize-none text-sm text-custom-gray"
-          value={textareaContent}
-          onChange={handleTextareaChange}
-          onFocus={handleTextareaFocus}
-          onBlur={handleTextareaBlur}
-          onKeyDown={handleKeyDown}
-        ></textarea>
-        {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute bottom-[-5rem] bg-white w-full z-10 shadow-lg rounded-md">
-            {suggestions.map((suggestion, idx) => (
-              <div
-                key={idx}
-                onMouseDown={() => handleSelectSuggestion(suggestion)}
-                className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                  idx === activeIndex ? "bg-gray-200" : ""
-                }`}
-              >
-                {suggestion.advicesName}
-              </div>
-            ))}
-          </div>
-        )}
+    <div className="flex flex-col">
+      <div className="flex gap-5 pb-4 border-b border-[#00000033]">
+        <h3 className="text-black text-lg xl:text-xl min-w-[26.4vmax]">
+          Advices
+        </h3>
       </div>
+      <div className="pt-4">
+        {fields.map((field, index) => (
+          <div key={index} className="flex gap-5 py-1">
+            <div className="flex flex-col gap-2 w-full relative">
+              <div className="bg-white flex px-4 xl:px-6 py-3 xl:py-4 rounded gap-2">
+                <input
+                  type="text"
+                  name="searchTerm"
+                  autoComplete="off"
+                  placeholder="Advice"
+                  className="bg-transparent outline-none text-lg xl:text-xl placeholder:text-[#d5d5d5] w-full"
+                  value={field.searchTerm}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    updateField(index, { searchTerm: value });
 
-      <div className="flex flex-col gap-3">
-        {predefinedAdvices.map((advice, index) => (
-          <div className="flex gap-1 items-center" key={index}>
-            <input
-              type="checkbox"
-              id={advice}
-              checked={checkedAdvices.includes(advice)}
-              onChange={() => handleCheckboxChange(advice)}
-              className="accent-custom-blue cursor-pointer"
-            />
-            <label
-              htmlFor={advice}
-              className="whitespace-nowrap text-sm text-custom-gray cursor-pointer"
+                    fetchSuggestions(index);
+                  }}
+                  onFocus={() => {
+                    if (!field.searchTerm) fetchRandomSuggestions(index);
+                    updateField(index, { showSuggestions: true });
+                  }}
+                  onBlur={() =>
+                    setTimeout(
+                      () => updateField(index, { showSuggestions: false }),
+                      150
+                    )
+                  }
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                />
+
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded bg-[#f3f3f3] items-center justify-center text-sm text-custom-gray"
+                  onClick={() => handleAddAdvice(index)}
+                >
+                  Add
+                </button>
+              </div>
+
+              {field.showSuggestions && field.searchResults.length > 0 && (
+                <div className="absolute top-[4rem] bg-white w-full z-10 shadow-lg rounded-md">
+                  {field.searchResults.map((item, idx) => (
+                    <div
+                      key={idx}
+                      onMouseDown={() => handleSelectSuggestion(item, index)}
+                      className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                        idx === activeIndex ? "bg-gray-200" : ""
+                      }`}
+                    >
+                      {item.advicesName}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {field.dentalChart.length > 0 && (
+              <div className="text-sm text-gray-500 mt-2">
+                Selected Dental Chart: {field.dentalChart.join(", ")}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => handleDentalChart(index)}
+              className="text-custom-gray inline-flex items-center gap-2 justify-center bg-white rounded px-4 py-2 text-base"
             >
-              {advice}
-            </label>
+              <CiCirclePlus className="text-xl font-bold" /> DC
+            </button>
+            <div className="flex flex-col gap-5 flex-1">
+              <div className="flex flex-row gap-2 justify-between flex-1">
+                <button
+                  type="button"
+                  className="text-custom-green inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base"
+                  onClick={addField}
+                >
+                  <CiCirclePlus />
+                </button>
+                <button
+                  type="button"
+                  className="text-[#E40000] inline-flex items-center justify-center bg-white rounded px-4 py-2 text-base"
+                  onClick={() => removeField(index)}
+                  disabled={fields.length === 1}
+                >
+                  <CiCircleMinus />
+                </button>
+              </div>
+            </div>
           </div>
         ))}
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-screen w-[60%] xl:w-[50%] overflow-scroll z-[100] custom-scroll  bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
+          showDentalChart !== null ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {showDentalChart !== null && (
+          <DentalChartDesign
+            handleClose={() => setShowDentalChart(null)}
+            onSelect={(selectedValues) =>
+              addDentalChartSelection(selectedValues, showDentalChart)
+            }
+            selectedValues={fields[showDentalChart]?.dentalChart || []}
+          />
+        )}
       </div>
     </div>
   );
 };
 
 export default Advices;
+
+function debounce(func, delay) {
+  let timer;
+  return (...args) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+}

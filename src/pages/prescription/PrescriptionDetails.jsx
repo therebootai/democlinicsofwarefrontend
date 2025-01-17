@@ -9,6 +9,7 @@ import html2pdf from "html2pdf.js";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PrescriptionWhatsapp from "../../component/prescription/PrescriptionWhatsapp";
+import RenderDentalChart from "../../component/dentalchartedesign/RenderDentalChart";
 
 const PrescriptionDetails = () => {
   const { patientId, prescriptionId } = useParams();
@@ -360,8 +361,12 @@ const PrescriptionDetails = () => {
                     <div className="flex flex-col">
                       {prescriptionData.prescriptions[0].chiefComplain.map(
                         (cc, index) => (
-                          <p className="text-sm" key={index}>
-                            {cc.chiefComplainName}
+                          <p
+                            className="text-sm flex gap-1 items-center"
+                            key={index}
+                          >
+                            {cc.chiefComplainName} -
+                            <RenderDentalChart dentalChart={cc.dentalChart} />
                           </p>
                         )
                       )}
@@ -379,6 +384,7 @@ const PrescriptionDetails = () => {
                             <h3>{oe.onExaminationName}</h3>
                             <p>{oe.onExaminationArea.join(", ")}</p>
                             <p>{oe.onExaminationAdditionalNotes}</p>
+                            <RenderDentalChart dentalChart={oe.dentalChart} />
                           </div>
                         )
                       )}
@@ -405,8 +411,12 @@ const PrescriptionDetails = () => {
                     <div className="grid grid-cols-2 gap-2">
                       {prescriptionData.prescriptions[0].radiography.map(
                         (rad, index) => (
-                          <p className="text-sm" key={index}>
-                            {rad.radiographyName}
+                          <p
+                            className="text-sm flex flex-row items-center gap-1"
+                            key={index}
+                          >
+                            {rad.radiographyName} -{" "}
+                            <RenderDentalChart dentalChart={rad.dentalChart} />
                           </p>
                         )
                       )}
@@ -417,8 +427,14 @@ const PrescriptionDetails = () => {
                     <div className="">
                       {prescriptionData.prescriptions[0].advices.map(
                         (advice, index) => (
-                          <p className="text-sm" key={index}>
-                            {advice.advicesName},
+                          <p
+                            className="text-sm flex flex-row items-center gap-1"
+                            key={index}
+                          >
+                            {advice.advicesName},{" "}
+                            <RenderDentalChart
+                              dentalChart={advice.dentalChart}
+                            />
                           </p>
                         )
                       )}
