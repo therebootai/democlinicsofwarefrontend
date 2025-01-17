@@ -4,7 +4,7 @@ import AdminDashboardTemplate from "../../template/AdminDashboardTemplate";
 import { GoPerson, GoPlusCircle } from "react-icons/go";
 import { MdCurrencyRupee } from "react-icons/md";
 import { BsEye } from "react-icons/bs";
-import { FaEdit } from "react-icons/fa";
+import { FaCaretDown, FaEdit } from "react-icons/fa";
 import Topheader from "../../component/Topheader";
 import { Link } from "react-router-dom";
 import ViewPatient from "../../component/ViewPatient";
@@ -23,6 +23,8 @@ const Patients = () => {
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
+  const [doctors, setDoctors] = useState([]);
+  const [doctorFilter, setDoctorFilter] = useState("");
   const [dateFilter, setDateFilter] = useState({ startDate: "", endDate: "" });
   const { user, favClinic } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
@@ -70,7 +72,7 @@ const Patients = () => {
         search,
         dateFilter.startDate,
         dateFilter.endDate,
-        "",
+        doctorFilter,
         favClinic._id
       );
     } else if (user.role === "admin" && user.designation === "Staff") {
@@ -79,7 +81,7 @@ const Patients = () => {
         search,
         dateFilter.startDate,
         dateFilter.endDate,
-        "",
+        doctorFilter,
         favClinic._id
       );
     } else {
@@ -92,7 +94,11 @@ const Patients = () => {
         favClinic._id
       );
     }
-  }, [currentPage, search, dateFilter, user, favClinic]);
+  }, [currentPage, search, dateFilter, user, favClinic, doctorFilter]);
+
+  useEffect(() => {
+    getDoctorsOfCurrentClinic();
+  }, []);
 
   const handleDateFilter = (startDate, endDate) => {
     setDateFilter({ startDate, endDate });
@@ -298,6 +304,20 @@ const Patients = () => {
     }
   };
 
+  async function getDoctorsOfCurrentClinic() {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/user/users?designation=Doctor`
+      );
+      const result = await response.data;
+      console.log(result);
+
+      setDoctors(result);
+    } catch (error) {
+      console.error("Error fetching Doctor", error);
+    }
+  }
+
   return (
     <AdminDashboardTemplate>
       <Topheader
@@ -310,6 +330,24 @@ const Patients = () => {
         handleClearFilter={handleClearFilter}
         handleAddPatient={handleAddPatient}
       >
+        {!(user.role === "admin" && user.designation === "Doctor") && (
+          <div className="flex items-center bg-[#F5F5F5] gap-3 rounded  relative xl:text-base text-xs xlg:text-sm text-custom-gray">
+            <select
+              value={doctorFilter}
+              onChange={(e) => setDoctorFilter(e.target.value)}
+              className="block appearance-none cursor-pointer truncate px-2 xlg:px-6 h-[2.5rem] pe-2 bg-[#F5F5F5] focus:outline-none"
+            >
+              <option value="">Choose Doctor</option>
+              {doctors?.length > 0 &&
+                doctors.map((doctor) => (
+                  <option value={doctor.userId} key={doctor._id}>
+                    {doctor.name}
+                  </option>
+                ))}
+            </select>
+            <FaCaretDown className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-600" />
+          </div>
+        )}
         <button
           onClick={handleAddNewClick}
           className="flex items-center bg-custom-orange hover:bg-custom-blue gap-3 rounded px-2 xlg:px-3 h-[2.5rem] text-xs xl:text-base xlg:text-sm text-[#F5F5F5] transition-colors duration-300 ease-in-out"
