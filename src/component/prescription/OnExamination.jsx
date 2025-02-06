@@ -264,31 +264,28 @@ const OnExamination = ({ onChange, existingData = [] }) => {
                     updateField(index, { searchTerm: value });
 
                     if (value.trim() === "") {
-                      fetchRandomSuggestions(index); // Show random suggestions if input is cleared
+                      fetchRandomSuggestions(index);
                     } else {
-                      fetchSuggestions(index); // Fetch specific suggestions when there is input
+                      fetchSuggestions(index);
                     }
 
-                    // Ensure the onExamination field is updated with the search term
                     updateField(index, { onExamination: value });
                   }}
                   onFocus={() => {
-                    if (!field.searchTerm) fetchRandomSuggestions(index); // Show random suggestions on focus if input is empty
+                    if (!field.searchTerm) fetchRandomSuggestions(index);
                     updateField(index, { showSuggestions: true });
                   }}
                   onBlur={() => {
                     setTimeout(() => {
                       if (fields[index].searchTerm.trim()) {
-                        // Update the onExaminationName with the trimmed value
                         updateField(index, {
                           onExamination: fields[index].searchTerm.trim(),
                           showSuggestions: false,
                         });
                       } else {
-                        // Clear suggestions when search term is empty
                         updateField(index, { showSuggestions: false });
                       }
-                    }, 150); // Use timeout to avoid race conditions with other events
+                    }, 150);
                   }}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                 />
