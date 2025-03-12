@@ -329,13 +329,13 @@ const PrescriptionDetails = () => {
                   <div className="p-[0.2rem] text-sm/[0px] action-column  rounded-full bg-white text-[#3780EF]">
                     <TbWorldWww />
                   </div>
-                  <div>www.dentitydental.in</div>
+                  <div>www.rebootai.in</div>
                 </div>
                 <div className="flex pdf-center gap-2">
                   <span className="p-[0.2rem] text-sm/[0px] action-column rounded-full bg-white text-[#3780EF]">
                     <FaPhoneAlt />
                   </span>
-                  9051553253
+                  7044076603
                 </div>
               </div>
               <div className="py-3 flex flex-row gap-2">
