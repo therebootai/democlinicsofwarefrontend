@@ -19,9 +19,9 @@ const PreviewPrescription = ({
         <div className="flex flex-row gap-4 p-2 w-full items-center">
           <div className="w-[20%]">
             <img
-              src="/images/dentitydentallogo.png"
-              alt="Dentity Dental"
-              className="w-fit h-[4rem]"
+              src="/images/demologo.svg"
+              alt="logo"
+              className="w-fit h-[2rem]"
             />
           </div>
           <div className="flex flex-col w-full gap-2 items-center">
@@ -52,13 +52,13 @@ const PreviewPrescription = ({
             <div className="p-[0.2rem] text-sm/[0px] action-column rounded-full bg-white text-[#3780EF]">
               <TbWorldWww />
             </div>
-            <div>www.dentitydental.in</div>
+            <div>www.rebootai.in</div>
           </div>
           <div className="flex pdf-center gap-2">
             <span className="p-[0.2rem] text-sm/[0px] action-column rounded-full bg-white text-[#3780EF]">
               <FaPhoneAlt />
             </span>
-            9051553253
+            7044076603
           </div>
         </div>
 

@@ -147,14 +147,14 @@ const SaveTcCardPdf = ({ tcCardId, patientId, fetchTCCards }) => {
         <div className="flex flex-row gap-4 p-2 w-full items-center">
           <div className="w-[20%]">
             <img
-              src="/images/dentitydentallogo.png"
-              alt="Dental Logo"
-              className="w-fit h-[4rem]"
+              src="/images/demologo.svg"
+              alt=" Logo"
+              className="w-fit h-[2rem]"
             />
           </div>
           <div className="flex flex-col w-full gap-2 items-center">
             <h1 className="text-lg font-semibold text-[#333333]">
-              A Unit of Multiplicity Dental Clinic Chain in Kolkata & W.B.
+              Dental Clinic Managment Software
             </h1>
             <div className="grid grid-cols-2 gap-x-8 text-sm font-medium text-[#000000]">
               <div className="flex flex-col gap-2">

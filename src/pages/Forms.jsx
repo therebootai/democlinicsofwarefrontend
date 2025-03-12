@@ -55,7 +55,7 @@ export const Forms = () => {
     fetchData();
   }, []);
 
-  if (!formData || formData.length === 0) {
+  if (!formData) {
     return <div>Loading...</div>;
   }
 
@@ -78,51 +78,57 @@ export const Forms = () => {
         </Topheader>
       </div>
       <div className="xl:p-8 p-4 flex flex-col gap-8">
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {formData.map((form) => (
-            <div
-              key={form.formId}
-              className="relative p-2 h-full flex flex-col items-center justify-center bg-white boxsh rounded"
-            >
-              <div className="p-2">
-                {form.file.endsWith(".pdf") ? (
-                  <iframe
-                    src={form.file}
-                    title={form.title}
-                    className="w-full h-[15rem]"
-                  ></iframe>
-                ) : (
-                  <img src={form.file} alt={form.title} className=" " />
-                )}
-              </div>
-              <h1 className="text-sm text-[#888] text-center">{form.title}</h1>
+        {formData.length === 0 ? (
+          <div className="text-center text-gray-500">No Data Found</div>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {formData.map((form) => (
+              <div
+                key={form.formId}
+                className="relative p-2 h-full flex flex-col items-center justify-center bg-white boxsh rounded"
+              >
+                <div className="p-2">
+                  {form.file.endsWith(".pdf") ? (
+                    <iframe
+                      src={form.file}
+                      title={form.title}
+                      className="w-full h-[15rem]"
+                    ></iframe>
+                  ) : (
+                    <img src={form.file} alt={form.title} className=" " />
+                  )}
+                </div>
+                <h1 className="text-sm text-[#888] text-center">
+                  {form.title}
+                </h1>
 
-              <div className="flex justify-between gap-4 mt-2">
-                <button
-                  type="button"
-                  className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-2 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
-                  onClick={() => window.open(form.file, "_blank")}
-                >
-                  View
-                </button>
-                <a
-                  href={form.file}
-                  download
-                  className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-2 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
-                >
-                  Download
-                </a>
-                <button
-                  onClick={() => handleDeleteClick(form.formId)} // Open delete confirmation dialog
-                  type="button"
-                  className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-2 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
-                >
-                  Delete
-                </button>
+                <div className="flex justify-between gap-4 mt-2">
+                  <button
+                    type="button"
+                    className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-2 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
+                    onClick={() => window.open(form.file, "_blank")}
+                  >
+                    View
+                  </button>
+                  <a
+                    href={form.file}
+                    download
+                    className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-2 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
+                  >
+                    Download
+                  </a>
+                  <button
+                    onClick={() => handleDeleteClick(form.formId)} // Open delete confirmation dialog
+                    type="button"
+                    className="text-custom-blue text-sm text-center border border-custom-blue rounded py-1 xlg:py-2 px-2 xlg:px-4 hover:text-white hover:bg-custom-blue transition-colors duration-300 inline-flex flex-1 items-center justify-center"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Popup */}

@@ -277,7 +277,7 @@ const CreateInvoice = () => {
               <div className="flex items-center gap-5 justify-center">
                 <div className="flex flex-col">
                   <h1 className="xlg:text-base text-sm xxl:text-xl font-semibold text-custom-gray text-right">
-                    Dentity Dental
+                    Demo Clinic
                   </h1>
                   <p className="xlg:text-base text-sm xxl:text-xl text-[#9C9C9C] text-right">
                     {clinicData?.clinic_name || "N/A"}
