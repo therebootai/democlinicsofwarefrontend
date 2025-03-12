@@ -33,9 +33,9 @@ const TopHeaderMini = () => {
     <header className="flex justify-between px-20 py-3 border-b border-black/20 bg-white">
       <Link to="/doctor/dashboard">
         <img
-          src="/images/dentitydentallogo.png"
+          src="/images/demologo.svg"
           alt="Clinic Logo"
-          className="h-[3rem] "
+          className="xl:h-[2rem] h-[1.5rem] "
         />
       </Link>
       <div className="flex items-center justify-center relative group">

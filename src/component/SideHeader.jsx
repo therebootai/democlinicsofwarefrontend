@@ -66,9 +66,9 @@ const AdminSideHeader = () => {
     >
       <div className="flex justify-center items-center mt-4 border-b p-2 pb-4  border-[#00000033]">
         <img
-          src="/images/dentitydentallogo.png"
+          src="/images/demologo.svg"
           alt="Clinic Logo"
-          className="xl:h-[3rem] h-[2.5rem] "
+          className="xl:h-[2rem] h-[1.5rem] "
         />
       </div>
       <div className="flex flex-col xlg:gap-4 gap-4 mt-2 p-1 xlg:p-2 xl:pl-4 ">
